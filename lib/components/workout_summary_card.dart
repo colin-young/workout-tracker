@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/components/relative_date.dart';
-import 'package:flutter_application_1/components/rounded_button.dart';
-import 'package:flutter_application_1/domain/workout_record.dart';
+import 'package:workout_tracker/components/card_title_divider.dart';
+import 'package:workout_tracker/components/relative_date.dart';
+import 'package:workout_tracker/components/rounded_button.dart';
+import 'package:workout_tracker/domain/workout_record.dart';
 
 class WorkoutSummaryCard extends StatelessWidget {
   final WorkoutRecord workoutRecord;
@@ -13,11 +14,11 @@ class WorkoutSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var finishedAt = workoutRecord.finishedAt();
     return Padding(
         padding: const EdgeInsets.all(5.0),
         child: Card(
             elevation: 5.0,
-            // color: Theme.of(context).colorScheme.secondaryContainer,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(children: <Widget>[
@@ -31,38 +32,12 @@ class WorkoutSummaryCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       if (!workoutRecord.isComplete())
-                        const RoundedButton(
-                            "Continue Current", Icons.play_arrow),
+                        RoundedButton(
+                            onPressed: () => null,
+                            text: "Continue Current",
+                            icon: Icons.play_arrow),
                     ]),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                        width: 10,
-                        child:
-                            Column(mainAxisSize: MainAxisSize.min, children: [
-                          Divider(
-                            thickness: 1,
-                            indent: 0,
-                            endIndent: 5,
-                            color: Theme.of(context).colorScheme.primary,
-                          )
-                        ])),
-                    RelativeDate(workoutRecord.finishedAt()),
-                    Expanded(
-                        child:
-                            Column(mainAxisSize: MainAxisSize.max, children: [
-                      Divider(
-                        thickness: 1,
-                        indent: 5,
-                        endIndent: 0,
-                        color: Theme.of(context).colorScheme.primary,
-                      )
-                    ])),
-                  ],
-                ),
+                CardTitleDivider(child: RelativeDate(finishedAt)),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
                   child: Row(

@@ -1,16 +1,17 @@
-# flutter_application_1
+# workout_tracker
 
-A new Flutter project.
+## Database Locations
 
-## Getting Started
+MacOS: /Users/colinyoung/Library/Containers/com.example.flutterApplication1/Data/Documents/workout_tracker.db
 
-This project is a starting point for a Flutter application.
+# Formulae
 
-A few resources to get you started if this is your first Flutter project:
+## One-Repitition Maximum
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Estimated maximum weight that can be lifted once. Can be used in reverse to estimate weight for target number of repetitions.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Epley
+
+$$1RM = w \times \left( 1 + {r \over 30}\right), assuming \left(r > 1\right)$$
+
+$$w = {1RM \over \left(1 + {r \over 30}\right)}$$

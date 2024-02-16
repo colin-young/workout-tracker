@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flutter_application_1",
+            "name": "workout_tracker",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "flutter_application_1 (profile mode)",
+            "name": "workout_tracker (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "flutter_application_1 (release mode)",
+            "name": "workout_tracker (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

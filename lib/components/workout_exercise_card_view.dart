@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/components/sets_list_view.dart';
-import 'package:flutter_application_1/domain/workout_sets.dart';
+import 'package:workout_tracker/components/sets_list_view.dart';
+import 'package:workout_tracker/domain/workout_sets.dart';
 
 class WorkoutExerciseCardView extends StatelessWidget {
   const WorkoutExerciseCardView({

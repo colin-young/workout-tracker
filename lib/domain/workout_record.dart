@@ -1,6 +1,6 @@
-import 'package:flutter_application_1/domain/exercise.dart';
-import 'package:flutter_application_1/domain/workout_definition.dart';
-import 'package:flutter_application_1/domain/workout_sets.dart';
+import 'package:workout_tracker/domain/exercise.dart';
+import 'package:workout_tracker/domain/workout_definition.dart';
+import 'package:workout_tracker/domain/workout_sets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
@@ -12,13 +12,14 @@ abstract class WorkoutRecord implements _$WorkoutRecord {
   const WorkoutRecord._();
 
   const factory WorkoutRecord(
-      {required WorkoutDefinition fromWorkoutDefinition,
+      {@Default(-1) int id,
+      required WorkoutDefinition fromWorkoutDefinition,
       Exercise? currentExercise,
       required List<WorkoutSets> sets,
       required DateTime startedAt,
       @Default(false) bool isActive}) = _WorkoutRecord;
 
-  factory WorkoutRecord.fromJson(Map<String, Object?> json) =>
+  factory WorkoutRecord.fromJson(Map<String, dynamic> json) =>
       _$WorkoutRecordFromJson(json);
 
   bool isComplete() => !sets.any((element) => !element.isComplete);

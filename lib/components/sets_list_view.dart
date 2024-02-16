@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/domain/set_entry.dart';
+import 'package:workout_tracker/domain/set_entry.dart';
 
 class SetsListView extends StatelessWidget {
   final List<SetEntry> entries;

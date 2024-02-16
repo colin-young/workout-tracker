@@ -1,5 +1,12 @@
 
 ```mermaid
+---
+title: Domain Classes
+config:
+  theme: forest
+  er:
+    layoutDirection: TB
+---
 erDiagram
 
     Exercise ||--o{ ExerciseSetting : settings
@@ -20,7 +27,6 @@ erDiagram
         String name
         String exerciseType
         String note
-        ExerciseSetting setting
     }
 
     SetEntry {
