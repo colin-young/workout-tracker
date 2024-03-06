@@ -1,0 +1,36 @@
+import 'package:go_router/go_router.dart';
+import 'package:workout_tracker/components/pages/exercise_edit_page.dart';
+import 'package:workout_tracker/components/pages/exercise_page.dart';
+import 'package:workout_tracker/components/pages/home_page.dart';
+import 'package:workout_tracker/components/pages/workout_page.dart';
+
+final GoRouter router = GoRouter(
+  routes: [
+    GoRoute(
+        name: "home",
+        path: "/",
+        builder: (context, state) => const HomePage(title: "Summary"),
+        routes: [
+          GoRoute(
+              name: 'exercises',
+              path: 'exercises',
+              builder: (context, state) => const ExercisePage(),
+              routes: [
+                GoRoute(
+                  name: 'exerciseEdit',
+                  path: 'exercise/:exerciseId/edit',
+                  builder: (context, state) => ExerciseEditPage(
+                    exerciseId: state.pathParameters['exerciseId']!,
+                    title: 'Exercise Name',
+                  ),
+                ),
+              ]),
+          GoRoute(
+              name: 'workout',
+              path: 'workout/:workoutId',
+              builder: (context, state) => WorkoutPage(
+                  title: "Workout",
+                  workoutId: state.pathParameters['workoutId']!))
+        ]),
+  ],
+);

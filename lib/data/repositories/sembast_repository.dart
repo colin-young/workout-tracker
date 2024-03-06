@@ -3,4 +3,6 @@ abstract class Repository<T> {
   Future update(T entity);
   Future delete(int entityId);
   Stream<List<T>> getAllEntitiesStream();
+  Future<List<T>> getAllEntities();
+  Future<T> getEntity(int entityId);
 }

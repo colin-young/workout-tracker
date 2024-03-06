@@ -1,7 +1,7 @@
+# Domain Classes
 
 ```mermaid
 ---
-title: Domain Classes
 config:
   theme: forest
   er:
@@ -14,7 +14,7 @@ erDiagram
     WorkoutDefinition ||--o{ WorkoutExercise : exercises
     WorkoutSets ||--|| Exercise : exercise
     WorkoutSets ||--o{ SetEntry : set
-    WorkoutRecord ||--o| WorkoutDefinition : workoutDefinition
+    WorkoutRecord ||--o| WorkoutDefinition : fromWorkoutDefinition
     WorkoutRecord ||--o| Exercise : currentExercise
     WorkoutRecord ||--o{ WorkoutSets : sets
 
@@ -51,12 +51,34 @@ erDiagram
     }
 
     WorkoutRecord {
-        WorkoutDefinition fromWorkoutDefinition
-        Exercise currentExercise
         DateTime startedAt
         DateTime finishedAt
         bool isLatest
         bool isActive
     }
+
+```
+# WorkoutExercise State
+
+```mermaid
+---
+config:
+  theme: forest
+---
+stateDiagram-v2
+    direction TB
+    [*] --> Incomplete
+    Incomplete --> Active : getNextExercise
+    Incomplete --> Skipped : skipExercise
+
+    Active --> Resting : recordSet
+
+    Resting --> Active : timerExpired
+
+    Resting --> Completed : completeSet
+    Active --> Completed : completeSet
+
+    Skipped --> [*]
+    Completed --> [*]
 
 ```

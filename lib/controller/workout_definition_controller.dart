@@ -9,32 +9,32 @@ part 'workout_definition_controller.g.dart';
 @riverpod
 class WorkoutDefinitionController extends _$WorkoutDefinitionController {
   @override
-  FutureOr<Stream<List<WorkoutDefinition>>> build() async {
+  FutureOr<List<WorkoutDefinition>> build() async {
     final definitionsRepository =
-        ref.read(workoutDefinitionsRepositoryProvider);
-    return definitionsRepository.getAllEntitiesStream();
+        ref.watch(workoutDefinitionsRepositoryProvider);
+    return definitionsRepository.getAllEntities();
   }
 
   Future<int> createWorkoutDefinition(
       {required String name, required List<WorkoutExercise> exercises}) async {
     final definitionsRepository =
-        ref.read(workoutDefinitionsRepositoryProvider);
+        ref.watch(workoutDefinitionsRepositoryProvider);
     final newDefinition = WorkoutDefinition(name: name, exercises: exercises);
 
     state = const AsyncLoading();
     var id = await definitionsRepository.insert(newDefinition);
     
     state = await AsyncValue.guard(() async {
-      return definitionsRepository.getAllEntitiesStream();
+      return definitionsRepository.getAllEntities();
     });
     return id;
   }
 
-  Future<Stream<List<WorkoutDefinition>>> getWorkoutDefinitions() async {
+  Future<List<WorkoutDefinition>> getWorkoutDefinitions() async {
     final definitionsRepository =
-        ref.read(workoutDefinitionsRepositoryProvider);
+        ref.watch(workoutDefinitionsRepositoryProvider);
     state = const AsyncLoading();
-    var definitions = definitionsRepository.getAllEntitiesStream();
+    var definitions = definitionsRepository.getAllEntities();
     state = await AsyncValue.guard(() async => definitions);
     return definitions;
   }

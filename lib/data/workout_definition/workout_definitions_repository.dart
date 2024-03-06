@@ -35,6 +35,12 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
               .toList(growable: false),
         );
   }
+  
+  @override
+  Future<List<WorkoutDefinition>> getAllEntities() async {
+    final records = await _store.find(database);
+    return records.map((e) => WorkoutDefinition.fromJson(e.value)).toList();
+  }
 
   @override
   Future<int> insert(WorkoutDefinition workoutDefinition) {
@@ -48,6 +54,12 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
     return _store
       .record(workoutDefinition.id)
       .update(database, workoutDefinition.toJson());
+  }
+  
+  @override
+  Future<WorkoutDefinition> getEntity(int entityId) {
+    // TODO: implement getEntity
+    throw UnimplementedError();
   }
 }
 

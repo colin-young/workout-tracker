@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workout_tracker/components/sets_list_view.dart';
-import 'package:workout_tracker/domain/workout_sets.dart';
+import 'package:workout_tracker/domain/exercise_sets.dart';
 
 class WorkoutExerciseCardView extends StatelessWidget {
   const WorkoutExerciseCardView({
@@ -8,14 +8,13 @@ class WorkoutExerciseCardView extends StatelessWidget {
     required this.workoutExercise,
   });
 
-  final WorkoutSets workoutExercise;
+  final ExerciseSets workoutExercise;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
-          elevation: 5,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -27,7 +26,7 @@ class WorkoutExerciseCardView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(workoutExercise.exercise.name,
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      style: Theme.of(context).textTheme.titleLarge,
                       softWrap: true,),
                       Builder(builder: (context) {
                         if (workoutExercise.isComplete) {

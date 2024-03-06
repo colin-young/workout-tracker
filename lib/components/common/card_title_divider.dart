@@ -10,31 +10,30 @@ class CardTitleDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const thickness = 1.5;
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        SizedBox(
-            width: 10,
+        const SizedBox(
+            width: 16,
             child:
                 Column(mainAxisSize: MainAxisSize.min, children: [
               Divider(
-                thickness: 1,
+                thickness: thickness,
                 indent: 0,
                 endIndent: 5,
-                color: Theme.of(context).colorScheme.primary,
               )
             ])),
         child,
-        Expanded(
+        const Expanded(
             child:
                 Column(mainAxisSize: MainAxisSize.max, children: [
           Divider(
-            thickness: 1,
+            thickness: thickness,
             indent: 5,
             endIndent: 0,
-            color: Theme.of(context).colorScheme.primary,
           )
         ])),
       ],

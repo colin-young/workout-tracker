@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
-  final String text;
+  final Widget text;
   final IconData icon;
   final double width;
   final double height;
@@ -30,8 +30,7 @@ class RoundedButton extends StatelessWidget {
                 const SizedBox(
                   width: 8,
                 ),
-                Text(text,
-                    style: Theme.of(context).textTheme.bodyMedium)
+                text
               ]),
         ),
       ),

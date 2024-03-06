@@ -7,14 +7,15 @@ part 'workout_sets.freezed.dart';
 part 'workout_sets.g.dart';
 
 @freezed
-abstract class WorkoutSets with _$WorkoutSets {
-  const factory WorkoutSets({
+abstract class ExerciseSets with _$ExerciseSets {
+  const factory ExerciseSets({
     @Default(-1) int id,
+    required int workoutId,
     required Exercise exercise,
     required List<SetEntry> sets,
     required bool isComplete,
   }) = _WorkoutSets;
 
-  factory WorkoutSets.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutSetsFromJson(json);
+  factory ExerciseSets.fromJson(Map<String, dynamic> json) =>
+      _$ExerciseSetsFromJson(json);
 }
