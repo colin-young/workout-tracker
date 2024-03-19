@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wheel_picker/wheel_picker.dart';
 import 'package:workout_tracker/components/common/digit_wheel.dart';
+import 'package:workout_tracker/components/workouts/exercise_sets_display.dart';
 import 'package:workout_tracker/components/workouts/record_set_button.dart';
 import 'package:workout_tracker/controller/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
 import 'package:workout_tracker/utility/int_digits.dart';
-import 'package:workout_tracker/utility/sets_display_string.dart';
 
 class SetRecorder extends ConsumerStatefulWidget {
   const SetRecorder({
@@ -26,10 +26,11 @@ class SetRecorder extends ConsumerStatefulWidget {
 
 class _SetRecorderState extends ConsumerState<SetRecorder>
     with UserPreferencesState {
-  late int _workoutRecordId;
   SetEntry setEntry =
       SetEntry(reps: 0, weight: 0, units: '', finishedAt: DateTime.now());
   String lastRepsDisplay = '';
+  var isInitialized = false;
+  late final workoutRecordId = widget.workoutRecordId;
 
   late final repsTensWheel = WheelPickerController(itemCount: 10);
   late final repsOnesWheel =
@@ -41,10 +42,38 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
   late final weightOnesWheel =
       WheelPickerController(itemCount: 10, mounts: [weightTensWheel]);
 
+  void initStateAsync() async {
+    await ref
+        .watch(getLastExerciseSetsByWorkoutCurrentExerciseProvider(
+                workoutRecordId: widget.workoutRecordId)
+            .future)
+        .then((value) {
+      var sets = [...value.sets];
+      sets.sort((a, b) => a.finishedAt.compareTo(b.finishedAt));
+
+      if (sets.isNotEmpty) {
+        SetEntry entry = SetEntry(
+            reps: sets.last.reps,
+            weight: sets.last.weight,
+            units: widget.weightUnits,
+            finishedAt: DateTime.now());
+
+        setState(() {
+          setEntry = entry;
+          isInitialized = true;
+        });
+
+        repsTensWheel.shiftBy(steps: setEntry.reps.tens());
+        repsOnesWheel.shiftBy(steps: setEntry.reps.ones());
+        weightHundredsWheel.shiftBy(steps: setEntry.weight.hundreds());
+        weightTensWheel.shiftBy(steps: setEntry.weight.tens());
+        weightOnesWheel.shiftBy(steps: setEntry.weight.ones());
+      }
+    });
+  }
+
   @override
   void initState() {
-    _workoutRecordId = widget.workoutRecordId;
-
     repsTensWheel.shiftBy(steps: setEntry.reps.tens());
     repsOnesWheel.shiftBy(steps: setEntry.reps.ones());
     weightHundredsWheel.shiftBy(steps: setEntry.weight.hundreds());
@@ -115,9 +144,13 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
 
   @override
   Widget build(BuildContext context) {
+    if (!isInitialized) initStateAsync();
+
     var prefs = userPreferences(ref);
     var textStyle = Theme.of(context).textTheme;
     var textTitle = textStyle.titleLarge;
+    final currentExerciseResult = ref.watch(workoutCurrentExerciseProvider(
+        workoutRecordId: widget.workoutRecordId));
 
     return Card(
         child: Padding(
@@ -200,50 +233,23 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                 RecordSetButton(
                   workoutSet: setEntry,
                   textStyle: textTitle,
-                  workoutRecordId: _workoutRecordId,
+                  workoutRecordId: widget.workoutRecordId,
                 ),
-                Consumer(builder: (_, WidgetRef ref, __) {
-                  final workoutResult = ref.watch(getWorkoutRecordProvider(
-                      workoutRecordId: _workoutRecordId));
-                  return workoutResult.when(
-                      data: (workout) {
-                        if (workout.currentExercise == null) {
-                          return Center(
-                              child: Text(
-                            'Error',
-                            style: textStyle.bodyMedium,
-                          ));
-                        } else {
-                          final workoutSetsResult = ref.watch(
-                              getWorkoutExerciseSetsByExerciseProvider(
-                                  workoutRecordId: _workoutRecordId,
-                                  exerciseId: workout.currentExercise!.id));
-
-                          return workoutSetsResult.when(
-                              data: (workoutSets) => Center(
-                                    child: Text(
-                                      workoutSets.displayString(),
-                                      style: textStyle.bodyMedium,
-                                    ),
-                                  ),
-                              error: (e, st) => Text(e.toString()),
-                              loading: () => const Center(
-                                  child: CircularProgressIndicator()));
-                        }
-                      },
-                      error: (e, st) => Text(e.toString()),
-                      loading: () => Stack(
-                            fit: StackFit.passthrough,
-                            children: [
-                              Center(
-                                  child: Text(
-                                lastRepsDisplay,
-                                style: textStyle.bodyMedium,
-                              )),
-                              const Center(child: CircularProgressIndicator())
-                            ],
-                          ));
-                }),
+                switch (currentExerciseResult) {
+                  AsyncData(:final value) => value!.exercise.id < 0
+                      ? Center(
+                          child: Text(
+                          'Error: ${value.exercise.id}',
+                          style: textStyle.bodyMedium,
+                        ))
+                      : ExerciseSetsDisplay(
+                          workoutRecordId: widget.workoutRecordId,
+                          exerciseId: value!.exercise.id),
+                  AsyncError(:final error) => Text(error.toString()),
+                  _ => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                },
               ],
             )));
   }

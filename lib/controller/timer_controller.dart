@@ -5,7 +5,6 @@ import 'package:workout_tracker/fsm/event.dart';
 import 'package:workout_tracker/timer/timer_context.dart';
 import 'package:workout_tracker/timer/timer_event.dart';
 import 'package:workout_tracker/timer/timer_machine.dart';
-import 'dart:developer' as developer;
 
 part 'timer_controller.g.dart';
 

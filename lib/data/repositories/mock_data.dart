@@ -56,6 +56,8 @@ const routine1 = WorkoutDefinition(name: "Routine 1", exercises: [
   WorkoutExercise(id: 1, order: 1, exercise: bicepsCurl),
   WorkoutExercise(id: 2, order: 2, exercise: seatedLegCurl),
   WorkoutExercise(id: 5, order: 3, exercise: legExtension),
+  WorkoutExercise(id: 5, order: 4, exercise: chestPress),
+  WorkoutExercise(id: 5, order: 5, exercise: pecFly),
 ]);
 const routine2 = WorkoutDefinition(name: "Routine 2", exercises: [
   WorkoutExercise(id: 3, order: 1, exercise: chestPress),
@@ -73,6 +75,7 @@ final sets = <ExerciseSets>[
   ExerciseSets(
       workoutId: 1,
       exercise: bicepsCurl,
+      order: 1,
       sets: [
         SetEntry(
             reps: 12,
@@ -94,6 +97,7 @@ final sets = <ExerciseSets>[
   ExerciseSets(
       workoutId: 1,
       exercise: seatedLegCurl,
+      order: 2,
       sets: [
         SetEntry(
             reps: 12,
@@ -112,10 +116,37 @@ final sets = <ExerciseSets>[
             finishedAt: workoutStartTime.add(const Duration(minutes: 7))),
       ],
       isComplete: false),
+  const ExerciseSets(
+    workoutId: 1,
+    order: 3,
+    exercise: legExtension,
+    sets: [],
+    isComplete: false,
+  ),
+  const ExerciseSets(
+    workoutId: 1,
+    order: 4,
+    exercise: chestPress,
+    sets: [],
+    isComplete: false,
+  ),
+  const ExerciseSets(
+    workoutId: 1,
+    order: 5,
+    exercise: benchDip,
+    sets: [],
+    isComplete: false,
+  ),
+  const ExerciseSets(
+    workoutId: 1,
+    order: 6,
+    exercise: pecFly,
+    sets: [],
+    isComplete: false,
+  ),
 ];
 
 final record = WorkoutRecord(
   fromWorkoutDefinition: routine1,
   startedAt: workoutStartTime,
-  currentExercise: legExtension,
 );

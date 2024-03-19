@@ -12,11 +12,10 @@ erDiagram
     Exercise ||--o{ ExerciseSetting : settings
     WorkoutExercise ||--|| Exercise : exercise
     WorkoutDefinition ||--o{ WorkoutExercise : exercises
-    WorkoutSets ||--|| Exercise : exercise
-    WorkoutSets ||--o{ SetEntry : set
+    ExerciseSets ||--|| Exercise : exercise
+    ExerciseSets ||--o{ SetEntry : set
     WorkoutRecord ||--o| WorkoutDefinition : fromWorkoutDefinition
-    WorkoutRecord ||--o| Exercise : currentExercise
-    WorkoutRecord ||--o{ WorkoutSets : sets
+    WorkoutRecord ||--o{ ExerciseSets : sets
 
     ExerciseSetting {
         String setting
@@ -45,9 +44,10 @@ erDiagram
         String name
     }
 
-    WorkoutSets {
+    ExerciseSets {
         Exercise exercise
         bool isComplete
+        int order
     }
 
     WorkoutRecord {

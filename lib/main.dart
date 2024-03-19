@@ -42,8 +42,10 @@ void main() async {
       await exerciseStore.add(db, benchDip.toJson());
 
       await workoutRecordStore.add(db, record.toJson());
-      await exerciseSetsStore.add(db, sets[0].toJson());
-      await exerciseSetsStore.add(db, sets[1].toJson());
+
+      for (final set in sets) {
+        await exerciseSetsStore.add(db, set.toJson());
+      }
     }
   });
 
@@ -80,6 +82,10 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
           ),
           elevation: 2,
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: appColorScheme.primary,
+          foregroundColor: appColorScheme.onPrimary,
         ),
         useMaterial3: true,
       ),

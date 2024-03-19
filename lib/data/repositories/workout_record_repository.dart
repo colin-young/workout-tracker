@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
+import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
 import 'dart:developer' as developer;
 
@@ -67,11 +70,32 @@ class WorkoutRecordRepository implements Repository<WorkoutRecord> {
         WorkoutRecord.fromJson(workoutRecordRecord!).copyWith(id: entityId);
     return workoutRecord;
   }
+
+  Stream<WorkoutRecord> getWorkoutRecordStream({required int workoutId}) {
+    return _store
+        .query(finder: Finder(filter: Filter.equals(Field.key, workoutId)))
+        .onSnapshots(database)
+        .map(
+          (snapshot) => snapshot
+              .map((definition) => WorkoutRecord.fromJson(definition.value)
+                  .copyWith(id: definition.key))
+              .toList()
+              .first,
+        );
+  }
 }
 
 @riverpod
 Future<WorkoutRecord> getWorkoutRecord(GetWorkoutRecordRef ref,
     {required int workoutRecordId}) async {
+  // developer.log('entering',
+  //     name: 'WorkoutRecordRepository.getWorkoutRecord');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'WorkoutRecordRepository.getWorkoutRecord');
+  // });
+
   return workoutRecordId > 0
       ? ref.watch(workoutRecordRepositoryProvider).getEntity(workoutRecordId)
       : Future.value(WorkoutRecord(
@@ -79,6 +103,22 @@ Future<WorkoutRecord> getWorkoutRecord(GetWorkoutRecordRef ref,
           fromWorkoutDefinition:
               const WorkoutDefinition(name: "", exercises: []),
         ));
+}
+
+@riverpod
+Stream<WorkoutRecord> getWorkoutRecordStream(GetWorkoutRecordStreamRef ref,
+    {required int workoutRecordId}) {
+  // developer.log('entering',
+  //     name: 'WorkoutRecordRepository.getWorkoutRecordStream');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'WorkoutRecordRepository.getWorkoutRecordStream');
+  // });
+
+  return ref
+      .watch(workoutRecordRepositoryProvider)
+      .getWorkoutRecordStream(workoutId: workoutRecordId);
 }
 
 // @riverpod
@@ -107,6 +147,24 @@ Future<WorkoutRecord> getWorkoutRecord(GetWorkoutRecordRef ref,
 // }
 
 @riverpod
+Stream<ExerciseSets?> workoutCurrentExercise(WorkoutCurrentExerciseRef ref,
+    {required int workoutRecordId}) async* {
+  // developer.log('entering', name: 'WorkoutRecordRepository.workoutCurrentExercise');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing', name: 'WorkoutRecordRepository.workoutCurrentExercise');
+  // });
+
+  final workout = await ref.watch(
+      getIncompleteExerciseSetsStreamProvider(workoutId: workoutRecordId)
+          .future);
+
+  if (workout.isNotEmpty) {
+    yield workout.first;
+  }
+}
+
+@riverpod
 Future<DateTime> workoutFinishedAt(WorkoutFinishedAtRef ref,
     {required int workoutRecordId}) async {
   final currentTime = DateTime.now();
@@ -133,22 +191,21 @@ Future<bool> isWorkoutComplete(IsWorkoutCompleteRef ref,
 
 @riverpod
 Future<String> workoutSetsUnits(WorkoutSetsUnitsRef ref,
-    {required int workoutRecordId}) async {
+    {required int workoutRecordId, required String defaultUnits}) async {
   final workoutSets = await ref.watch(
       getAllWorkoutExerciseSetsProvider(workoutRecordId: workoutRecordId)
           .future);
   if (workoutSets.isEmpty) {
-    return "";
+    return '';
   }
-  return workoutSets.fold("", (previousValue, element) {
-    var nextValue = element.sets.fold(
-        "",
-        (prev, curr) =>
-            prev == "" || prev == curr.units ? curr.units : "unknown");
+  return workoutSets.fold(defaultUnits, (previousValue, element) {
+    var nextValue = element.sets.fold(defaultUnits, (prev, curr) {
+      return prev == '' || prev == curr.units ? curr.units : 'unknown';
+    });
 
-    return previousValue == "" || previousValue == nextValue
+    return previousValue == '' || previousValue == nextValue
         ? nextValue
-        : "unknown";
+        : 'unknown';
   });
 }
 

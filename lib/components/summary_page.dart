@@ -5,6 +5,7 @@ import 'package:workout_tracker/components/exercises/workout_exercise_card_view.
 import 'package:workout_tracker/components/workout_summary_card.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/data/repositories/last_workout_repository.dart';
+import 'dart:developer' as developer;
 
 class SummaryPage extends ConsumerWidget {
   const SummaryPage({super.key});
@@ -14,20 +15,23 @@ class SummaryPage extends ConsumerWidget {
     final workoutRecordAsync = ref.watch(getLastworkoutRecordProvider);
 
     return workoutRecordAsync.when(
-        data: (workoutRecord) => Padding(
+        data: (workoutRecord) {
+          developer.log('workoutId: ${workoutRecord.id}', name: 'SummaryPage');
+
+          return Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  WorkoutSummaryCard(workoutRecord),
+                  WorkoutSummaryCard(workoutRecord.id),
                   Expanded(child: Consumer(
                     builder: (context, ref, child) {
-                      final workoutSetsFuture = ref.watch(
-                          getAllWorkoutExerciseSetsProvider(
+                      final workoutSetsResults = ref.watch(
+                          getAllWorkoutExerciseSetsInProgressProvider(
                               workoutRecordId: workoutRecord.id));
-                      return workoutSetsFuture.when(
+                      return workoutSetsResults.when(
                           data: (workoutSets) => ListView(
                                 shrinkWrap: true,
                                 children: workoutSets
@@ -35,7 +39,7 @@ class SummaryPage extends ConsumerWidget {
                                         workoutExercise: e))
                                     .toList(),
                               ),
-                          error: (e, st) => Text(e.toString()),
+                          error: (e, st) => Text('SummaryPage: $e'),
                           loading: () => const Center(
                                 child: CircularProgressIndicator(),
                               ));
@@ -44,7 +48,8 @@ class SummaryPage extends ConsumerWidget {
                   const RoutineManager(),
                 ],
               ),
-            ),
+            );
+        },
         error: (e, st) => Text(e.toString()),
         loading: () => const CircularProgressIndicator());
   }

@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:workout_tracker/data/repositories/exercise_repository.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
+import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'dart:developer' as developer;
@@ -12,53 +14,150 @@ part 'exercise_sets_controller.g.dart';
 class ExerciseSetsController extends _$ExerciseSetsController {
   @override
   FutureOr<List<ExerciseSets>> build() async {
-    developer.log('initializing', name: 'ExerciseSetsController');
+    // developer.log('initializing', name: 'ExerciseSetsController.build');
 
-    ref.onDispose(() {
-      developer.log('ref.dispose', name: 'ExerciseSetsController');
+    ref.onDispose(() async {
+      // developer.log('ref.dispose', name: 'ExerciseSetsController');
+
+      await Future.wait([
+        _currentExerciseController.close(),
+        _upcomingExercisesController.close(),
+        _completedExercisesController.close(),
+      ]);
     });
 
-    final exerciseSets = ref.watch(getAllExerciseSetsProvider.future);
+    final exerciseSets = ref.watch(getAllExerciseSetsStreamProvider.future);
 
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => exerciseSets);
+
     return exerciseSets;
+  }
+
+  final _currentSetController = StreamController<ExerciseSets>.broadcast();
+  Stream<ExerciseSets> get streamSets => _currentSetController.stream;
+
+  final _currentExerciseController = StreamController<Exercise>.broadcast();
+  Stream<Exercise> get streamExercise => _currentExerciseController.stream;
+
+  final _upcomingExercisesController =
+      StreamController<List<Exercise>>.broadcast();
+  Stream<List<Exercise>> get streamUpcoming =>
+      _upcomingExercisesController.stream;
+
+  final _completedExercisesController =
+      StreamController<List<Exercise>>.broadcast();
+  Stream<List<Exercise>> get streamCompleted =>
+      _completedExercisesController.stream;
+
+  Future<void> completeWorkoutSet({required int workoutSetId}) async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
+      final exercise = await ref.read(exerciseSetsRepositoryProvider).getEntity(workoutSetId);
+      await ref.watch(exerciseSetsRepositoryProvider).update(exercise.copyWith(isComplete: true));
+      return await ref.watch(getAllExerciseSetsStreamProvider.future);
+    });
   }
 
   Future<void> addWorkoutSet(
       {required int workoutRecordId, required SetEntry newSet}) async {
+    developer.log('executing', name: 'ExerciseSetsController.addWorkoutSet');
     state = const AsyncLoading();
 
-    final workoutRecord = await ref.read(
-        getWorkoutRecordProvider(workoutRecordId: workoutRecordId).future);
-    final exerciseSets = await ref.read(
-        getAllWorkoutExerciseSetsProvider(workoutRecordId: workoutRecordId)
+    final currentSets = await ref.read(
+        workoutCurrentExerciseProvider(workoutRecordId: workoutRecordId)
             .future);
 
     state = await AsyncValue.guard(() async {
-      final exerciseId = workoutRecord.currentExercise!.id;
-
-      if (exerciseSets.any((element) => element.exercise.id == exerciseId)) {
-        final oldSet =
-            exerciseSets.firstWhere((e) => e.exercise.id == exerciseId);
-        final updatedSet = oldSet.copyWith(sets: [...oldSet.sets, newSet]);
+      if (currentSets != null) {
+        final updatedSet =
+            currentSets.copyWith(sets: [...currentSets.sets, newSet]);
         await ref.read(updateExerciseSetsProvider(exercise: updatedSet).future);
+        _currentSetController.add(updatedSet);
       } else {
-        final exercise =
-            await ref.read(getExerciseProvider(entityId: exerciseId).future);
-        final newExerciseSets = ExerciseSets(
-            workoutId: workoutRecordId,
-            exercise: exercise,
-            sets: [newSet],
-            isComplete: false);
-        await ref
-            .read(insertExerciseSetsProvider(exercise: newExerciseSets).future);
+        // TODO report error
       }
 
-      // await Future.delayed(const Duration(seconds: 2));
-      return await ref.watch(getAllExerciseSetsProvider.future);
+      developer.log('returning', name: 'ExerciseSetsController.addWorkoutSet');
+      return await ref.watch(getAllExerciseSetsStreamProvider.future);
     });
+  }
 
-    ref.invalidate(getAllExerciseSetsProvider);
+  Future<void> reorderIncompleteExercises(
+      {required int workoutRecordId,
+      required int oldIndex,
+      required int newIndex,
+      bool skipFirst = false}) async {
+    state = const AsyncLoading();
+
+    final currentSets = await ref.read(
+        getIncompleteExerciseSetsStreamProvider(workoutId: workoutRecordId)
+            .future);
+
+    state = await AsyncValue.guard(() async {
+      final startIndex = skipFirst ? 1 : 0;
+      final original = currentSets[oldIndex + startIndex];
+
+      final isLast = newIndex >= currentSets.length - startIndex;
+
+      developer.log(
+          'moving ${original.exercise.name} (order ${original.order}) from $oldIndex to $newIndex',
+          name: 'ExerciseSetsController.reorderExercises');
+
+      List<ExerciseSets> newExercises = [];
+
+      // order start is order from first record, even if skipping
+      var currentOrder = currentSets[0].order;
+
+      developer.log('incomplete sort starts at $currentOrder',
+          name: 'ExerciseSetsController.reorderExercises');
+
+      for (var index = 0; index < currentSets.length; index++) {
+        if (index == newIndex + startIndex) {
+          // if at insert position, add moved item
+          developer.log(
+              'index: $index, newIndex + startIndex: ${newIndex + startIndex}',
+              name: 'ExerciseSetsController.reorderExercises');
+          currentOrder = addToExerciseSetsList(
+              original, currentOrder, newExercises,
+              action: 'Moving');
+        }
+        if (index != oldIndex + startIndex) {
+          // if not at original position, add current item
+          developer.log(
+              'index: $index, newIndex + startIndex: ${newIndex + startIndex}',
+              name: 'ExerciseSetsController.reorderExercises');
+          currentOrder = addToExerciseSetsList(
+              currentSets[index], currentOrder, newExercises);
+        }
+      }
+
+      if (isLast) {
+        currentOrder = addToExerciseSetsList(
+            original, currentOrder, newExercises,
+            action: 'Moving');
+      }
+
+      await Future.wait([
+        for (var index = startIndex; index < newExercises.length; index++)
+          {
+            ref
+                .read(exerciseSetsRepositoryProvider)
+                .update(newExercises[index]),
+          }
+      ] as Iterable<Future>);
+
+      return await ref.watch(getAllExerciseSetsStreamProvider.future);
+    });
+  }
+
+  int addToExerciseSetsList(
+      ExerciseSets value, int currentOrder, List<ExerciseSets> newExercises,
+      {String action = 'Adding'}) {
+    developer.log('$action ${value.exercise.name} at order: $currentOrder',
+        name: 'ExerciseSetsController.reorderExercises');
+    newExercises.add(value.copyWith(order: currentOrder));
+    return currentOrder + 1;
   }
 }

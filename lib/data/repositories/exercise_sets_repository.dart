@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/exercise_repository.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
+import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'dart:developer' as developer;
 
 import 'package:workout_tracker/domain/exercise_sets.dart';
+import 'package:workout_tracker/utility/exercise_sets_extensions.dart';
 
 part 'exercise_sets_repository.g.dart';
 
@@ -17,8 +21,17 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
   final Database database;
   late final StoreRef<int, Map<String, dynamic>> _store;
 
+  final _setsController = StreamController<ExerciseSets>.broadcast();
+  Stream<ExerciseSets> get streamExerciseSets => _setsController.stream;
+
   ExerciseSetsRepository({required this.database}) {
     _store = intMapStoreFactory.store('exercise_sets_store');
+  }
+
+  Future<void> close() async {
+    await Future.wait([
+      _setsController.close(),
+    ]);
   }
 
   @override
@@ -34,6 +47,21 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
         );
   }
 
+  Stream<List<ExerciseSets>> getWorkoutSetsStream({required int workoutId}) {
+    return _store
+        .query(
+            finder: Finder(
+                filter: Filter.equals('workoutId', workoutId),
+                sortOrders: [SortOrder('workoutId'), SortOrder('order')]))
+        .onSnapshots(database)
+        .map(
+          (snapshot) => snapshot
+              .map((definition) => ExerciseSets.fromJson(definition.value)
+                  .copyWith(id: definition.key))
+              .toList(),
+        );
+  }
+
   @override
   Future<List<ExerciseSets>> getAllEntities() async {
     final records = await _store.find(database);
@@ -43,13 +71,19 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
   }
 
   @override
-  Future<int> insert(ExerciseSets exercise) {
-    return _store.add(database, exercise.toJson());
+  Future<int> insert(ExerciseSets exercise) async {
+    var add = await _store.add(database, exercise.toJson());
+    _setsController.add(exercise.copyWith(id: add));
+    return add;
   }
 
   @override
-  Future update(ExerciseSets exercise) {
-    return _store.record(exercise.id).update(database, exercise.toJson());
+  Future update(ExerciseSets exercise) async {
+    developer.log('', name: 'exerciseSetsRepositoryProvider.update');
+    var update =
+        await _store.record(exercise.id).update(database, exercise.toJson());
+    _setsController.add(exercise);
+    return update;
   }
 
   @override
@@ -64,11 +98,12 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
 @riverpod
 Future<ExerciseSets> getExerciseSets(GetExerciseSetsRef ref,
     {required int entityId}) async {
-  developer.log('init', name: 'getExerciseSets');
+  // developer.log('entering', name: 'ExerciseSetsRepository.getExerciseSets');
 
-  ref.onDispose(() {
-    developer.log('ref.dispose', name: 'getExerciseSets');
-  });
+  // ref.onDispose(() {
+  //   developer.log('disposing', name: 'ExerciseSetsRepository.getExerciseSets');
+  // });
+
   return await ref.watch(exerciseSetsRepositoryProvider).getEntity(entityId);
 }
 
@@ -76,17 +111,41 @@ Future<ExerciseSets> getExerciseSets(GetExerciseSetsRef ref,
 Future<List<ExerciseSets>> getAllWorkoutExerciseSets(
     GetAllWorkoutExerciseSetsRef ref,
     {required int workoutRecordId}) async {
-  developer.log('init', name: 'getAllWorkoutExerciseSets');
+  // developer.log('entering',
+  //     name: 'ExerciseSetsRepository.getAllWorkoutExerciseSets');
 
-  final allSets = await ref.watch(getAllExerciseSetsProvider.future);
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getAllWorkoutExerciseSets');
+  // });
 
-  ref.onDispose(() {
-    developer.log('ref.dispose', name: 'getAllWorkoutExerciseSets');
-  });
+  final allSets = await ref.watch(getAllExerciseSetsStreamProvider.selectAsync(
+      (data) => data
+          .where((element) => element.workoutId == workoutRecordId)
+          .toList()));
 
-  return Future(() => allSets
-      .where((element) => element.workoutId == workoutRecordId)
-      .toList());
+  return allSets;
+}
+
+@riverpod
+Future<List<ExerciseSets>> getAllWorkoutExerciseSetsInProgress(
+    GetAllWorkoutExerciseSetsInProgressRef ref,
+    {required int workoutRecordId}) async {
+  // developer.log('entering',
+  //     name: 'ExerciseSetsRepository.getAllWorkoutExerciseSetsInProgress');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getAllWorkoutExerciseSetsInProgress');
+  // });
+
+  final allSets = await ref.watch(getAllExerciseSetsStreamProvider.selectAsync(
+      (value) => value
+          .where((element) =>
+              element.workoutId == workoutRecordId && element.sets.isNotEmpty)
+          .toList()));
+
+  return allSets;
 }
 
 @riverpod
@@ -94,15 +153,15 @@ Future<ExerciseSets> getWorkoutExerciseSetsByExercise(
     GetWorkoutExerciseSetsByExerciseRef ref,
     {required int workoutRecordId,
     required int exerciseId}) async {
-  developer.log('init', name: 'getWorkoutExerciseSetsByExercise');
+  // developer.log('init', name: 'getWorkoutExerciseSetsByExercise');
 
   final workoutSets = await ref.watch(
       getAllWorkoutExerciseSetsProvider(workoutRecordId: workoutRecordId)
           .future);
 
-  ref.onDispose(() {
-    developer.log('ref.dispose', name: 'getWorkoutExerciseSetsByExercise');
-  });
+  // ref.onDispose(() {
+  //   developer.log('ref.dispose', name: 'getWorkoutExerciseSetsByExercise');
+  // });
 
   return Future(() async {
     var sets = workoutSets.where((e) {
@@ -117,46 +176,223 @@ Future<ExerciseSets> getWorkoutExerciseSetsByExercise(
           workoutId: workoutRecordId,
           exercise: exerciseResult,
           sets: [],
+          order: -1,
           isComplete: false));
     }
   });
 }
 
 @riverpod
-Future<Stream<List<ExerciseSets>>> getAllExerciseSetsStream(
-    GetAllExerciseSetsStreamRef ref) async {
-  developer.log('init', name: 'getAllExerciseSetsStream');
+Stream<List<ExerciseSets>> getAllExerciseSetsStream(
+    GetAllExerciseSetsStreamRef ref) {
+  // developer.log('entering',
+  //     name: 'ExerciseSetsRepository.getAllExerciseSetsStream');
 
-  ref.onDispose(() {
-    developer.log('ref.dispose', name: 'getAllExerciseSetsStream');
-  });
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getAllExerciseSetsStream');
+  // });
+
   return ref.watch(exerciseSetsRepositoryProvider).getAllEntitiesStream();
 }
 
 @riverpod
-Future<List<ExerciseSets>> getAllExerciseSets(GetAllExerciseSetsRef ref) async {
-  developer.log('init', name: 'getAllExerciseSets');
+Stream<ExerciseSets> getLastExerciseSetsByExerciseStream(
+    GetLastExerciseSetsByExerciseStreamRef ref,
+    {required int exerciseId}) async* {
+  // developer.log('entering',
+  //     name: 'ExerciseSetsRepository.getLastExerciseSetsByExerciseStream');
 
-  ref.onDispose(() {
-    developer.log('ref.dispose', name: 'getAllExerciseSets');
-  });
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getLastExerciseSetsByExerciseStream');
+  // });
+
+  final allSets =
+      ref.watch(exerciseSetsRepositoryProvider).getAllEntitiesStream();
+
+  await for (final sets in allSets.where(
+      (event) => event.any((element) => element.exercise.id == exerciseId))) {
+    for (final set in sets.where((e) => e.exercise.id == exerciseId)) {
+      yield set;
+    }
+  }
+}
+
+@riverpod
+Future<ExerciseSets> getLastExerciseSetsByWorkoutCurrentExercise(
+    GetLastExerciseSetsByWorkoutCurrentExerciseRef ref,
+    {required int workoutRecordId}) async {
+  // developer.log('entering',
+  //     name:
+  //         'ExerciseSetsRepository.getLastExerciseSetsByWorkoutCurrentExerciseStream');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name:
+  //           'ExerciseSetsRepository.getLastExerciseSetsByWorkoutCurrentExerciseStream');
+  // });
+
+  final currentWorkoutExercise = await ref.watch(
+      workoutCurrentExerciseProvider(workoutRecordId: workoutRecordId).future);
+
+  final exerciseId = currentWorkoutExercise!.exercise.id;
+
+  var exerciseSets =
+      await ref.watch(exerciseSetsRepositoryProvider).getAllEntities();
+  exerciseSets.sort((a, b) => a.latestDateTime().compareTo(b.latestDateTime()));
+
+  return Future(
+    () => exerciseSets.where((e) => e.exercise.id == exerciseId).first,
+  );
+}
+
+@riverpod
+Stream<ExerciseSets?> getWorkoutExerciseSetsStream(
+    GetWorkoutExerciseSetsStreamRef ref,
+    {required int workoutId,
+    required int exerciseId}) async* {
+  // developer.log('entering',
+  //     name: 'ExerciseSetsRepository.getWorkoutExerciseSetsStream');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getWorkoutExerciseSetsStream');
+  // });
+
+  final sets = ref
+      .watch(exerciseSetsRepositoryProvider)
+      .getWorkoutSetsStream(workoutId: workoutId);
+
+  await for (final set in sets) {
+    if (set.isNotEmpty) {
+      var filteredSets = set.where((s) => s.exercise.id == exerciseId);
+      if (filteredSets.isNotEmpty) {
+        yield filteredSets.first;
+      }
+    }
+  }
+}
+
+@riverpod
+Stream<List<ExerciseSets>> getCompletedExerciseSetsStream(
+    GetCompletedExerciseSetsStreamRef ref,
+    {required int workoutId}) async* {
+  // developer.log('entering',
+  //     name: 'ExerciseSetsRepository.getCompletedExerciseSetsStream');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getCompletedExerciseSetsStream');
+  // });
+
+  final sets = ref
+      .watch(exerciseSetsRepositoryProvider)
+      .getWorkoutSetsStream(workoutId: workoutId);
+
+  await for (final set in sets) {
+    if (set.isNotEmpty) {
+      yield set.where((s) => s.isComplete).toList();
+    }
+  }
+}
+
+@riverpod
+Stream<List<ExerciseSets>> getIncompleteExerciseSetsStream(
+    GetIncompleteExerciseSetsStreamRef ref,
+    {required int workoutId}) async* {
+  // developer.log('entering',
+  //     name: 'ExerciseSetsRepository.getIncompleteExerciseSetsStream');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getIncompleteExerciseSetsStream');
+  // });
+
+  final sets = ref
+      .watch(exerciseSetsRepositoryProvider)
+      .getWorkoutSetsStream(workoutId: workoutId);
+
+  await for (final set in sets) {
+    if (set.isNotEmpty) {
+      yield set.where((set) => !set.isComplete).toList();
+    }
+  }
+}
+
+@riverpod
+Stream<List<ExerciseSets>> getUpcomingExerciseSetsStream(
+    GetUpcomingExerciseSetsStreamRef ref,
+    {required int workoutId,
+    required int exerciseId}) async* {
+  // developer.log('entering',
+  //     name: 'ExerciseSetsRepository.getUpcomingExerciseSetsStream');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getUpcomingExerciseSetsStream');
+  // });
+
+  final sets = ref
+      .watch(exerciseSetsRepositoryProvider)
+      .getWorkoutSetsStream(workoutId: workoutId);
+
+  await for (final set in sets) {
+    if (set.isNotEmpty) {
+      yield set
+          .where((s) => !s.isComplete && s.exercise.id != exerciseId)
+          .toList();
+    }
+  }
+}
+
+@riverpod
+Future<List<ExerciseSets>> getAllExerciseSets(GetAllExerciseSetsRef ref) async {
+  // developer.log('entering', name: 'ExerciseSetsRepository.getAllExerciseSets');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getAllExerciseSets');
+  // });
+
   return await ref.watch(exerciseSetsRepositoryProvider).getAllEntities();
 }
 
 @riverpod
 Future<int> insertExerciseSets(InsertExerciseSetsRef ref,
     {required ExerciseSets exercise}) {
+  // developer.log('entering', name: 'ExerciseSetsRepository.insertExerciseSets');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.insertExerciseSets');
+  // });
+
   return ref.read(exerciseSetsRepositoryProvider).insert(exercise);
 }
 
 @riverpod
 Future deleteExerciseSets(DeleteExerciseSetsRef ref,
     {required int exerciseId}) {
+  // developer.log('entering', name: 'ExerciseSetsRepository.deleteExerciseSets');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.deleteExerciseSets');
+  // });
+
   return ref.read(exerciseSetsRepositoryProvider).delete(exerciseId);
 }
 
 @riverpod
 Future updateExerciseSets(UpdateExerciseSetsRef ref,
     {required ExerciseSets exercise}) {
+  // developer.log('entering', name: 'ExerciseSetsRepository.updateExerciseSets');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.updateExerciseSets');
+  // });
+
   return ref.read(exerciseSetsRepositoryProvider).update(exercise);
 }

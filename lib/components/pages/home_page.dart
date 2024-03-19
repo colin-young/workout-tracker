@@ -1,11 +1,8 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/common/timer_widget.dart';
 import 'package:workout_tracker/components/summary_page.dart';
-import 'package:workout_tracker/controller/timer_controller.dart';
-import 'dart:developer' as developer;
 
 class HomePage extends StatelessWidget {
   const HomePage({
