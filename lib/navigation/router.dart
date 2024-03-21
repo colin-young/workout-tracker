@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:workout_tracker/components/pages/add_workout_exercise.dart';
 import 'package:workout_tracker/components/pages/exercise_edit_page.dart';
 import 'package:workout_tracker/components/pages/exercise_page.dart';
 import 'package:workout_tracker/components/pages/home_page.dart';
@@ -30,7 +31,16 @@ final GoRouter router = GoRouter(
               path: 'workout/:workoutId',
               builder: (context, state) => WorkoutPage(
                   title: "Workout",
-                  workoutId: state.pathParameters['workoutId']!))
+                  workoutId: state.pathParameters['workoutId']!),
+              routes: [
+                GoRoute(
+                  name: 'addWorkoutExercise',
+                  path: 'addExercise',
+                  builder: (context, state) => AddWorkoutExercise(
+                      title: 'Add Exercise',
+                      workoutId: state.pathParameters['workoutId']!),
+                )
+              ])
         ]),
   ],
 );

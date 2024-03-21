@@ -1,3 +1,5 @@
+// Finite State Machine
+// based on https://github.com/SandroMaglione/dart-state-chart
 import 'dart:async';
 
 import 'package:workout_tracker/fsm/event.dart';

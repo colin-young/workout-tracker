@@ -6,16 +6,15 @@ class ExerciseSettingsDisplay extends StatelessWidget {
   const ExerciseSettingsDisplay({
     super.key,
     required this.entry,
-    required this.backgroundColor,
-    required this.onBackgroundColor,
   });
 
   final Exercise entry;
-  final Color backgroundColor;
-  final Color onBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
+    final onBackgroundColor = Theme.of(context).colorScheme.onSecondary;
+    final backgroundColor = Theme.of(context).colorScheme.secondary;
+
     return Wrap(
       alignment: WrapAlignment.spaceAround,
       runAlignment: WrapAlignment.spaceAround,

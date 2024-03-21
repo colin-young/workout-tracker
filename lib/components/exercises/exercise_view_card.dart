@@ -7,13 +7,9 @@ class ExerciseViewCard extends StatelessWidget {
   const ExerciseViewCard({
     super.key,
     required this.entry,
-    required this.backgroundColor,
-    required this.onBackgroundColor,
   });
 
   final Exercise entry;
-  final Color backgroundColor;
-  final Color onBackgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +44,7 @@ class ExerciseViewCard extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 2,
-                  child: ExerciseSettingsDisplay(
-                      entry: entry,
-                      backgroundColor: backgroundColor,
-                      onBackgroundColor: onBackgroundColor),
+                  child: ExerciseSettingsDisplay(entry: entry),
                 ),
               ],
             ),

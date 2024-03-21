@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workout_tracker/components/common/rounded_button.dart';
 import 'package:workout_tracker/components/exercises/exercise_list_tile.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
-import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/utility/exercise_sets_extensions.dart';
 import 'dart:developer' as developer;
@@ -24,11 +24,13 @@ class ExerciseListWithSetsTile extends ConsumerWidget {
         onReorder: (oldIndex, newIndex) {
           developer.log('reorder ($oldIndex, $newIndex)',
               name: 'ExerciseListWithSetsTile.ReorderableListView.onReorder');
-          ref.read(exerciseSetsControllerProvider.notifier).reorderIncompleteExercises(
-              workoutRecordId: workoutRecordId,
-              oldIndex: oldIndex,
-              newIndex: newIndex,
-              skipFirst: true);
+          ref
+              .read(exerciseSetsControllerProvider.notifier)
+              .reorderIncompleteExercises(
+                  workoutRecordId: workoutRecordId,
+                  oldIndex: oldIndex,
+                  newIndex: newIndex,
+                  skipFirst: true);
         },
         shrinkWrap: true,
         itemCount: _workoutSets.length,
@@ -72,7 +74,74 @@ class UpcomingExercises extends ConsumerWidget {
 
                     return [
                       upcomingExercises.isNotEmpty
-                          ? Text('Up Next', style: textStyle.titleMedium)
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    RoundedButton(
+                                        text: const Text('Swap'),
+                                        icon: Icons.swap_vert,
+                                        width: 80,
+                                        onPressed: () {
+                                          ref
+                                              .read(
+                                                  exerciseSetsControllerProvider
+                                                      .notifier)
+                                              .reorderIncompleteExercises(
+                                                  workoutRecordId:
+                                                      workoutRecordId,
+                                                  oldIndex: 0,
+                                                  newIndex: 2,
+                                                  skipFirst: false);
+                                        }),
+                                    RoundedButton(
+                                        text: const Text('Remove'),
+                                        icon: Icons.delete_forever,
+                                        width: 80,
+                                        onPressed: sets.sets.isEmpty
+                                            ? () {
+                                                const snackBar = SnackBar(
+                                                  content: Text(
+                                                      'Long-press to remove'),
+                                                );
+
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              }
+                                            : null,
+                                        onLongPressed: sets.sets.isEmpty
+                                            ? () {
+                                                ref
+                                                    .read(getIncompleteExerciseSetsStreamProvider(
+                                                            workoutId:
+                                                                workoutRecordId)
+                                                        .future)
+                                                    .then((value) {
+                                                  if (value.isNotEmpty) {
+                                                    ref.read(
+                                                        deleteExerciseSetsProvider(
+                                                            exerciseId: value
+                                                                .first.id));
+                                                  }
+                                                });
+                                              }
+                                            : null),
+                                  ],
+                                ),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text('Up Next',
+                                          style: textStyle.titleMedium),
+                                    ]),
+                              ],
+                            )
                           : const SizedBox(),
                       ExerciseListWithSetsTile(
                           workoutRecordId: workoutRecordId,

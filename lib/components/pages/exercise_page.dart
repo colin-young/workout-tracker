@@ -22,9 +22,6 @@ class ExercisePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var onBackgroundColor = Theme.of(context).colorScheme.onSecondary;
-    var backgroundColor = Theme.of(context).colorScheme.secondary;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Exercises"),
@@ -55,7 +52,7 @@ class ExercisePage extends StatelessWidget {
                             return GestureDetector(
                               onDoubleTap: () => context
                                   .go('/exercises/exercise/${entry.id}/edit'),
-                              child: ExerciseViewCard(entry: entry, backgroundColor: backgroundColor, onBackgroundColor: onBackgroundColor),
+                              child: ExerciseViewCard(entry: entry),
                             );
                           },
                         ),

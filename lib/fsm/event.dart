@@ -1,3 +1,5 @@
+// Finite State Machine
+// based on https://github.com/SandroMaglione/dart-state-chart
 import 'package:workout_tracker/fsm/state.dart';
 
 typedef EventAction<C, S extends State> = C Function(C ctx, S prevState, S nextState)?;

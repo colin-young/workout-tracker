@@ -5,11 +5,11 @@ import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
-import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
 import 'dart:developer' as developer;
 
 import 'package:workout_tracker/domain/workout_record.dart';
+import 'package:workout_tracker/utility/exercise_sets_extensions.dart';
 
 part 'workout_record_repository.g.dart';
 
@@ -147,24 +147,6 @@ Stream<WorkoutRecord> getWorkoutRecordStream(GetWorkoutRecordStreamRef ref,
 // }
 
 @riverpod
-Stream<ExerciseSets?> workoutCurrentExercise(WorkoutCurrentExerciseRef ref,
-    {required int workoutRecordId}) async* {
-  // developer.log('entering', name: 'WorkoutRecordRepository.workoutCurrentExercise');
-
-  // ref.onDispose(() {
-  //   developer.log('disposing', name: 'WorkoutRecordRepository.workoutCurrentExercise');
-  // });
-
-  final workout = await ref.watch(
-      getIncompleteExerciseSetsStreamProvider(workoutId: workoutRecordId)
-          .future);
-
-  if (workout.isNotEmpty) {
-    yield workout.first;
-  }
-}
-
-@riverpod
 Future<DateTime> workoutFinishedAt(WorkoutFinishedAtRef ref,
     {required int workoutRecordId}) async {
   final currentTime = DateTime.now();
@@ -249,4 +231,29 @@ Future<int> totalWorkoutReps(TotalWorkoutRepsRef ref,
       (previousValue, element) async =>
           await previousValue +
           element.sets.fold(0, (prev, curr) => prev + curr.reps));
+}
+
+@riverpod
+Stream<WorkoutRecord> getLastworkoutRecord(GetLastworkoutRecordRef ref) async* {
+  // developer.log('entering', name: 'LastWorkoutRepository.getLastworkoutRecord');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing', name: 'LastWorkoutRepository.getLastworkoutRecord');
+  // });
+
+  var allrecords = await ref
+      .watch(getAllExerciseSetsStreamProvider.selectAsync((value) async {
+    // for (final val in value) {
+    value.sort((a, b) => a.latestDateTime().compareTo(b.latestDateTime()));
+    return value;
+    // }
+  }));
+
+  if ((await allrecords).isNotEmpty) {
+    final lastRecord = await allrecords;
+    final workoutRecord = await ref.watch(
+        getWorkoutRecordProvider(workoutRecordId: lastRecord.first.workoutId)
+            .future);
+    yield workoutRecord;
+  }
 }

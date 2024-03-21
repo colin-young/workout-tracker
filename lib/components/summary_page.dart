@@ -4,8 +4,9 @@ import 'package:workout_tracker/components/routine_manager.dart';
 import 'package:workout_tracker/components/exercises/workout_exercise_card_view.dart';
 import 'package:workout_tracker/components/workout_summary_card.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
-import 'package:workout_tracker/data/repositories/last_workout_repository.dart';
 import 'dart:developer' as developer;
+
+import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 
 class SummaryPage extends ConsumerWidget {
   const SummaryPage({super.key});

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
-import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
@@ -54,8 +53,12 @@ class ExerciseSetsController extends _$ExerciseSetsController {
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      final exercise = await ref.read(exerciseSetsRepositoryProvider).getEntity(workoutSetId);
-      await ref.watch(exerciseSetsRepositoryProvider).update(exercise.copyWith(isComplete: true));
+      final exercise = await ref
+          .read(exerciseSetsRepositoryProvider)
+          .getEntity(workoutSetId);
+      await ref
+          .watch(exerciseSetsRepositoryProvider)
+          .update(exercise.copyWith(isComplete: true));
       return await ref.watch(getAllExerciseSetsStreamProvider.future);
     });
   }
@@ -98,36 +101,21 @@ class ExerciseSetsController extends _$ExerciseSetsController {
     state = await AsyncValue.guard(() async {
       final startIndex = skipFirst ? 1 : 0;
       final original = currentSets[oldIndex + startIndex];
-
       final isLast = newIndex >= currentSets.length - startIndex;
-
-      developer.log(
-          'moving ${original.exercise.name} (order ${original.order}) from $oldIndex to $newIndex',
-          name: 'ExerciseSetsController.reorderExercises');
-
       List<ExerciseSets> newExercises = [];
 
       // order start is order from first record, even if skipping
       var currentOrder = currentSets[0].order;
 
-      developer.log('incomplete sort starts at $currentOrder',
-          name: 'ExerciseSetsController.reorderExercises');
-
       for (var index = 0; index < currentSets.length; index++) {
+        // if at insert position, add moved item
         if (index == newIndex + startIndex) {
-          // if at insert position, add moved item
-          developer.log(
-              'index: $index, newIndex + startIndex: ${newIndex + startIndex}',
-              name: 'ExerciseSetsController.reorderExercises');
           currentOrder = addToExerciseSetsList(
               original, currentOrder, newExercises,
               action: 'Moving');
         }
+        // if not at original position, add current item
         if (index != oldIndex + startIndex) {
-          // if not at original position, add current item
-          developer.log(
-              'index: $index, newIndex + startIndex: ${newIndex + startIndex}',
-              name: 'ExerciseSetsController.reorderExercises');
           currentOrder = addToExerciseSetsList(
               currentSets[index], currentOrder, newExercises);
         }
@@ -140,7 +128,7 @@ class ExerciseSetsController extends _$ExerciseSetsController {
       }
 
       await Future.wait([
-        for (var index = startIndex; index < newExercises.length; index++)
+        for (var index = 0; index < newExercises.length; index++)
           {
             ref
                 .read(exerciseSetsRepositoryProvider)
@@ -157,7 +145,11 @@ class ExerciseSetsController extends _$ExerciseSetsController {
       {String action = 'Adding'}) {
     developer.log('$action ${value.exercise.name} at order: $currentOrder',
         name: 'ExerciseSetsController.reorderExercises');
-    newExercises.add(value.copyWith(order: currentOrder));
+
+    if (value.order != currentOrder) {
+      newExercises.add(value.copyWith(order: currentOrder));
+    }
+
     return currentOrder + 1;
   }
 }

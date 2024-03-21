@@ -1,3 +1,5 @@
+// Finite State Machine
+// based on https://github.com/SandroMaglione/dart-state-chart
 typedef StateAction<Context> = Context? Function(Context ctx)?;
 
 abstract class State<Context> {

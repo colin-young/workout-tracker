@@ -68,11 +68,11 @@ Future<Exercise> getExercise(GetExerciseRef ref,
       : Future.value(const Exercise(name: "", settings: []));
 }
 
-@riverpod
-Stream<List<Exercise>> getAllEntitiesStream(GetAllEntitiesStreamRef ref) {
-  developer.log('getAllEntitiesStream', name: 'ExerciseRepository@riverpod');
-  return ref.watch(exerciseRepositoryProvider).getAllEntitiesStream();
-}
+// @riverpod
+// Stream<List<Exercise>> getAllEntitiesStream(GetAllEntitiesStreamRef ref) {
+//   developer.log('getAllEntitiesStream', name: 'ExerciseRepository@riverpod');
+//   return ref.watch(exerciseRepositoryProvider).getAllEntitiesStream();
+// }
 
 @riverpod
 Future<int> insertExercise(InsertExerciseRef ref,

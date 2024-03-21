@@ -11,15 +11,12 @@ class WorkoutManager extends ConsumerWidget with UserPreferencesState {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prefs = userPreferences(ref);
-
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
         child: Column(
           children: [
             SetRecorder(
-              weightUnits: prefs.weightUnits,
               workoutRecordId: workoutRecordId,
             ),
             const SizedBox(

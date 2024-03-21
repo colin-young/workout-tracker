@@ -22,6 +22,7 @@ class ExerciseSetsDisplay extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 workoutSets.displayString(),
                 style: textStyle.bodyMedium,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
         error: (e, st) => Text(e.toString()),
