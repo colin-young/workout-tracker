@@ -5,7 +5,6 @@ import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart'
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/exercise_setting.dart';
 import 'package:workout_tracker/domain/exercise_type.dart';
-import 'dart:developer' as developer;
 
 part 'exercise_controller.g.dart';
 
