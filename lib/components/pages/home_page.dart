@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/timer_widget.dart';
 import 'package:workout_tracker/components/summary_page.dart';
 
@@ -19,6 +19,14 @@ class HomePage extends StatelessWidget {
         title: Text(
           title,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {
+              context.go('/licenses');
+            },
+          )
+        ],
       ),
       body: const SummaryPage(),
       bottomSheet: Padding(
