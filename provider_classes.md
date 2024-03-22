@@ -102,6 +102,11 @@ direction RL
         Stream~ExerciseSets?~ getWorkoutExerciseSetsStream(int workoutId, int exerciseId)
     }
 
+
+    class getWorkoutSetsStreamProvider {
+        Stream~List~ExerciseSets~~ getWorkoutSetsStream(int workoutId)
+    }
+
     class getCompletedExerciseSetsStreamProvider {
         Stream~List~ExerciseSets~~ getCompletedExerciseSetsStream(int workoutId)
     }
@@ -124,6 +129,7 @@ direction RL
     getIncompleteExerciseSetsStreamProvider <|-- workoutCurrentExerciseProvider
     exerciseSetsRepositoryProvider <|-- getAllExerciseSetsStreamProvider
     workoutCurrentExerciseProvider <|-- canCompleteSetsProvider
+    exerciseSetsRepositoryProvider <|-- getWorkoutSetsStreamProvider
     exerciseSetsRepositoryProvider <|-- getWorkoutExerciseSetsStreamProvider
     exerciseSetsRepositoryProvider <|-- getCompletedExerciseSetsStreamProvider
     exerciseSetsRepositoryProvider <|-- getIncompleteExerciseSetsStreamProvider
@@ -159,6 +165,7 @@ direction RL
     class ExerciseControllerProvider
 
     exerciseRepositoryProvider <|-- ExerciseControllerProvider
+    getWorkoutSetsStreamProvider <|-- ExerciseControllerProvider
 
     class ExerciseSetsControllerProvider {
         Future~void~ addWorkoutSet(SetEntry newSet)

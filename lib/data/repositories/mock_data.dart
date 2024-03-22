@@ -44,13 +44,31 @@ const benchDip = Exercise(
     name: "Bench Dip",
     exerciseType: ExerciseType.bodyWeight,
     settings: []);
+const shoulderPress = Exercise(
+    id: 7,
+    name: "Shoulder Press",
+    exerciseType: ExerciseType.dumbbell,
+    settings: []);
+const forwardRaise = Exercise(
+    id: 8,
+    name: "Forward Raise",
+    exerciseType: ExerciseType.dumbbell,
+    settings: []);
+const tricepPulldown = Exercise(
+    id: 9,
+    name: "Tricep Pulldown",
+    exerciseType: ExerciseType.machine,
+    settings: []);
 const exerciseList = [
   bicepsCurl,
   seatedLegCurl,
   chestPress,
   pecFly,
   legExtension,
-  benchDip
+  benchDip,
+  shoulderPress,
+  forwardRaise,
+  tricepPulldown,
 ];
 const routine1 = WorkoutDefinition(name: "Routine 1", exercises: [
   WorkoutExercise(id: 1, order: 1, exercise: bicepsCurl),

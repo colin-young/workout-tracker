@@ -145,40 +145,6 @@ Future<List<ExerciseSets>> getAllWorkoutExerciseSetsInProgress(
   return allSets;
 }
 
-// @riverpod
-// Future<ExerciseSets> getWorkoutExerciseSetsByExercise(
-//     GetWorkoutExerciseSetsByExerciseRef ref,
-//     {required int workoutRecordId,
-//     required int exerciseId}) async {
-//   // developer.log('init', name: 'getWorkoutExerciseSetsByExercise');
-
-//   final workoutSets = await ref.watch(
-//       getAllWorkoutExerciseSetsProvider(workoutRecordId: workoutRecordId)
-//           .future);
-
-//   // ref.onDispose(() {
-//   //   developer.log('ref.dispose', name: 'getWorkoutExerciseSetsByExercise');
-//   // });
-
-//   return Future(() async {
-//     var sets = workoutSets.where((e) {
-//       return e.exercise.id == exerciseId;
-//     });
-//     if (sets.isNotEmpty) {
-//       return sets.first;
-//     } else {
-//       final exerciseResult =
-//           await ref.watch(getExerciseProvider(entityId: exerciseId).future);
-//       return Future(() => ExerciseSets(
-//           workoutId: workoutRecordId,
-//           exercise: exerciseResult,
-//           sets: [],
-//           order: -1,
-//           isComplete: false));
-//     }
-//   });
-// }
-
 @riverpod
 Stream<List<ExerciseSets>> getAllExerciseSetsStream(
     GetAllExerciseSetsStreamRef ref) {
@@ -193,66 +159,14 @@ Stream<List<ExerciseSets>> getAllExerciseSetsStream(
   return ref.watch(exerciseSetsRepositoryProvider).getAllEntitiesStream();
 }
 
-// @riverpod
-// Stream<ExerciseSets> getLastExerciseSetsByExerciseStream(
-//     GetLastExerciseSetsByExerciseStreamRef ref,
-//     {required int exerciseId}) async* {
-//   // developer.log('entering',
-//   //     name: 'ExerciseSetsRepository.getLastExerciseSetsByExerciseStream');
-
-//   // ref.onDispose(() {
-//   //   developer.log('disposing',
-//   //       name: 'ExerciseSetsRepository.getLastExerciseSetsByExerciseStream');
-//   // });
-
-//   final allSets =
-//       ref.watch(exerciseSetsRepositoryProvider).getAllEntitiesStream();
-
-//   await for (final sets in allSets.where(
-//       (event) => event.any((element) => element.exercise.id == exerciseId))) {
-//     for (final set in sets.where((e) => e.exercise.id == exerciseId)) {
-//       yield set;
-//     }
-//   }
-// }
-
-// @riverpod
-// Future<ExerciseSets> getLastExerciseSetsByWorkoutCurrentExercise(
-//     GetLastExerciseSetsByWorkoutCurrentExerciseRef ref,
-//     {required int workoutRecordId}) async {
-//   // developer.log('entering',
-//   //     name:
-//   //         'ExerciseSetsRepository.getLastExerciseSetsByWorkoutCurrentExerciseStream');
-
-//   // ref.onDispose(() {
-//   //   developer.log('disposing',
-//   //       name:
-//   //           'ExerciseSetsRepository.getLastExerciseSetsByWorkoutCurrentExerciseStream');
-//   // });
-
-//   final currentWorkoutExercise = await ref.watch(
-//       workoutCurrentExerciseProvider(workoutRecordId: workoutRecordId).future);
-
-//   final exerciseId = currentWorkoutExercise!.exercise.id;
-
-//   var exerciseSets =
-//       await ref.watch(exerciseSetsRepositoryProvider).getAllEntities();
-//   exerciseSets.sort((a, b) => a.latestDateTime().compareTo(b.latestDateTime()));
-
-//   return Future(
-//     () => exerciseSets.where((e) => e.exercise.id == exerciseId).first,
-//   );
-// }
-
 @riverpod
-Future<bool> canCompleteSets(CanCompleteSetsRef ref, {required workoutRecordId}) async {
+Future<bool> canCompleteSets(CanCompleteSetsRef ref,
+    {required workoutRecordId}) async {
   final currentWorkoutExercise = await ref.watch(
       workoutCurrentExerciseProvider(workoutRecordId: workoutRecordId).future);
 
   return currentWorkoutExercise?.sets.isNotEmpty ?? false;
 }
-
-
 
 @riverpod
 Stream<ExerciseSets?> getWorkoutExerciseSetsStream(
@@ -277,6 +191,30 @@ Stream<ExerciseSets?> getWorkoutExerciseSetsStream(
       if (filteredSets.isNotEmpty) {
         yield filteredSets.first;
       }
+    }
+  }
+}
+
+/// Get all the sets (exercises) for a given workout. Includes complete, 
+/// incomplete and not started sets.
+@riverpod
+Stream<List<ExerciseSets>> getWorkoutSetsStream(GetWorkoutSetsStreamRef ref,
+    {required int workoutId}) async* {
+  // developer.log('entering',
+  //     name: 'ExerciseSetsRepository.getCompletedExerciseSetsStream');
+
+  // ref.onDispose(() {
+  //   developer.log('disposing',
+  //       name: 'ExerciseSetsRepository.getCompletedExerciseSetsStream');
+  // });
+
+  final sets = ref
+      .watch(exerciseSetsRepositoryProvider)
+      .getWorkoutSetsStream(workoutId: workoutId);
+
+  await for (final set in sets) {
+    if (set.isNotEmpty) {
+      yield set;
     }
   }
 }
@@ -352,31 +290,6 @@ Stream<List<ExerciseSets>> getUpcomingExerciseSetsStream(
     }
   }
 }
-
-// @riverpod
-// Future<List<ExerciseSets>> getAllExerciseSets(GetAllExerciseSetsRef ref) async {
-//   // developer.log('entering', name: 'ExerciseSetsRepository.getAllExerciseSets');
-
-//   // ref.onDispose(() {
-//   //   developer.log('disposing',
-//   //       name: 'ExerciseSetsRepository.getAllExerciseSets');
-//   // });
-
-//   return await ref.watch(exerciseSetsRepositoryProvider).getAllEntities();
-// }
-
-// @riverpod
-// Future<int> insertExerciseSets(InsertExerciseSetsRef ref,
-//     {required ExerciseSets exercise}) {
-//   // developer.log('entering', name: 'ExerciseSetsRepository.insertExerciseSets');
-
-//   // ref.onDispose(() {
-//   //   developer.log('disposing',
-//   //       name: 'ExerciseSetsRepository.insertExerciseSets');
-//   // });
-
-//   return ref.read(exerciseSetsRepositoryProvider).insert(exercise);
-// }
 
 @riverpod
 Future deleteExerciseSets(DeleteExerciseSetsRef ref,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/components/exercises/exercise_list_tile.dart';
+import 'package:workout_tracker/components/exercise_sets/exercise_sets_list_tile.dart';
 import 'package:workout_tracker/domain/workout_exercise.dart';
 
 class ExerciseListReorderable extends StatelessWidget {
@@ -22,7 +22,7 @@ class ExerciseListReorderable extends StatelessWidget {
       itemBuilder: (context, index) {
         return Card(
           key: Key('$index'),
-          child: ExerciseListTile(
+          child: ExerciseSetsListTile(
               icon: exercises[index].exercise.exerciseType?.icon,
               title: exercises[index].exercise.name),
         );

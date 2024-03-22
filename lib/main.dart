@@ -40,6 +40,9 @@ void main() async {
       await exerciseStore.add(db, pecFly.toJson());
       await exerciseStore.add(db, legExtension.toJson());
       await exerciseStore.add(db, benchDip.toJson());
+      await exerciseStore.add(db, shoulderPress.toJson());
+      await exerciseStore.add(db, forwardRaise.toJson());
+      await exerciseStore.add(db, tricepPulldown.toJson());
 
       await workoutRecordStore.add(db, record.toJson());
 

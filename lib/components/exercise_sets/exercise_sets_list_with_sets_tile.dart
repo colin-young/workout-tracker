@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/common/rounded_button.dart';
-import 'package:workout_tracker/components/exercises/exercise_list_tile.dart';
+import 'package:workout_tracker/components/exercise_sets/exercise_sets_list_tile.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/utility/exercise_sets_extensions.dart';
 import 'dart:developer' as developer;
 
-class ExerciseListWithSetsTile extends ConsumerWidget {
-  const ExerciseListWithSetsTile({
+class ExerciseSetsListWithSetsTile extends ConsumerWidget {
+  const ExerciseSetsListWithSetsTile({
     super.key,
     required List<ExerciseSets> workoutSets,
     required this.workoutRecordId,
@@ -36,7 +36,7 @@ class ExerciseListWithSetsTile extends ConsumerWidget {
         itemCount: _workoutSets.length,
         itemBuilder: (context, index) => Card(
             key: Key('$index'),
-            child: ExerciseListTile(
+            child: ExerciseSetsListTile(
                 icon: _workoutSets[index].exercise.exerciseType!.icon,
                 title: _workoutSets[index].exercise.name,
                 subtitle: _workoutSets[index].displayString())));
@@ -143,7 +143,7 @@ class UpcomingExercises extends ConsumerWidget {
                               ],
                             )
                           : const SizedBox(),
-                      ExerciseListWithSetsTile(
+                      ExerciseSetsListWithSetsTile(
                           workoutRecordId: workoutRecordId,
                           workoutSets: upcomingExercises)
                     ];
@@ -195,7 +195,7 @@ class CompletedExercises extends ConsumerWidget {
                         .toList();
                     return [
                       Text('Completed', style: textStyle.titleMedium),
-                      ExerciseListWithSetsTile(
+                      ExerciseSetsListWithSetsTile(
                           workoutRecordId: workoutRecordId,
                           workoutSets: completedExercises)
                     ];

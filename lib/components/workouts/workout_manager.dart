@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workout_tracker/components/exercises/exercise_list_with_sets_tile.dart';
+import 'package:workout_tracker/components/exercise_sets/exercise_sets_list_with_sets_tile.dart';
 import 'package:workout_tracker/components/workouts/set_recorder.dart';
-import 'package:workout_tracker/controller/user_preferences_state.dart';
 
-class WorkoutManager extends ConsumerWidget with UserPreferencesState {
+class WorkoutManager extends ConsumerWidget {
   const WorkoutManager({super.key, required this.workoutRecordId});
 
   final int workoutRecordId;

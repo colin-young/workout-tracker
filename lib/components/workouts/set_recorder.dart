@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/common/multi_digit_wheel.dart';
-import 'package:workout_tracker/components/exercises/exercise_settings_display.dart';
+import 'package:workout_tracker/components/exercise_sets/exercise_settings_display.dart';
 import 'package:workout_tracker/components/workouts/exercise_sets_display.dart';
 import 'package:workout_tracker/components/workouts/record_set_button.dart';
 import 'package:workout_tracker/controller/user_preferences_state.dart';

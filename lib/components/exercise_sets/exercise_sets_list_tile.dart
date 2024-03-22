@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ExerciseListTile extends StatelessWidget {
-  const ExerciseListTile({
+class ExerciseSetsListTile extends StatelessWidget {
+  const ExerciseSetsListTile({
     super.key,
     required this.icon,
     required this.title, this.subtitle = '',
