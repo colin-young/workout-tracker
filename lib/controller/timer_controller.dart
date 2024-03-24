@@ -8,7 +8,7 @@ import 'package:workout_tracker/timer/timer_machine.dart';
 
 part 'timer_controller.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class TimerController extends _$TimerController {
   @override
   Future<void> build() async {
@@ -29,14 +29,15 @@ class TimerController extends _$TimerController {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<TimerMachine> getTimer(GetTimerRef ref) async {
   return TimerMachine.create(
       context:
-          TimerContext.init(duration: const Duration(minutes: 1, seconds: 15)));
+      // TODO Read default timer duration from UserPrefs.
+          TimerContext.init(duration: const Duration(minutes: 0, seconds: 5)));
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<TimerState> getState(GetStateRef ref) async* {
   final timer = await ref.watch(getTimerProvider.future);
 
@@ -47,7 +48,7 @@ Stream<TimerState> getState(GetStateRef ref) async* {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<TimerContext> getContext(GetContextRef ref) async* {
   final timer = await ref.watch(getTimerProvider.future);
 
@@ -58,7 +59,7 @@ Stream<TimerContext> getContext(GetContextRef ref) async* {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<List<Event>> getAllowedEvents(GetAllowedEventsRef ref) async* {
   final timer = await ref.watch(getTimerProvider.future);
 

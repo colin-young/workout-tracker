@@ -29,14 +29,23 @@ class TimerMachine extends Machine<TimerContext, TimerState, TimerEvent> {
     super.handleEvent(event);
 
     if (state == Running()) {
-      if (_timer != null)
-      {
-        _timer?.cancel();
-      }
+      if (event == UpdateDisplay()) {
+        if (context.elapsedTime >= context.timerDuration) {
+          if (_timer != null) {
+            _timer?.cancel();
+          }
+          super.handleEvent(Finish());
+          super.handleEvent(Reset());
+        }
+      } else {
+        if (_timer != null) {
+          _timer?.cancel();
+        }
 
-      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-        handleEvent(UpdateDisplay());
-      });
+        _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+          handleEvent(UpdateDisplay());
+        });
+      }
     } else {
       _timer?.cancel();
     }

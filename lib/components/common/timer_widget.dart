@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/controller/timer_controller.dart';
+import 'package:workout_tracker/timer/timer_context.dart';
 import 'package:workout_tracker/timer/timer_event.dart';
 
 class TimerWidget extends ConsumerWidget {
@@ -8,7 +9,7 @@ class TimerWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timerContext = ref.watch(getContextProvider);
+    final timerContext = ref.watch(getTimerProvider);
     final allowedEvents = ref.watch(getAllowedEventsProvider);
 
     var textStyle = Theme.of(context).textTheme;
@@ -49,63 +50,61 @@ class TimerWidget extends ConsumerWidget {
       icon: (const Icon(Icons.pause_circle, size: 40)),
     );
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            allowedEvents.when(
-              data: (events) {
-                return events.contains(Reset())
-                    ? resetIconButton
-                    : resetIconButtonDisabled;
-              },
-              error: (e, st) => Text(e.toString()),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  timerContext.when(
-                    data: (context) {
-                      return SizedBox(
-                        width: timerDisplaysize.width * 1.1,
-                        child: Center(
-                          child: Text(
-                            context.getDisplay(),
-                            style: textStyle.headlineMedium,
-                          ),
-                        ),
-                      );
-                    },
-                    error: (e, st) => Text(e.toString()),
-                    loading: () => const Center(
-                      child: CircularProgressIndicator(),
+    return switch (timerContext) {
+      AsyncData(:final value) => value.state != Initiated()
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    allowedEvents.when(
+                      data: (events) {
+                        return events.contains(Reset())
+                            ? resetIconButton
+                            : resetIconButtonDisabled;
+                      },
+                      error: (e, st) => Text(e.toString()),
+                      loading: () => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
-                  ),
-                  Center(child: Text('Rest', style: textStyle.labelSmall))
-                ],
-              ),
-            ),
-            allowedEvents.when(
-              data: (events) {
-                return events.contains(Start())
-                    ? playIconButton
-                    : events.contains(Pause())
-                        ? pauseIconButton
-                        : playIconButtonDisabled;
-              },
-              error: (e, st) => Text(e.toString()),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ]),
-    );
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: timerDisplaysize.width * 1.1,
+                            child: Center(
+                              child: Text(
+                                value.context.getDisplay(),
+                                style: textStyle.headlineMedium,
+                              ),
+                            ),
+                          ),
+                          Center(
+                              child: Text('Rest', style: textStyle.labelSmall))
+                        ],
+                      ),
+                    ),
+                    allowedEvents.when(
+                      data: (events) {
+                        return events.contains(Start())
+                            ? playIconButton
+                            : events.contains(Pause())
+                                ? pauseIconButton
+                                : playIconButtonDisabled;
+                      },
+                      error: (e, st) => Text(e.toString()),
+                      loading: () => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ]),
+            )
+          : const SizedBox(),
+      _ => Container(),
+    };
   }
 }

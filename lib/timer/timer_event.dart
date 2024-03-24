@@ -64,7 +64,6 @@ class Finish extends TimerEvent {
 class UpdateDisplay extends TimerEvent {
   UpdateDisplay() : super(name: 'update-display');
 
-
   (String,) _equality() => (name,);
 
   @override

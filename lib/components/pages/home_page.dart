@@ -29,13 +29,8 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: const SummaryPage(),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Consumer(
-          builder: (context, ref, child) {
-            return const TimerWidget();
-          },
-        ),
+      bottomSheet: Consumer(
+        builder: (context, ref, child) => const TimerWidget(),
       ),
     );
   }

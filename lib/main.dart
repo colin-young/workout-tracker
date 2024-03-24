@@ -90,6 +90,10 @@ class MyApp extends StatelessWidget {
           backgroundColor: appColorScheme.primary,
           foregroundColor: appColorScheme.onPrimary,
         ),
+        bottomSheetTheme: BottomSheetThemeData(
+          backgroundColor: appColorScheme.secondaryContainer,
+          elevation: 5,
+        ),
         useMaterial3: true,
       ),
     );

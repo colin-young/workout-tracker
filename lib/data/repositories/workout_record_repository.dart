@@ -5,7 +5,6 @@ import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
-import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
 import 'dart:developer' as developer;
 
