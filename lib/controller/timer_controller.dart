@@ -33,7 +33,7 @@ class TimerController extends _$TimerController {
 Future<TimerMachine> getTimer(GetTimerRef ref) async {
   return TimerMachine.create(
       context:
-      // TODO Read default timer duration from UserPrefs.
+          // TODO Read default timer duration from UserPrefs.
           TimerContext.init(duration: const Duration(minutes: 0, seconds: 5)));
 }
 

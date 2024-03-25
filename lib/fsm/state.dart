@@ -1,12 +1,12 @@
 // Finite State Machine
 // based on https://github.com/SandroMaglione/dart-state-chart
-typedef StateAction<Context> = Context? Function(Context ctx)?;
+typedef MachineStateAction<C> = C? Function(C ctx)?;
 
-abstract class State<Context> {
+abstract class MachineState<C> {
   final String name;
 
-  const State({required this.name, this.onEntry, this.onExit});
+  const MachineState({required this.name, this.onEntry, this.onExit});
 
-  final StateAction<Context> onEntry;
-  final StateAction<Context> onExit;
+  final MachineStateAction<C> onEntry;
+  final MachineStateAction<C> onExit;
 }

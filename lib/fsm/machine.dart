@@ -6,7 +6,7 @@ import 'package:workout_tracker/fsm/event.dart';
 import 'package:workout_tracker/fsm/state.dart';
 // import 'dart:developer' as developer;
 
-abstract class Machine<C, S extends State<C>, E extends Event> {
+abstract class Machine<C, S extends MachineState<C>, E extends Event> {
   Machine({required this.state, required this.events, required this.context});
 
   final _stateController = StreamController<S>.broadcast();

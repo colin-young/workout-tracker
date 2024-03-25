@@ -6,17 +6,19 @@ class TimerContext {
   final DateTime startedAt;
   final bool isRunning;
 
-  TimerContext._(
-      {required this.timerDuration,
-      required this.elapsedTime,
-      required this.startedAt,
-      this.isRunning = false});
+  TimerContext._({
+    required this.timerDuration,
+    required this.elapsedTime,
+    required this.startedAt,
+    this.isRunning = false,
+  });
 
   factory TimerContext.init({required Duration duration}) {
     return TimerContext._(
-        timerDuration: duration,
-        elapsedTime: Duration.zero,
-        startedAt: DateTime.now());
+      timerDuration: duration,
+      elapsedTime: Duration.zero,
+      startedAt: DateTime.now(),
+    );
   }
   factory TimerContext._handleEvent(
       {required Duration timerDuration,
@@ -54,7 +56,7 @@ class TimerContext {
   }
 }
 
-sealed class TimerState extends State<TimerContext> {
+sealed class TimerState extends MachineState<TimerContext> {
   TimerState({required super.name});
 }
 
@@ -62,14 +64,14 @@ class Initiated extends TimerState {
   Initiated() : super(name: 'initiated');
 
   @override
-  StateAction<TimerContext>? get onEntry =>
+  MachineStateAction<TimerContext>? get onEntry =>
       (prev) => TimerContext?._handleEvent(
           timerDuration: prev.timerDuration, elapsedTime: Duration.zero);
 
   (String,) _equality() => (name,);
 
   @override
-  operator ==(covariant State<TimerContext> other) {
+  operator ==(covariant MachineState<TimerContext> other) {
     return other is Initiated;
   }
 
@@ -81,21 +83,23 @@ class Running extends TimerState {
   Running() : super(name: 'running');
 
   @override
-  StateAction<TimerContext>? get onEntry => (prev) => TimerContext._handleEvent(
-      timerDuration: prev.timerDuration,
-      elapsedTime: prev.elapsedTime,
-      isRunning: true);
+  MachineStateAction<TimerContext>? get onEntry =>
+      (prev) => TimerContext._handleEvent(
+          timerDuration: prev.timerDuration,
+          elapsedTime: prev.elapsedTime,
+          isRunning: true);
 
   @override
-  StateAction<TimerContext>? get onExit => (prev) => TimerContext._handleEvent(
-      timerDuration: prev.timerDuration,
-      elapsedTime:
-          prev.elapsedTime + DateTime.now().difference(prev.startedAt));
+  MachineStateAction<TimerContext>? get onExit =>
+      (prev) => TimerContext._handleEvent(
+          timerDuration: prev.timerDuration,
+          elapsedTime:
+              prev.elapsedTime + DateTime.now().difference(prev.startedAt));
 
   (String,) _equality() => (name,);
 
   @override
-  operator ==(covariant State<TimerContext> other) {
+  operator ==(covariant MachineState<TimerContext> other) {
     return other is Running;
   }
 
@@ -107,15 +111,16 @@ class Paused extends TimerState {
   Paused() : super(name: 'paused');
 
   @override
-  StateAction<TimerContext>? get onEntry => (prev) => TimerContext._handleEvent(
-      timerDuration: prev.timerDuration,
-      elapsedTime:
-          prev.elapsedTime + DateTime.now().difference(prev.startedAt));
+  MachineStateAction<TimerContext>? get onEntry =>
+      (prev) => TimerContext._handleEvent(
+          timerDuration: prev.timerDuration,
+          elapsedTime:
+              prev.elapsedTime + DateTime.now().difference(prev.startedAt));
 
   (String,) _equality() => (name,);
 
   @override
-  operator ==(covariant State<TimerContext> other) {
+  operator ==(covariant MachineState<TimerContext> other) {
     return other is Paused;
   }
 
@@ -129,7 +134,7 @@ class Finished extends TimerState {
   (String,) _equality() => (name,);
 
   @override
-  operator ==(covariant State<TimerContext> other) {
+  operator ==(covariant MachineState<TimerContext> other) {
     return other is Finished;
   }
 
