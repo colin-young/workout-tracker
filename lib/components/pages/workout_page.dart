@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/common/timer_widget.dart';
 import 'package:workout_tracker/components/workouts/workout_manager.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
@@ -19,7 +20,7 @@ class WorkoutPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final int workoutRecordId = int.parse(workoutId);
 
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         title: Consumer(builder: (_, WidgetRef ref, __) {
           final workoutResult = ref.watch(
@@ -46,9 +47,6 @@ class WorkoutPage extends ConsumerWidget {
         ),
       ),
       floatingActionButton: CompleteSetsFAB(workoutRecordId: workoutRecordId),
-      bottomSheet: Consumer(
-        builder: (context, ref, child) => const TimerWidget(),
-      ),
     );
   }
 }

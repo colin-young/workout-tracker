@@ -7,6 +7,7 @@ typedef EventAction<C, S extends MachineState> = C Function(C ctx, S prevState, 
 abstract class Event<C, S extends MachineState> {
   final EventAction<C, S> action;
   final String name;
+  final bool includeInStream;
 
-  const Event({required this.name, this.action});
+  Event({required this.name, this.action, this.includeInStream = false});
 }

@@ -15,7 +15,6 @@ class TimerController extends _$TimerController {
     final timerMachine = ref.watch(getTimerProvider.future);
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => timerMachine);
-    // return timerMachine;
   }
 
   Future<void> handleEvent(TimerEvent event) async {
@@ -34,7 +33,7 @@ Future<TimerMachine> getTimer(GetTimerRef ref) async {
   return TimerMachine.create(
       context:
           // TODO Read default timer duration from UserPrefs.
-          TimerContext.init(duration: const Duration(minutes: 0, seconds: 5)));
+          TimerContext.init(duration: const Duration(minutes: 1, seconds: 15)));
 }
 
 @Riverpod(keepAlive: true)
@@ -67,5 +66,14 @@ Stream<List<Event>> getAllowedEvents(GetAllowedEventsRef ref) async* {
 
   await for (final _ in timer.streamState) {
     yield timer.allowedEvents();
+  }
+}
+
+@Riverpod(keepAlive: true)
+Stream<Event> getEvents(GetEventsRef ref) async* {
+  final timer = await ref.watch(getTimerProvider.future);
+
+  await for (final event in timer.streamEvent) {
+    yield event;
   }
 }

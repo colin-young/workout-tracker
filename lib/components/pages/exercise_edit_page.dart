@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/exercise_sets/exercise_edit_form.dart';
 import 'package:workout_tracker/data/repositories/exercise_repository.dart';
 
@@ -14,7 +15,7 @@ class ExerciseEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final int exerciseIdKey = int.parse(exerciseId);
 
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         title: Text(title),
       ),

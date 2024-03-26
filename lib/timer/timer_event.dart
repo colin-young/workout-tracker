@@ -2,7 +2,7 @@ import 'package:workout_tracker/fsm/event.dart';
 import 'package:workout_tracker/timer/timer_context.dart';
 
 sealed class TimerEvent extends Event<TimerContext, TimerState> {
-  TimerEvent({required super.name});
+  TimerEvent({required super.name, super.includeInStream});
 }
 
 class Start extends TimerEvent {
@@ -48,7 +48,7 @@ class Reset extends TimerEvent {
 }
 
 class Finish extends TimerEvent {
-  Finish() : super(name: 'finish');
+  Finish() : super(name: 'finish', includeInStream: true);
 
   (String,) _equality() => (name,);
 

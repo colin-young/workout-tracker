@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import '../../oss_licenses.dart';
 
 class LicencesPage extends StatelessWidget {
@@ -7,7 +8,7 @@ class LicencesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         title: const Text("Licences"),
       ),
@@ -58,7 +59,7 @@ class LicenceDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         title: Text(title),
       ),

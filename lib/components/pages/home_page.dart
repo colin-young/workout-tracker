@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:workout_tracker/components/common/timer_widget.dart';
+import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/summary_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,7 +13,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         title: Text(
           title,
@@ -29,9 +28,6 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: const SummaryPage(),
-      bottomSheet: Consumer(
-        builder: (context, ref, child) => const TimerWidget(),
-      ),
     );
   }
 }

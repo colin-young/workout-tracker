@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/controller/timer_controller.dart';
 import 'package:workout_tracker/timer/timer_context.dart';
 import 'package:workout_tracker/timer/timer_event.dart';
+import 'dart:developer' as developer;
 
 class TimerWidget extends ConsumerWidget {
   const TimerWidget({super.key});
@@ -11,6 +13,28 @@ class TimerWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final timerContext = ref.watch(getTimerProvider);
     final allowedEvents = ref.watch(getAllowedEventsProvider);
+    final events = ref.watch(getEventsProvider);
+
+    switch (events) {
+      case AsyncData(:final value):
+        developer.log('Timer event: ${value.name}', name: 'TimerWidget.build');
+        if (value == Finish()) {
+          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+            final route2 = Router.of(context).routeInformationProvider?.value.uri;
+            developer.log('route: ${route2.toString()}', name: 'TimerWidget.build');
+
+            final snackBar = SnackBar(
+              content: const Text('Timer completed'),
+              action: SnackBarAction(
+                label: 'Dismiss',
+                onPressed: () {},
+              ),
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          });
+        }
+    }
 
     var textStyle = Theme.of(context).textTheme;
 

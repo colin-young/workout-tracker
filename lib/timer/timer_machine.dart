@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:workout_tracker/timer/timer_event.dart';
 import 'package:workout_tracker/timer/timer_context.dart';
 import 'package:workout_tracker/fsm/machine.dart';
