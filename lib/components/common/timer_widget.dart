@@ -76,57 +76,60 @@ class TimerWidget extends ConsumerWidget {
 
     return switch (timerContext) {
       AsyncData(:final value) => value.state != Initiated()
-          ? Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    allowedEvents.when(
-                      data: (events) {
-                        return events.contains(Reset())
-                            ? resetIconButton
-                            : resetIconButtonDisabled;
-                      },
-                      error: (e, st) => Text(e.toString()),
-                      loading: () => const Center(
-                        child: CircularProgressIndicator(),
+          ? Hero(
+            tag: 'timer',
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      allowedEvents.when(
+                        data: (events) {
+                          return events.contains(Reset())
+                              ? resetIconButton
+                              : resetIconButtonDisabled;
+                        },
+                        error: (e, st) => Text(e.toString()),
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: timerDisplaysize.width * 1.1,
-                            child: Center(
-                              child: Text(
-                                value.context.getDisplay(),
-                                style: textStyle.headlineMedium,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: timerDisplaysize.width * 1.1,
+                              child: Center(
+                                child: Text(
+                                  value.context.getDisplay(),
+                                  style: textStyle.headlineMedium,
+                                ),
                               ),
                             ),
-                          ),
-                          Center(
-                              child: Text('Rest', style: textStyle.labelSmall))
-                        ],
+                            Center(
+                                child: Text('Rest', style: textStyle.labelSmall))
+                          ],
+                        ),
                       ),
-                    ),
-                    allowedEvents.when(
-                      data: (events) {
-                        return events.contains(Start())
-                            ? playIconButton
-                            : events.contains(Pause())
-                                ? pauseIconButton
-                                : playIconButtonDisabled;
-                      },
-                      error: (e, st) => Text(e.toString()),
-                      loading: () => const Center(
-                        child: CircularProgressIndicator(),
+                      allowedEvents.when(
+                        data: (events) {
+                          return events.contains(Start())
+                              ? playIconButton
+                              : events.contains(Pause())
+                                  ? pauseIconButton
+                                  : playIconButtonDisabled;
+                        },
+                        error: (e, st) => Text(e.toString()),
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
-                    ),
-                  ]),
-            )
+                    ]),
+              ),
+          )
           : const SizedBox(),
       _ => Container(),
     };
