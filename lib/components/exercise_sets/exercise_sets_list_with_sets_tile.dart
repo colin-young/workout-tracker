@@ -34,12 +34,18 @@ class ExerciseSetsListWithSetsTile extends ConsumerWidget {
         },
         shrinkWrap: true,
         itemCount: _workoutSets.length,
-        itemBuilder: (context, index) => Card(
-            key: Key('$index'),
-            child: ExerciseSetsListTile(
-                icon: _workoutSets[index].exercise.exerciseType!.icon,
-                title: _workoutSets[index].exercise.name,
-                subtitle: _workoutSets[index].displayString())));
+        itemBuilder: (context, index) => Dismissible(
+              key: Key('$index'),
+          onDismissed: (direction) {
+                ref.read(deleteExerciseSetsProvider(
+                    exerciseId: _workoutSets[index].id));
+          },
+          child: Card(
+              child: ExerciseSetsListTile(
+                  icon: _workoutSets[index].exercise.exerciseType!.icon,
+                  title: _workoutSets[index].exercise.name,
+                  subtitle: _workoutSets[index].displayString())),
+        ));
   }
 }
 
