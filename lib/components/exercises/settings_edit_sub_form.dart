@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workout_tracker/components/common/card_title_divider.dart';
-import 'package:workout_tracker/components/exercise_sets/setting_editor.dart';
+import 'package:workout_tracker/components/exercises/setting_editor.dart';
 import 'package:workout_tracker/components/common/rounded_button.dart';
 import 'package:workout_tracker/domain/exercise_setting.dart';
 

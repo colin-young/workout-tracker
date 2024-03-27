@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workout_tracker/components/exercise_sets/exercise_sets_list_with_sets_tile.dart';
-import 'package:workout_tracker/components/workouts/set_recorder.dart';
+import 'package:workout_tracker/components/workouts/exercise_sets/exercise_sets_list_with_sets_tile.dart';
+import 'package:workout_tracker/components/workouts/exercise_sets/set_recorder.dart';
 
 class WorkoutManager extends ConsumerWidget {
   const WorkoutManager({super.key, required this.workoutRecordId});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/routine_manager.dart';
-import 'package:workout_tracker/components/exercise_sets/workout_exercise_card_view.dart';
+import 'package:workout_tracker/components/workouts/exercise_sets/workout_exercise_card_view.dart';
 import 'package:workout_tracker/components/workout_summary_card.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'dart:developer' as developer;

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/components/exercise_sets/exercise_settings_display.dart';
+import 'package:workout_tracker/components/workouts/exercise_sets/exercise_settings_display.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 
 class ExerciseCarouselCard extends StatelessWidget {

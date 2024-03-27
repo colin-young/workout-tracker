@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/common/rounded_button.dart';
-import 'package:workout_tracker/components/exercise_sets/exercise_sets_list_tile.dart';
+import 'package:workout_tracker/components/workouts/exercise_sets/exercise_sets_list_tile.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
-import 'package:workout_tracker/components/exercise_sets/exercise_view_card.dart';
+import 'package:workout_tracker/components/workouts/exercise_sets/exercise_view_card.dart';
 import 'package:workout_tracker/controller/exercise_controller.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 
