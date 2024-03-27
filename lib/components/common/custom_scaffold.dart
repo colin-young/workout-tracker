@@ -27,7 +27,7 @@ class CustomScaffold extends Scaffold {
       super.persistentFooterButtons,
       super.primary,
       super.resizeToAvoidBottomInset,
-      super.restorationId}) : super(bottomSheet: Consumer(
+      super.restorationId}) : super(bottomSheet: Consumer(        
         builder: (context, ref, child) => const TimerWidget(),
       ));
 }

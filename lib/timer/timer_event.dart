@@ -6,7 +6,7 @@ sealed class TimerEvent extends Event<TimerContext, TimerState> {
 }
 
 class Start extends TimerEvent {
-  Start() : super(name: 'start');
+  Start() : super(name: 'start', includeInStream: true);
 
   (String,) _equality() => (name,);
 
@@ -20,7 +20,7 @@ class Start extends TimerEvent {
 }
 
 class Pause extends TimerEvent {
-  Pause() : super(name: 'pause');
+  Pause() : super(name: 'pause', includeInStream: true);
 
   (String,) _equality() => (name,);
 
@@ -34,7 +34,7 @@ class Pause extends TimerEvent {
 }
 
 class Reset extends TimerEvent {
-  Reset() : super(name: 'reset');
+  Reset() : super(name: 'reset', includeInStream: true);
 
   (String,) _equality() => (name,);
 

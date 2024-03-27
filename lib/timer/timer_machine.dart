@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:workout_tracker/timer/timer_event.dart';
 import 'package:workout_tracker/timer/timer_context.dart';
 import 'package:workout_tracker/fsm/machine.dart';
+import 'dart:developer' as developer;
 
 class TimerMachine extends Machine<TimerContext, TimerState, TimerEvent> {
   Timer? _timer;
@@ -25,6 +26,7 @@ class TimerMachine extends Machine<TimerContext, TimerState, TimerEvent> {
 
   @override
   handleEvent(TimerEvent event) {
+    developer.log('event: ${event.name}', name: 'TimerMachine.handleEvent');
     super.handleEvent(event);
 
     if (state == Running()) {
@@ -49,7 +51,7 @@ class TimerMachine extends Machine<TimerContext, TimerState, TimerEvent> {
       _timer?.cancel();
     }
 
-    super.handleEvent(UpdateDisplay());
+    // super.handleEvent(UpdateDisplay());
   }
 
   factory TimerMachine.create({required TimerContext context}) {

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
-import 'package:workout_tracker/components/common/timer_widget.dart';
 import 'package:workout_tracker/components/workouts/workout_manager.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
 import 'package:workout_tracker/controller/timer_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/timer/timer_context.dart';
 import 'package:workout_tracker/timer/timer_event.dart';
+import 'dart:developer' as developer;
 
 class WorkoutPage extends ConsumerWidget {
   const WorkoutPage({required this.title, required this.workoutId, super.key});
@@ -69,7 +69,7 @@ class CompleteSetsFAB extends ConsumerWidget {
           ? FloatingActionButton(
               onPressed: () {
                 ref
-                    .watch(workoutCurrentExerciseProvider(
+                    .read(workoutCurrentExerciseProvider(
                             workoutRecordId: workoutRecordId)
                         .future)
                     .then((value) {
@@ -84,10 +84,13 @@ class CompleteSetsFAB extends ConsumerWidget {
                     ref
                         .read(timerControllerProvider.notifier)
                         .handleEvent(Reset());
+                  } else {
+                    developer.log('start event fired',
+                        name: 'WorkoutPage.FloatingActionButton.onPressed');
+                    ref
+                        .read(timerControllerProvider.notifier)
+                        .handleEvent(Start());
                   }
-                  ref
-                      .read(timerControllerProvider.notifier)
-                      .handleEvent(Start());
                 });
               },
               child: const Icon(Icons.check),

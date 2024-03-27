@@ -8,7 +8,7 @@ import 'package:workout_tracker/timer/timer_machine.dart';
 
 part 'timer_controller.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class TimerController extends _$TimerController {
   @override
   Future<void> build() async {
@@ -28,7 +28,7 @@ class TimerController extends _$TimerController {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<TimerMachine> getTimer(GetTimerRef ref) async {
   return TimerMachine.create(
       context:
@@ -36,7 +36,7 @@ Future<TimerMachine> getTimer(GetTimerRef ref) async {
           TimerContext.init(duration: const Duration(minutes: 1, seconds: 15)));
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<TimerState> getState(GetStateRef ref) async* {
   final timer = await ref.watch(getTimerProvider.future);
 
@@ -47,7 +47,7 @@ Stream<TimerState> getState(GetStateRef ref) async* {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<TimerContext> getContext(GetContextRef ref) async* {
   final timer = await ref.watch(getTimerProvider.future);
 
@@ -58,7 +58,7 @@ Stream<TimerContext> getContext(GetContextRef ref) async* {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<List<Event>> getAllowedEvents(GetAllowedEventsRef ref) async* {
   final timer = await ref.watch(getTimerProvider.future);
 
@@ -69,7 +69,7 @@ Stream<List<Event>> getAllowedEvents(GetAllowedEventsRef ref) async* {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<Event> getEvents(GetEventsRef ref) async* {
   final timer = await ref.watch(getTimerProvider.future);
 

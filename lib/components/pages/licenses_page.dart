@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import '../../oss_licenses.dart';
 
@@ -73,11 +74,9 @@ class LicenceDetailPage extends StatelessWidget {
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  licence,
-                  style: const TextStyle(fontSize: 15),
-                ),
+                MarkdownBody(data: licence),
               ],
             ),
           ),
