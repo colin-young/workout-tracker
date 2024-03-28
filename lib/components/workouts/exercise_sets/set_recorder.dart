@@ -27,6 +27,7 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
       SetEntry(reps: 0, weight: 0, units: '', finishedAt: DateTime.now());
   late final workoutRecordId = widget.workoutRecordId;
   bool isInitialized = false;
+  int lastWorkoutSetsId = -1;
 
   void updateWorkoutSet(SetEntry entry) {
     var prefs = userPreferences(ref);
@@ -82,11 +83,16 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
 
     switch (currentExerciseResult) {
       case AsyncData(:final value):
-        if (!isInitialized) {
+        if (!isInitialized || value?.id != lastWorkoutSetsId) {
           if (value!.sets.isNotEmpty) {
             updateWorkoutSet(setEntry.copyWith(
               reps: value.sets.last.reps, weight: value.sets.last.weight));
+          } else {
+            updateWorkoutSet(setEntry.copyWith(
+                reps: 0, weight: 0));
           }
+
+          lastWorkoutSetsId = value.id;
           isInitialized = true;
         }
     }

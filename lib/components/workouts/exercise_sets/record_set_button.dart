@@ -86,9 +86,9 @@ class RecordSetButton extends ConsumerWidget {
                 icon: Icons.check,
                 onPressed: () async {
                   await ref
-                      .read(exerciseSetsControllerProvider.notifier).addWorkoutSet(
-                          workoutRecordId: workoutRecordId,
-                          newSet: workoutSet);
+                      .read(exerciseSetsControllerProvider.notifier)
+                      .addWorkoutSet(
+                          workoutRecordId: workoutRecordId, newSet: workoutSet);
                 },
               )
             ],
