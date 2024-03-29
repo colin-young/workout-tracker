@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/summary_page.dart';
 
@@ -27,7 +29,20 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: const SummaryPage(),
+      body: ShowCaseWidget(
+          onComplete: (index, key) {
+            if (index == 1) {
+              SystemChrome.setSystemUIOverlayStyle(
+                SystemUiOverlayStyle.light.copyWith(
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarColor: Colors.white,
+                ),
+              );
+            }
+          },
+          blurValue: 1,
+          builder: Builder(builder: (context) => SummaryPage()),
+          ),
     );
   }
 }
