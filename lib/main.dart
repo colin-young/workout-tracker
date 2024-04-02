@@ -29,8 +29,10 @@ void main() async {
       onVersionChanged: (db, oldVersion, newVersion) async {
     // If the db does not exist, create some data
     if (oldVersion == 0) {
-      await mainStore.record(UserPreferences.storeName).put(db, const UserPreferences(weightUnits: "lbs").toJson());
-      
+      await mainStore
+          .record(UserPreferences.storeName)
+          .put(db, const UserPreferences(weightUnits: "lbs").toJson());
+
       await workoutDefinitionStore.add(db, json);
       await workoutDefinitionStore.add(db, routine2.toJson());
 
@@ -68,7 +70,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    var appColorScheme = ColorScheme.fromSeed(seedColor: Colors.blueAccent.shade700);
+    var appColorScheme =
+        ColorScheme.fromSeed(seedColor: Colors.blueAccent.shade700);
 
     return MaterialApp.router(
       routerConfig: router,
@@ -90,10 +93,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: appColorScheme.primary,
           foregroundColor: appColorScheme.onPrimary,
         ),
-        bottomSheetTheme: BottomSheetThemeData(
-          backgroundColor: appColorScheme.secondaryContainer,
-          elevation: 5,
-        ),
+        bottomSheetTheme: const BottomSheetThemeData(),
+        bottomAppBarTheme: const BottomAppBarTheme(),
         useMaterial3: true,
       ),
     );

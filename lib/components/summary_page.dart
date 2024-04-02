@@ -19,8 +19,8 @@ class SummaryPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final workoutRecordAsync = ref.watch(getLastworkoutRecordProvider);
 
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) => ShowCaseWidget.of(context).startShowCase([_one, _two]));
+    // WidgetsBinding.instance.addPostFrameCallback(
+    //     (_) => ShowCaseWidget.of(context).startShowCase([_one, _two]));
 
     return workoutRecordAsync.when(
         data: (workoutRecord) {
@@ -70,7 +70,6 @@ class SummaryPage extends ConsumerWidget {
                   ),
                   ),
                 ),
-                const RoutineManager(),
               ],
             ),
           );

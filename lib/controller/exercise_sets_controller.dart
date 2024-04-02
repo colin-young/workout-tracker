@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
+import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'dart:developer' as developer;
+
+import 'package:workout_tracker/utility/exercise_sets_extensions.dart';
 
 part 'exercise_sets_controller.g.dart';
 
@@ -78,6 +81,11 @@ class ExerciseSetsController extends _$ExerciseSetsController {
             currentSets.copyWith(sets: [...currentSets.sets, newSet]);
         await ref.read(updateExerciseSetsProvider(exercise: updatedSet).future);
         _currentSetController.add(updatedSet);
+        final workoutRecord = await ref
+            .read(workoutRecordRepositoryProvider)
+            .getEntity(workoutRecordId);
+         await ref.read(workoutRecordRepositoryProvider).insert(workoutRecord
+            .copyWith(lastActivityAt: updatedSet.latestDateTime()));
       } else {
         // TODO report error
       }

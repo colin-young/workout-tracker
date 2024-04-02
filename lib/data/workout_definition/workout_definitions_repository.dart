@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
+import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
 import 'dart:developer' as developer;
 
@@ -69,6 +70,20 @@ Stream<List<WorkoutDefinition>> getAllEntitiesStream(
       developer.log('getAllEntitiesStream', name: 'WorkoutDefinitionsRepository@riverpod');
   return ref.watch(workoutDefinitionsRepositoryProvider).getAllEntitiesStream();
 }
+
+// @riverpod
+// Stream<List<WorkoutDefinition>> getAllEntitiesWithDateStream(
+//     GetAllEntitiesStreamRef ref) async* {
+//   developer.log('getAllEntitiesStream',
+//       name: 'WorkoutDefinitionsRepository@riverpod');
+//   final definitions = ref.watch(workoutDefinitionsRepositoryProvider).getAllEntitiesStream();
+
+//   await for (final definitionList in definitions) {
+//     for (final definition in definitionList) {
+//       yield ref.watch(getLastWorkoutDateProvider(workoutDefinitionId: definition.id));
+//     }
+//   }
+// }
 
 @riverpod
 Future<int> insert(InsertRef ref,

@@ -70,7 +70,7 @@ const exerciseList = [
   forwardRaise,
   tricepPulldown,
 ];
-const routine1 = WorkoutDefinition(name: "Routine 1", exercises: [
+const routine1 = WorkoutDefinition(id: 1, name: "Routine 1", exercises: [
   WorkoutExercise(id: 1, order: 1, exercise: bicepsCurl),
   WorkoutExercise(id: 2, order: 2, exercise: seatedLegCurl),
   WorkoutExercise(id: 5, order: 3, exercise: legExtension),
@@ -167,4 +167,5 @@ final sets = <ExerciseSets>[
 final record = WorkoutRecord(
   fromWorkoutDefinition: routine1,
   startedAt: workoutStartTime,
+  lastActivityAt: workoutStartTime.add(const Duration(minutes: 7)),
 );

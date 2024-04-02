@@ -5,6 +5,7 @@ import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
+import 'package:workout_tracker/data/workout_definition/workout_definitions_repository.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
 import 'dart:developer' as developer;
 
@@ -259,4 +260,46 @@ Stream<WorkoutRecord> getLastworkoutRecord(GetLastworkoutRecordRef ref) async* {
             .future);
     yield workoutRecord;
   }
+}
+
+typedef WorkoutDefinitionDate = ({
+  WorkoutDefinition definition,
+  DateTime? date,
+});
+
+@riverpod
+Stream<List<WorkoutDefinitionDate>> getLastWorkoutDate(
+    GetLastWorkoutDateRef ref) async* {
+  final allDefinitions =
+      await ref.watch(workoutDefinitionsRepositoryProvider).getAllEntities();
+  final allWorkouts =
+      await ref.read(workoutRecordRepositoryProvider).getAllEntities();
+  allWorkouts.sort((a, b) => -a.id.compareTo(b.id));
+
+  final definitionDates = allDefinitions.map((definition) async {
+    developer.log('definition: ${definition.name}',
+        name: 'WorkoutRecordRepository.getLastWorkoutDate');
+
+    final lastWorkout = allWorkouts.where((workout) {
+      developer.log(
+          'Compare ${workout.fromWorkoutDefinition?.name} to ${definition.name}: ${workout.fromWorkoutDefinition?.id} == ${definition.id}',
+          name: 'WorkoutRecordRepository.getLastWorkoutDate');
+      return workout.fromWorkoutDefinition?.id == definition.id;
+    }).firstOrNull;
+
+    final DateTime? finishedAt;
+    if (lastWorkout != null) {
+      developer.log('lastWorkout: ${lastWorkout.fromWorkoutDefinition?.name}',
+          name: 'WorkoutRecordRepository.getLastWorkoutDate');
+      finishedAt = lastWorkout.lastActivityAt;
+    } else {
+      developer.log('lastWorkout: null',
+          name: 'WorkoutRecordRepository.getLastWorkoutDate');
+      finishedAt = null;
+    }
+
+    return (definition: definition, date: finishedAt);
+  }).toList();
+
+  yield await Future.wait(definitionDates);
 }
