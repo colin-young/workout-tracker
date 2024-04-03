@@ -4,5 +4,9 @@ import 'package:workout_tracker/domain/user_preferences.dart';
 
 mixin UserPreferencesState {
   UserPreferences userPreferences(WidgetRef ref) =>
-      ref.watch(getUserPreferencesProvider).value ?? const UserPreferences(weightUnits: "unknown");
+      ref.watch(getUserPreferencesProvider).value ??
+      const UserPreferences(
+          weightUnits: "unknown",
+          autoCloseWorkout: UserPreferencesAutoCloseWorkout(
+              autoClose: true, autoCloseWorkoutAfter: Duration()));
 }

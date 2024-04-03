@@ -89,14 +89,6 @@ class WorkoutRecordRepository implements Repository<WorkoutRecord> {
 @riverpod
 Future<WorkoutRecord> getWorkoutRecord(GetWorkoutRecordRef ref,
     {required int workoutRecordId}) async {
-  // developer.log('entering',
-  //     name: 'WorkoutRecordRepository.getWorkoutRecord');
-
-  // ref.onDispose(() {
-  //   developer.log('disposing',
-  //       name: 'WorkoutRecordRepository.getWorkoutRecord');
-  // });
-
   return workoutRecordId > 0
       ? ref.watch(workoutRecordRepositoryProvider).getEntity(workoutRecordId)
       : Future.value(WorkoutRecord(
@@ -109,14 +101,6 @@ Future<WorkoutRecord> getWorkoutRecord(GetWorkoutRecordRef ref,
 @riverpod
 Stream<WorkoutRecord> getWorkoutRecordStream(GetWorkoutRecordStreamRef ref,
     {required int workoutRecordId}) {
-  // developer.log('entering',
-  //     name: 'WorkoutRecordRepository.getWorkoutRecordStream');
-
-  // ref.onDispose(() {
-  //   developer.log('disposing',
-  //       name: 'WorkoutRecordRepository.getWorkoutRecordStream');
-  // });
-
   return ref
       .watch(workoutRecordRepositoryProvider)
       .getWorkoutRecordStream(workoutId: workoutRecordId);
@@ -170,6 +154,28 @@ Future<bool> isWorkoutComplete(IsWorkoutCompleteRef ref,
     return element.isComplete;
   });
   return workoutSets2;
+}
+
+@riverpod
+Future<WorkoutRecord> completeAllWorkoutExercises(
+    CompleteAllWorkoutExercisesRef ref,
+    {required int workoutRecordId}) async {
+  final workoutExercises = await ref.read(
+      getAllWorkoutExerciseSetsProvider(workoutRecordId: workoutRecordId)
+          .future);
+
+  final List<Future<Object?>> updates = [];
+  for (final exercise in workoutExercises) {
+    if (!exercise.isComplete) {
+      updates.add(ref.read(updateExerciseSetsProvider(
+              exercise: exercise.copyWith(isComplete: true))
+          .future));
+    }
+  }
+  Future.wait(updates);
+
+  return ref
+      .watch(getWorkoutRecordProvider(workoutRecordId: workoutRecordId).future);
 }
 
 @riverpod
@@ -239,18 +245,10 @@ Future<int> totalWorkoutReps(TotalWorkoutRepsRef ref,
 
 @riverpod
 Stream<WorkoutRecord> getLastworkoutRecord(GetLastworkoutRecordRef ref) async* {
-  // developer.log('entering', name: 'LastWorkoutRepository.getLastworkoutRecord');
-
-  // ref.onDispose(() {
-  //   developer.log('disposing', name: 'LastWorkoutRepository.getLastworkoutRecord');
-  // });
-
   var allrecords = await ref
       .watch(getAllExerciseSetsStreamProvider.selectAsync((value) async {
-    // for (final val in value) {
     value.sort((a, b) => a.latestDateTime().compareTo(b.latestDateTime()));
     return value;
-    // }
   }));
 
   if ((await allrecords).isNotEmpty) {
@@ -277,24 +275,14 @@ Stream<List<WorkoutDefinitionDate>> getLastWorkoutDate(
   allWorkouts.sort((a, b) => -a.id.compareTo(b.id));
 
   final definitionDates = allDefinitions.map((definition) async {
-    developer.log('definition: ${definition.name}',
-        name: 'WorkoutRecordRepository.getLastWorkoutDate');
-
     final lastWorkout = allWorkouts.where((workout) {
-      developer.log(
-          'Compare ${workout.fromWorkoutDefinition?.name} to ${definition.name}: ${workout.fromWorkoutDefinition?.id} == ${definition.id}',
-          name: 'WorkoutRecordRepository.getLastWorkoutDate');
       return workout.fromWorkoutDefinition?.id == definition.id;
     }).firstOrNull;
 
     final DateTime? finishedAt;
     if (lastWorkout != null) {
-      developer.log('lastWorkout: ${lastWorkout.fromWorkoutDefinition?.name}',
-          name: 'WorkoutRecordRepository.getLastWorkoutDate');
       finishedAt = lastWorkout.lastActivityAt;
     } else {
-      developer.log('lastWorkout: null',
-          name: 'WorkoutRecordRepository.getLastWorkoutDate');
       finishedAt = null;
     }
 

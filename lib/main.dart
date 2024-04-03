@@ -29,9 +29,14 @@ void main() async {
       onVersionChanged: (db, oldVersion, newVersion) async {
     // If the db does not exist, create some data
     if (oldVersion == 0) {
-      await mainStore
-          .record(UserPreferences.storeName)
-          .put(db, const UserPreferences(weightUnits: "lbs").toJson());
+      await mainStore.record(UserPreferences.storeName).put(
+          db,
+          const UserPreferences(
+                  weightUnits: "lbs",
+                  autoCloseWorkout: UserPreferencesAutoCloseWorkout(
+                      autoClose: true,
+                      autoCloseWorkoutAfter: Duration(hours: 12)))
+              .toJson());
 
       await workoutDefinitionStore.add(db, json);
       await workoutDefinitionStore.add(db, routine2.toJson());

@@ -4,9 +4,21 @@ part 'user_preferences.freezed.dart';
 part 'user_preferences.g.dart';
 
 @freezed
+abstract class UserPreferencesAutoCloseWorkout with _$UserPreferencesAutoCloseWorkout {
+  const factory UserPreferencesAutoCloseWorkout({
+    required bool autoClose,
+    required Duration autoCloseWorkoutAfter,
+  }) = _UserPreferencesAutoCloseWorkout;
+
+  factory UserPreferencesAutoCloseWorkout.fromJson(Map<String, dynamic> json) =>
+      _$UserPreferencesAutoCloseWorkoutFromJson(json);
+}
+
+@freezed
 abstract class UserPreferences with _$UserPreferences {
   const factory UserPreferences({
     required String weightUnits,
+    required UserPreferencesAutoCloseWorkout autoCloseWorkout,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>
