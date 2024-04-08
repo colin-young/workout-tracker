@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/components/common/card_title_divider.dart';
+import 'package:workout_tracker/components/common/ui/card_title_divider.dart';
 import 'package:workout_tracker/components/workouts/exercise_sets/exercise_settings_display.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 

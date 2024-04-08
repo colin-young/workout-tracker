@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
@@ -36,7 +37,10 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
 
   @override
   Stream<List<ExerciseSets>> getAllEntitiesStream() {
-    return _store.query().onSnapshots(database).map(
+    return _store
+        .query()
+        .onSnapshots(database)
+        .map(
           (snapshot) => snapshot
               .map((definition) => ExerciseSets.fromJson(definition.value)
                   .copyWith(id: definition.key))
@@ -160,6 +164,18 @@ Stream<List<ExerciseSets>> getAllExerciseSetsStream(
 }
 
 @riverpod
+Stream<List<ExerciseSets>> getAllExerciseSetsByExerciseStream(
+    GetAllExerciseSetsByExerciseStreamRef ref,
+    {required int exerciseId}) async* {
+  final allSets =
+      await ref.watch(exerciseSetsRepositoryProvider).getAllEntities();
+  final exerciseSets =
+      allSets.where((element) => element.exercise.id == exerciseId).toList();
+
+  yield exerciseSets;
+}
+
+@riverpod
 Future<bool> canCompleteSets(CanCompleteSetsRef ref,
     {required workoutRecordId}) async {
   final currentWorkoutExercise = await ref.watch(
@@ -195,7 +211,7 @@ Stream<ExerciseSets?> getWorkoutExerciseSetsStream(
   }
 }
 
-/// Get all the sets (exercises) for a given workout. Includes complete, 
+/// Get all the sets (exercises) for a given workout. Includes complete,
 /// incomplete and not started sets.
 @riverpod
 Stream<List<ExerciseSets>> getWorkoutSetsStream(GetWorkoutSetsStreamRef ref,

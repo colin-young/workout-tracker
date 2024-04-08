@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -6,7 +8,9 @@ import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/mock_data.dart';
+import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/domain/user_preferences.dart';
+import 'package:workout_tracker/domain/workout_record.dart';
 import 'package:workout_tracker/navigation/router.dart';
 
 void main() async {
@@ -22,7 +26,6 @@ void main() async {
   var exerciseStore = intMapStoreFactory.store('exercise_store');
   var exerciseSetsStore = intMapStoreFactory.store('exercise_sets_store');
   var workoutRecordStore = intMapStoreFactory.store('workout_record_store');
-  var json = routine1.toJson();
 
   // TODO remove mock data, handle no data case for all stores
   final database = await databaseFactoryIo.openDatabase(dbPath, version: 1,
@@ -32,14 +35,15 @@ void main() async {
       await mainStore.record(UserPreferences.storeName).put(
           db,
           const UserPreferences(
-                  weightUnits: "lbs",
-                  autoCloseWorkout: UserPreferencesAutoCloseWorkout(
-                      autoClose: true,
-                      autoCloseWorkoutAfter: Duration(hours: 12)))
-              .toJson());
+            weightUnits: "lbs",
+            autoCloseWorkout: UserPreferencesAutoCloseWorkout(
+                autoClose: true, autoCloseWorkoutAfter: Duration(hours: 12)),
+            showcase: UserPreferencesShowcase(summaryPage: false),
+          ).toJson());
 
-      await workoutDefinitionStore.add(db, json);
+      await workoutDefinitionStore.add(db, routine1.toJson());
       await workoutDefinitionStore.add(db, routine2.toJson());
+      await workoutDefinitionStore.add(db, routine3.toJson());
 
       await exerciseStore.add(db, bicepsCurl.toJson());
       await exerciseStore.add(db, seatedLegCurl.toJson());
@@ -51,10 +55,34 @@ void main() async {
       await exerciseStore.add(db, forwardRaise.toJson());
       await exerciseStore.add(db, tricepPulldown.toJson());
 
-      await workoutRecordStore.add(db, record.toJson());
+      final routines = [routine1, routine2, routine3];
+      var prevWorkoutRecordStart = workoutStartTime;
+      var setsCount = 0;
 
-      for (final set in sets) {
-        await exerciseSetsStore.add(db, set.toJson());
+      for (int i = 1; i < 40; i++) {
+        var routine = routines[i % 3];
+
+        final workoutStartsAt =
+            prevWorkoutRecordStart.add(Duration(days: Random().nextInt(2) + 1));
+        final workoutSets = createExerciseSets(
+            id: setsCount + 1,
+            workoutId: i,
+            routine: routine,
+            startTime: workoutStartsAt);
+
+        setsCount = setsCount + workoutSets.length;
+
+        final workoutRecord = WorkoutRecord(
+          id: i,
+          fromWorkoutDefinition: routine,
+          startedAt: prevWorkoutRecordStart,
+          lastActivityAt: workoutSets.last.sets.last.finishedAt,
+        );
+
+        prevWorkoutRecordStart = workoutRecord.lastActivityAt!;
+
+        await workoutRecordStore.add(db, workoutRecord.toJson());
+        await insertExerciseSets(workoutSets, exerciseSetsStore, db);
       }
     }
   });
@@ -67,6 +95,13 @@ void main() async {
       child: const MyApp(),
     ),
   );
+}
+
+Future<void> insertExerciseSets(Iterable<ExerciseSets> sets,
+    StoreRef<int, Map<String, Object?>> exerciseSetsStore, Database db) async {
+  for (final set in sets) {
+    await exerciseSetsStore.add(db, set.toJson());
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -87,12 +122,6 @@ class MyApp extends StatelessWidget {
           foregroundColor: appColorScheme.onPrimary,
           backgroundColor: appColorScheme.primary,
           elevation: 5,
-        ),
-        cardTheme: CardTheme(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          elevation: 2,
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: appColorScheme.primary,

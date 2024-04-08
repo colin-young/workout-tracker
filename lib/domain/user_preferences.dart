@@ -15,10 +15,21 @@ abstract class UserPreferencesAutoCloseWorkout with _$UserPreferencesAutoCloseWo
 }
 
 @freezed
+abstract class UserPreferencesShowcase with _$UserPreferencesShowcase {
+  const factory UserPreferencesShowcase({
+    required bool summaryPage,
+  }) = _UserPreferencesShowcase;
+
+  factory UserPreferencesShowcase.fromJson(Map<String, dynamic> json) =>
+    _$UserPreferencesShowcaseFromJson(json);
+}
+
+@freezed
 abstract class UserPreferences with _$UserPreferences {
   const factory UserPreferences({
     required String weightUnits,
     required UserPreferencesAutoCloseWorkout autoCloseWorkout,
+    required UserPreferencesShowcase showcase,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>

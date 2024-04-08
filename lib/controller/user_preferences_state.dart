@@ -8,5 +8,6 @@ mixin UserPreferencesState {
       const UserPreferences(
           weightUnits: "unknown",
           autoCloseWorkout: UserPreferencesAutoCloseWorkout(
-              autoClose: true, autoCloseWorkoutAfter: Duration()));
+              autoClose: true, autoCloseWorkoutAfter: Duration()),
+          showcase: UserPreferencesShowcase(summaryPage: false));
 }

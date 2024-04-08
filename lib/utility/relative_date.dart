@@ -6,8 +6,8 @@ extension RelativeDate on DateTime {
     final int hours = difference.inHours;
     final int minutes = difference.inMinutes;
     String displayValue = '';
-    if (days > 14) {
-      displayValue = toIso8601String();
+    if (days > 15) {
+      displayValue = '${difference.inDays ~/ 7} weeks ago';
     } else if (days == 1) {
       displayValue = 'Yesterday';
     } else if (days > 1) {

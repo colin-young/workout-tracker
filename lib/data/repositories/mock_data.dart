@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:path/path.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/exercise_setting.dart';
 import 'package:workout_tracker/domain/exercise_type.dart';
@@ -87,85 +90,100 @@ const routine3 = WorkoutDefinition(name: "Routine 3", exercises: [
   WorkoutExercise(order: 3, exercise: bicepsCurl),
 ]);
 const workoutDefinitions = [routine1, routine2, routine3];
-final workoutStartTime = DateTime.now().subtract(const Duration(days: 1));
+final workoutStartTime = DateTime.now().subtract(const Duration(days: 60));
 
-final sets = <ExerciseSets>[
-  ExerciseSets(
-      workoutId: 1,
-      exercise: bicepsCurl,
-      order: 1,
-      sets: [
-        SetEntry(
-            reps: 12,
-            weight: 25,
-            units: "lbs",
-            finishedAt: workoutStartTime.add(const Duration(minutes: 1))),
-        SetEntry(
-            reps: 11,
-            weight: 25,
-            units: "lbs",
-            finishedAt: workoutStartTime.add(const Duration(minutes: 2))),
-        SetEntry(
-            reps: 9,
-            weight: 25,
-            units: "lbs",
-            finishedAt: workoutStartTime.add(const Duration(minutes: 3))),
-      ],
-      isComplete: true),
-  ExerciseSets(
-      workoutId: 1,
-      exercise: seatedLegCurl,
-      order: 2,
-      sets: [
-        SetEntry(
-            reps: 12,
-            weight: 160,
-            units: "lbs",
-            finishedAt: workoutStartTime.add(const Duration(minutes: 5))),
-        SetEntry(
-            reps: 9,
-            weight: 160,
-            units: "lbs",
-            finishedAt: workoutStartTime.add(const Duration(minutes: 6))),
-        SetEntry(
-            reps: 8,
-            weight: 160,
-            units: "lbs",
-            finishedAt: workoutStartTime.add(const Duration(minutes: 7))),
-      ],
-      isComplete: false),
-  const ExerciseSets(
-    workoutId: 1,
-    order: 3,
-    exercise: legExtension,
-    sets: [],
-    isComplete: false,
-  ),
-  const ExerciseSets(
-    workoutId: 1,
-    order: 4,
-    exercise: chestPress,
-    sets: [],
-    isComplete: false,
-  ),
-  const ExerciseSets(
-    workoutId: 1,
-    order: 5,
-    exercise: benchDip,
-    sets: [],
-    isComplete: false,
-  ),
-  const ExerciseSets(
-    workoutId: 1,
-    order: 6,
-    exercise: pecFly,
-    sets: [],
-    isComplete: false,
-  ),
-];
+List<SetEntry> generateSets(DateTime startTime) {
+  final setCount = Random().nextInt(2) + 2;
+  final durations = List.generate(
+      setCount,
+      (index) => Duration(
+          seconds: Random().nextInt(59), minutes: Random().nextInt(3) + 1));
+  return List.generate(
+      setCount,
+      (index) => generateSetEntry(
+          startTime,
+          durations.take(index).fold(
+              Duration.zero,
+              (previousValue, element) => Duration(
+                  seconds: previousValue.inSeconds + element.inSeconds))));
+}
 
-final record = WorkoutRecord(
+SetEntry generateSetEntry(
+        DateTime previousSetStartTime, Duration setDuration) =>
+    SetEntry(
+        reps: Random().nextInt(10) + 5,
+        weight: Random().nextInt(100) + 20,
+        units: "lbs",
+        finishedAt: previousSetStartTime.add(setDuration));
+
+Iterable<ExerciseSets> createExerciseSets(
+    {required int id,
+    required int workoutId,
+    required WorkoutDefinition routine,
+    required DateTime startTime,
+    bool isComplete = true}) {
+  final setsCount = isComplete
+      ? routine.exercises.length
+      : Random().nextInt(routine.exercises.length - 2) + 1;
+
+  var currentId = id;
+
+  return routine.exercises.map((e) {
+    final sets = ExerciseSets(
+        id: currentId,
+        workoutId: workoutId,
+        order: e.order,
+        exercise: e.exercise,
+        sets: e.order > setsCount ? [] : generateSets(startTime),
+        isComplete: isComplete);
+
+    currentId++;
+    return sets;
+  });
+}
+
+final workout1Sets = createExerciseSets(
+    id: 1, workoutId: 1, routine: routine1, startTime: workoutStartTime);
+
+final workoutRecord1 = WorkoutRecord(
+  id: 1,
   fromWorkoutDefinition: routine1,
   startedAt: workoutStartTime,
-  lastActivityAt: workoutStartTime.add(const Duration(minutes: 7)),
+  lastActivityAt: workout1Sets.last.sets.last.finishedAt,
+);
+
+var prevWorkoutRecord = workoutRecord1;
+final routines = [routine1, routine2, routine3];
+
+final workout2StartsAt =
+    workoutRecord1.lastActivityAt!.add(Duration(days: Random().nextInt(2)));
+final workout2Sets = createExerciseSets(
+    id: routine1.exercises.length + 1,
+    workoutId: 2,
+    routine: routine2,
+    startTime: workout2StartsAt);
+
+final workoutRecord2 = WorkoutRecord(
+  id: 2,
+  fromWorkoutDefinition: routine2,
+  startedAt: workout2StartsAt,
+  lastActivityAt: workout2Sets.last.sets.last.finishedAt,
+);
+
+final workout3StartsAt =
+    workoutRecord1.lastActivityAt!.add(Duration(days: Random().nextInt(2)));
+final workout3Sets = createExerciseSets(
+    id: routine1.exercises.length + routine2.exercises.length + 1,
+    workoutId: 3,
+    routine: routine3,
+    startTime: workout3StartsAt,
+    isComplete: false);
+
+final workoutRecord3 = WorkoutRecord(
+  id: 3,
+  fromWorkoutDefinition: routine3,
+  startedAt: DateTime.now(),
+  lastActivityAt: workout2Sets.any((element) => element.isComplete)
+      ? workout2Sets.last.sets.last.finishedAt
+      : null,
 );
