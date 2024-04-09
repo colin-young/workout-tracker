@@ -200,7 +200,6 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
                               child: SimpleTimeSeriesChart(
                                 key: UniqueKey(),
                                 widget.workoutExercise.exercise.id,
-                                animate: false,
                                 showAxis: isOpen,
                                 animation: _opacityTween.value,
                               )),

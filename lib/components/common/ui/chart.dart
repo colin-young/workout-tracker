@@ -1,6 +1,5 @@
 import 'package:community_charts_flutter/community_charts_flutter.dart'
     as charts;
-import 'package:community_charts_flutter/community_charts_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
@@ -16,7 +15,7 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
 
   const SimpleTimeSeriesChart(this.exerciseId,
       {super.key,
-      this.animate = true,
+      this.animate = false,
       this.showAxis = true,
       this.animation = 1.0});
 
@@ -67,25 +66,29 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
       charts.Series<TimeSeriesSets, DateTime>(
         id: 'Sets',
         colorFn: (_, __) =>
-            ColorUtil.fromDartColor(Theme.of(context).colorScheme.primary),
+            charts.ColorUtil.fromDartColor(Theme.of(context).colorScheme.primary),
         domainFn: (TimeSeriesSets sets, _) => sets.time,
         measureFn: (TimeSeriesSets sets, _) => sets.value,
+        measureLowerBoundFn: (TimeSeriesSets sets, _) => sets.min,
+        measureUpperBoundFn: (TimeSeriesSets sets, _) => sets.max,
         data: data,
       ),
     ];
     final rangeSeries = [
       charts.Series<TimeSeriesSets, DateTime>(
         id: 'Max',
-        colorFn: (_, __) => ColorUtil.fromDartColor(showAxis
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(showAxis
             ? Theme.of(context).colorScheme.onBackground
             : Colors.transparent),
         domainFn: (TimeSeriesSets sets, _) => sets.time,
         measureFn: (TimeSeriesSets sets, _) => sets.max! - sets.min!,
+        labelAccessorFn: (TimeSeriesSets sets, _) =>
+              '${sets.max! - sets.min!}',
         data: data,
       )..setAttribute(charts.rendererIdKey, 'rangeCap'),
       charts.Series<TimeSeriesSets, DateTime>(
         id: 'Min',
-        colorFn: (_, __) => ColorUtil.fromDartColor(showAxis
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(showAxis
             ? Theme.of(context).colorScheme.onBackground
             : Colors.transparent),
         domainFn: (TimeSeriesSets sets, _) => sets.time,
@@ -94,7 +97,7 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
       )..setAttribute(charts.rendererIdKey, 'rangeCap'),
       charts.Series<TimeSeriesSets, DateTime>(
         id: 'MaxBar',
-        colorFn: (_, __) => ColorUtil.fromDartColor(
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(
             Theme.of(context).colorScheme.onBackground.withOpacity(animation)),
         domainFn: (TimeSeriesSets sets, _) => sets.time,
         measureFn: (TimeSeriesSets sets, _) => sets.max! - sets.min!,
@@ -102,14 +105,15 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
       )..setAttribute(charts.rendererIdKey, 'rangeBar'),
       charts.Series<TimeSeriesSets, DateTime>(
         id: 'MinBar',
-        colorFn: (_, __) => ColorUtil.fromDartColor(Colors.transparent),
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.transparent),
         domainFn: (TimeSeriesSets sets, _) => sets.time,
         measureFn: (TimeSeriesSets sets, _) => sets.min,
         data: data,
       )..setAttribute(charts.rendererIdKey, 'rangeBar'),
     ];
 
-    final series = [...dataSeries, ...rangeSeries];
+    // TODO add range bars option to enable display
+    final series = [...dataSeries, /*...rangeSeries*/];
 
     return IgnorePointer(
       child: charts.TimeSeriesChart(
@@ -120,18 +124,18 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
         domainAxis: charts.EndPointsTimeAxisSpec(
             renderSpec: charts.SmallTickRendererSpec(
                 lineStyle: charts.LineStyleSpec(
-          color: ColorUtil.fromDartColor(Theme.of(context)
+          color: charts.ColorUtil.fromDartColor(Theme.of(context)
               .colorScheme
               .onBackground
               .withOpacity(animation)),
         ))),
         primaryMeasureAxis: charts.NumericAxisSpec(
-          renderSpec: charts.SmallTickRendererSpec(
+          renderSpec: charts.GridlineRendererSpec(
               lineStyle: charts.LineStyleSpec(
-            color: ColorUtil.fromDartColor(Theme.of(context)
+            color: charts.ColorUtil.fromDartColor(Theme.of(context)
                 .colorScheme
                 .onBackground
-                .withOpacity(animation)),
+                .withOpacity(animation * 0.25)),
           )),
         ),
         customSeriesRenderers: [
