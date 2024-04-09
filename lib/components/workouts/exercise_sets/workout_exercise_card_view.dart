@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:workout_tracker/components/common/ui/chart.dart';
 import 'package:workout_tracker/components/sets_list_view.dart';
@@ -20,7 +21,11 @@ class WorkoutExerciseCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClosedWorkoutExerciseCard(
-        inset: inset, workoutExercise: workoutExercise);
+      inset: inset,
+      workoutExercise: workoutExercise,
+      detailPanelColor: Theme.of(context).colorScheme.secondaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.background,
+    );
   }
 }
 
@@ -29,8 +34,10 @@ class ClosedWorkoutExerciseCard extends StatefulWidget {
       {super.key,
       required this.inset,
       required this.workoutExercise,
+      required this.detailPanelColor,
+      required this.backgroundColor,
       this.chartHeight = 160,
-      this.animationDuration = const Duration(milliseconds: 500),
+      this.animationDuration = const Duration(milliseconds: 1500),
       this.chartOpacityBackground = 0.125});
 
   final double inset;
@@ -38,6 +45,8 @@ class ClosedWorkoutExerciseCard extends StatefulWidget {
   final Duration animationDuration;
   final double chartOpacityBackground;
   final int chartHeight;
+  final Color detailPanelColor;
+  final Color backgroundColor;
 
   @override
   State<ClosedWorkoutExerciseCard> createState() =>
@@ -51,19 +60,45 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
   late final chartHeightOpen = widget.chartHeight;
 
   var isOpen = false;
+  final colorForwardCurve =
+      const Interval(0.25, 1.0, curve: Curves.fastOutSlowIn);
+  final colorReverseCurve =
+      const Interval(0.25, 1.0, curve: Curves.fastOutSlowIn).flipped;
+
   late final AnimationController _controller = AnimationController(
     duration: widget.animationDuration,
+    reverseDuration:
+        Duration(milliseconds: (widget.animationDuration.inMilliseconds ~/ 2)),
     vsync: this,
   );
-  late final Animation<double> _hideOnOpenAnimation = CurvedAnimation(
+
+  late final Animation<double> _expandDetailPanel =
+      Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
     parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  );
+    curve: const Interval(0, 0.75, curve: Curves.bounceOut),
+    reverseCurve:
+        const Interval(0.0, 0.75, curve: Curves.fastEaseInToSlowEaseOut).flipped,
+  ));
+  
+  late final _colorTween = ColorTween(
+    begin: widget.backgroundColor,
+    end: widget.detailPanelColor,
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: colorForwardCurve,
+    reverseCurve: colorReverseCurve,
+  ));
+  
+  late final _opacityTween =
+      Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    parent: _controller,
+    curve: colorForwardCurve,
+    reverseCurve: colorReverseCurve,
+  ));
 
   @override
   void initState() {
     super.initState();
-    _controller.forward();
   }
 
   @override
@@ -72,15 +107,19 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
     super.dispose();
   }
 
-  toggleState() {
+  Future<void> toggleState() async {
     setState(() {
       isOpen = !isOpen;
     });
 
-    if (!isOpen) {
-      _controller.forward();
-    } else {
-      _controller.reverse();
+    try {
+      if (isOpen) {
+        await _controller.forward().orCancel;
+      } else {
+        await _controller.reverse().orCancel;
+      }
+    } on TickerCanceled {
+      // The animation got canceled, probably because it was disposed of.
     }
   }
 
@@ -99,18 +138,13 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
     final headingStyle = Theme.of(context).textTheme.headlineSmall;
     final setEntryStyle = Theme.of(context).textTheme.bodyMedium;
 
-    final cardHeadersHeight =
+    final cardHeightClosed = max(
         _textSize(widget.workoutExercise.exercise.name, headingStyle!).height +
             widget.inset +
-            _textSize(
-                    'dummy string',
-                    subHeadingStyle!)
-                .height +
-            widget.inset;
-    final setsListHeight = widget.workoutExercise.sets.length *
-        _textSize('1 dummy entry', setEntryStyle!).height;
-    final cardHeightClosed =
-        max(cardHeadersHeight, setsListHeight) + widget.inset;
+            _textSize('dummy string', subHeadingStyle!).height +
+            widget.inset,
+        widget.workoutExercise.sets.length *
+            _textSize('1 dummy entry', setEntryStyle!).height);
 
     return GestureDetector(
       onTap: () {
@@ -127,38 +161,48 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
                   elevation: 0,
                   margin: EdgeInsets.zero,
                   child: AnimatedBuilder(
-                    animation: _hideOnOpenAnimation,
+                    animation: _expandDetailPanel,
                     builder: (BuildContext context, Widget? child) {
                       return SizedBox(
-                        height: (1.0 - _hideOnOpenAnimation.value) *
-                            (_textSize(widget.workoutExercise.exercise.name,
-                                        headingStyle)
-                                    .height +
-                                widget.inset +
-                                widget.inset),
+                        height: _expandDetailPanel.value * cardHeightClosed,
                       );
                     },
                   ),
                 ),
                 Card(
+                  shape: ContinuousRectangleBorder(
+                      side: BorderSide(
+                    color: widget.detailPanelColor,
+                    width: 1,
+                  )),
+                  color: _colorTween.value,
+                  clipBehavior: Clip.hardEdge,
                   elevation: 0,
                   margin: EdgeInsets.zero,
                   child: AnimatedBuilder(
-                    animation: _hideOnOpenAnimation,
+                    key: UniqueKey(),
+                    animation: _expandDetailPanel,
                     builder: (BuildContext context, Widget? child) {
-                      return SizedBox(
-                        height: (1.0 - _hideOnOpenAnimation.value) * chartHeightOpen +
-                            cardHeightClosed,
+                      return Container(
+                        key: UniqueKey(),
+                        height: _expandDetailPanel.value * chartHeightOpen +
+                            cardHeightClosed +
+                            widget.inset / 2,
+                        color: _colorTween.value,
                         child: Padding(
+                          key: UniqueKey(),
                           padding: EdgeInsets.all(widget.inset),
                           child: Opacity(
-                              opacity: (1.0 - _hideOnOpenAnimation.value) *
+                              key: UniqueKey(),
+                              opacity: _opacityTween.value *
                                       chartOpacityRangeSize +
                                   chartOpacityBackground,
                               child: SimpleTimeSeriesChart(
+                                key: UniqueKey(),
                                 widget.workoutExercise.exercise.id,
-                                animate: true,
-                                showAxis: isOpen ? true : false,
+                                animate: false,
+                                showAxis: isOpen,
+                                animation: _opacityTween.value,
                               )),
                         ),
                       );
