@@ -1,12 +1,13 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:workout_tracker/components/common/ui/chart.dart';
+import 'package:workout_tracker/components/common/ui/chart/exercise_chart_type.dart';
 import 'package:workout_tracker/components/sets_list_view.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/utility/relative_date.dart';
-import 'dart:developer' as developer;
+import 'package:workout_tracker/utility/set_entry_list_utils.dart';
+import 'package:workout_tracker/utility/set_entry_utils.dart';
 
 class WorkoutExerciseCardView extends StatelessWidget {
   const WorkoutExerciseCardView({
@@ -36,9 +37,10 @@ class ClosedWorkoutExerciseCard extends StatefulWidget {
       required this.workoutExercise,
       required this.detailPanelColor,
       required this.backgroundColor,
-      this.chartHeight = 160,
-      this.animationDuration = const Duration(milliseconds: 1500),
-      this.chartOpacityBackground = 0.125});
+      this.chartHeight = 240,
+      this.animationDuration = const Duration(milliseconds: 1000),
+      this.chartOpacityBackground = 0.125,
+      this.chartType = ExerciseChartType.oneRM});
 
   final double inset;
   final ExerciseSets workoutExercise;
@@ -47,6 +49,7 @@ class ClosedWorkoutExerciseCard extends StatefulWidget {
   final int chartHeight;
   final Color detailPanelColor;
   final Color backgroundColor;
+  final ExerciseChartType chartType;
 
   @override
   State<ClosedWorkoutExerciseCard> createState() =>
@@ -58,6 +61,35 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
   late final chartOpacityBackground = widget.chartOpacityBackground;
   late final chartOpacityRangeSize = 1 - widget.chartOpacityBackground;
   late final chartHeightOpen = widget.chartHeight;
+  final chipLinePadding = 8.0;
+
+  late ExerciseChartType chartType;
+  late bool showRange = false;
+  late bool showTrend = false;
+
+  final chartTypes = {
+    ExerciseChartType.oneRM: SetEntryUtils.oneRMEpley,
+    ExerciseChartType.totalWeightPerSet: SetEntryUtils.totalWeightPerSet,
+    ExerciseChartType.totalWeight: SetEntryUtils.totalWeightPerSet
+  };
+
+  final valueAccumulator = {
+    ExerciseChartType.oneRM: SetEntryListUtils.average,
+    ExerciseChartType.totalWeightPerSet: SetEntryListUtils.average,
+    ExerciseChartType.totalWeight: SetEntryListUtils.sum
+  };
+
+  final minFunc = {
+    ExerciseChartType.oneRM: SetEntryListUtils.min,
+    ExerciseChartType.totalWeightPerSet: SetEntryListUtils.min,
+    ExerciseChartType.totalWeight: null
+  };
+
+  final maxFunc = {
+    ExerciseChartType.oneRM: SetEntryListUtils.max,
+    ExerciseChartType.totalWeightPerSet: SetEntryListUtils.max,
+    ExerciseChartType.totalWeight: null
+  };
 
   var isOpen = false;
   final colorForwardCurve =
@@ -75,11 +107,19 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
   late final Animation<double> _expandDetailPanel =
       Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
     parent: _controller,
-    curve: const Interval(0, 0.75, curve: Curves.bounceOut),
+    curve: const Interval(0, 0.75, curve: Curves.fastEaseInToSlowEaseOut),
     reverseCurve:
-        const Interval(0.0, 0.75, curve: Curves.fastEaseInToSlowEaseOut).flipped,
+        const Interval(0.0, 0.75, curve: Curves.fastEaseInToSlowEaseOut)
+            .flipped,
   ));
-  
+
+  late final _opacityTween =
+      Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    parent: _controller,
+    curve: colorForwardCurve,
+    reverseCurve: colorReverseCurve,
+  ));
+
   late final _colorTween = ColorTween(
     begin: widget.backgroundColor,
     end: widget.detailPanelColor,
@@ -88,16 +128,10 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
     curve: colorForwardCurve,
     reverseCurve: colorReverseCurve,
   ));
-  
-  late final _opacityTween =
-      Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-    parent: _controller,
-    curve: colorForwardCurve,
-    reverseCurve: colorReverseCurve,
-  ));
 
   @override
   void initState() {
+    chartType = widget.chartType;
     super.initState();
   }
 
@@ -134,10 +168,13 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
 
   @override
   Widget build(BuildContext context) {
-    final subHeadingStyle = Theme.of(context).textTheme.bodyMedium;
-    final headingStyle = Theme.of(context).textTheme.headlineSmall;
-    final setEntryStyle = Theme.of(context).textTheme.bodyMedium;
+    var textTheme = Theme.of(context).textTheme;
+    final subHeadingStyle = textTheme.bodyMedium;
+    final headingStyle = textTheme.headlineSmall;
+    final setEntryStyle = textTheme.bodyMedium;
+    final chipTextStyle = textTheme.bodySmall!;
 
+    const chipsHeight = 24.0;
     final cardHeightClosed = max(
         _textSize(widget.workoutExercise.exercise.name, headingStyle!).height +
             widget.inset +
@@ -158,13 +195,25 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
             Column(
               children: [
                 Card.outlined(
+                  shape: ContinuousRectangleBorder(
+                      side: BorderSide(
+                    color: widget.detailPanelColor,
+                    width: 1,
+                  )),
                   elevation: 0,
                   margin: EdgeInsets.zero,
                   child: AnimatedBuilder(
                     animation: _expandDetailPanel,
                     builder: (BuildContext context, Widget? child) {
-                      return SizedBox(
-                        height: _expandDetailPanel.value * cardHeightClosed,
+                      return Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            height: _expandDetailPanel.value * cardHeightClosed,
+                            width: double.infinity,
+                          ),
+                        ],
                       );
                     },
                   ),
@@ -175,7 +224,6 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
                     color: widget.detailPanelColor,
                     width: 1,
                   )),
-                  color: _colorTween.value,
                   clipBehavior: Clip.hardEdge,
                   elevation: 0,
                   margin: EdgeInsets.zero,
@@ -183,27 +231,105 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
                     key: UniqueKey(),
                     animation: _expandDetailPanel,
                     builder: (BuildContext context, Widget? child) {
-                      return Container(
-                        key: UniqueKey(),
-                        height: _expandDetailPanel.value * chartHeightOpen +
-                            cardHeightClosed +
-                            widget.inset / 2,
-                        color: _colorTween.value,
-                        child: Padding(
-                          key: UniqueKey(),
-                          padding: EdgeInsets.all(widget.inset),
-                          child: Opacity(
+                      return Stack(
+                        children: [
+                          SizedBox(
+                            key: UniqueKey(),
+                            height: _expandDetailPanel.value * chartHeightOpen +
+                                cardHeightClosed +
+                                widget.inset / 2,
+                            child: Padding(
                               key: UniqueKey(),
-                              opacity: _opacityTween.value *
-                                      chartOpacityRangeSize +
-                                  chartOpacityBackground,
-                              child: SimpleTimeSeriesChart(
-                                key: UniqueKey(),
-                                widget.workoutExercise.exercise.id,
-                                showAxis: isOpen,
-                                animation: _opacityTween.value,
-                              )),
-                        ),
+                              padding: EdgeInsets.fromLTRB(
+                                  widget.inset,
+                                  chipsHeight + chipLinePadding,
+                                  widget.inset,
+                                  chipsHeight + chipLinePadding),
+                              child: Opacity(
+                                  key: UniqueKey(),
+                                  opacity: _opacityTween.value *
+                                          chartOpacityRangeSize +
+                                      chartOpacityBackground,
+                                  child: IgnorePointer(
+                                    child: ExerciseSummaryChart(
+                                      key: UniqueKey(),
+                                      exerciseId:
+                                          widget.workoutExercise.exercise.id,
+                                      showAxis: isOpen,
+                                      showRange: showRange,
+                                      showTrend: showTrend,
+                                      animation: _opacityTween,
+                                      setValueAccumulator:
+                                          valueAccumulator[chartType]!,
+                                      valueFunc: chartTypes[chartType]!,
+                                      minFunc: minFunc[chartType],
+                                      maxFunc: maxFunc[chartType],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                ScaleTransition(
+                                  scale: _expandDetailPanel,
+                                  child: Padding(
+                                      padding: EdgeInsets.all(chipLinePadding),
+                                      child: Center(
+                                        child: SegmentedButton(
+                                            segments: ExerciseChartType.values
+                                                .map((e) => ButtonSegment<
+                                                        ExerciseChartType>(
+                                                      value: e,
+                                                      label: Text(
+                                                        e.label,
+                                                        style: chipTextStyle,
+                                                      ),
+                                                    ))
+                                                .toList(),
+                                            selected: <ExerciseChartType>{
+                                              chartType
+                                            },
+                                            onSelectionChanged:
+                                                (Set<ExerciseChartType>
+                                                    newSelection) {
+                                              setState(() {
+                                                chartType = newSelection.first;
+                                              });
+                                            }),
+                                      )),
+                                ),
+                                Transform.scale(
+                                  scale: _expandDetailPanel.value,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(
+                                        8.0 * _expandDetailPanel.value),
+                                    child: ChartFeatureChips(
+                                      setRangeState: (value) {
+                                        setState(
+                                          () {
+                                            showRange = value;
+                                          },
+                                        );
+                                      },
+                                      setTrendState: (value) {
+                                        setState(() {
+                                          showTrend = value;
+                                        });
+                                      },
+                                      showRange: showRange,
+                                      showTrend: showTrend,
+                                      chipTextStyle: chipTextStyle,
+                                      hasRange: minFunc[chartType] != null,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),
@@ -262,6 +388,50 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
           ],
         ),
       ),
+    );
+  }
+}
+
+class ChartFeatureChips extends StatelessWidget {
+  final void Function(bool) setRangeState;
+  final void Function(bool) setTrendState;
+  final bool showRange;
+  final bool showTrend;
+  final bool hasRange;
+  final TextStyle chipTextStyle;
+
+  const ChartFeatureChips({
+    super.key,
+    required this.setRangeState,
+    required this.setTrendState,
+    required this.showRange,
+    required this.showTrend,
+    required this.chipTextStyle,
+    required this.hasRange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      children: [
+        FilterChip(
+          label: Text('Range', style: chipTextStyle),
+          onSelected: hasRange
+              ? (bool value) {
+                  setRangeState(value);
+                }
+              : null,
+          selected: showRange,
+        ),
+        FilterChip(
+          label: Text('Trend', style: chipTextStyle),
+          onSelected: (bool value) {
+            setTrendState(value);
+          },
+          selected: showTrend,
+        ),
+      ],
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:path/path.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/exercise_setting.dart';
 import 'package:workout_tracker/domain/exercise_type.dart';

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
