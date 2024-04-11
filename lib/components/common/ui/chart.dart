@@ -2,12 +2,10 @@ import 'package:community_charts_flutter/community_charts_flutter.dart'
     as charts;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workout_tracker/components/common/ui/chart/exercise_chart_type.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
 import 'package:collection/collection.dart';
 import 'package:workout_tracker/utility/set_entry_list_utils.dart';
-import 'package:workout_tracker/utility/set_entry_utils.dart';
 
 class ExerciseSummaryChart extends ConsumerWidget {
   final int exerciseId;

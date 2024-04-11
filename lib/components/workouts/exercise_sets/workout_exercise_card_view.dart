@@ -120,15 +120,6 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
     reverseCurve: colorReverseCurve,
   ));
 
-  late final _colorTween = ColorTween(
-    begin: widget.backgroundColor,
-    end: widget.detailPanelColor,
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: colorForwardCurve,
-    reverseCurve: colorReverseCurve,
-  ));
-
   @override
   void initState() {
     chartType = widget.chartType;
