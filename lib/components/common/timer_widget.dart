@@ -7,14 +7,20 @@ import 'package:workout_tracker/timer/timer_event.dart';
 import 'dart:developer' as developer;
 
 class TimerWidget extends ConsumerStatefulWidget {
-  const TimerWidget({super.key});
+  final Duration animationDuration;
+  final bool isVisible;
+
+  const TimerWidget(
+      {super.key,
+      this.animationDuration = const Duration(milliseconds: 1000),
+      this.isVisible = false});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TimerWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() => TimerWidgetState();
 }
 
-class _TimerWidgetState extends ConsumerState<TimerWidget> {
-  late double height;
+class TimerWidgetState extends ConsumerState<TimerWidget>
+    with TickerProviderStateMixin {
   late bool isVisible;
 
   double widgetHeight = 72.0;
@@ -23,27 +29,55 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
   @override
   void initState() {
     super.initState();
-    height = 0.0;
-    isVisible = false;
+    isVisible = widget.isVisible;
+    developer.log('Animation: ${_controller.value}',
+        name: 'TimerWidget.initState');
   }
 
-  void _setVisible() {
-    setState(() {
-      isVisible = true;
-      height = widgetHeight;
-    });
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
-  void _setInvisible() {
-    setState(() {
-      height = 0;
-    });
-  }
+  late final AnimationController _controller = AnimationController(
+    duration: widget.animationDuration,
+    reverseDuration:
+        Duration(milliseconds: (widget.animationDuration.inMilliseconds ~/ 2)),
+    vsync: this,
+  );
 
-  void _setIsVisible(bool visible) {
+  late final Animation<double> _expandTimer =
+      Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    parent: _controller,
+    curve: const Interval(0, 0.75, curve: Curves.fastEaseInToSlowEaseOut),
+    reverseCurve:
+        const Interval(0.25, 1.0, curve: Curves.fastEaseInToSlowEaseOut)
+            .flipped,
+  ));
+
+  late final Animation<double> _opacity = Tween(begin: 0.0, end: 1.0).animate(
+    CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+        reverseCurve:
+            const Interval(0.0, 0.5, curve: Curves.fastOutSlowIn).flipped),
+  );
+
+  Future<void> _setIsVisible(bool visible) async {
     setState(() {
       isVisible = visible;
     });
+
+    try {
+      if (isVisible) {
+        await _controller.forward().orCancel;
+      } else {
+        await _controller.reverse().orCancel;
+      }
+    } on TickerCanceled {
+      // The animation got canceled, probably because it was disposed of.
+    }
   }
 
   void _setDisplay(TimerContext context) {
@@ -60,14 +94,8 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
 
     switch (events) {
       case AsyncData(:final value):
-        developer.log('Timer event: ${value.name}', name: 'TimerWidget.build');
         if (value == Finish()) {
           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            final route2 =
-                Router.of(context).routeInformationProvider?.value.uri;
-            developer.log('route: ${route2.toString()}',
-                name: 'TimerWidget.build');
-
             final snackBar = SnackBar(
               content: const Text('Timer completed'),
               action: SnackBarAction(
@@ -77,21 +105,17 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
             );
 
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            _setInvisible();
+            _setIsVisible(false);
           });
         } else {
-          if (value == Reset()) {
-            _setInvisible();
-          } else {
-            _setVisible();
-          }
+          _setIsVisible(value != Reset());
         }
     }
 
     switch (timerContext) {
       case AsyncData(:final value):
         if (value.state != Initiated()) {
-          _setVisible();
+          _setIsVisible(true);
         }
         _setDisplay(value.context);
     }
@@ -119,8 +143,6 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
     );
     var playIconButton = IconButton(
       onPressed: () {
-        developer.log('start event fired',
-            name: '_TimerWidgetState.playIconButton.onPressed');
         ref.read(timerControllerProvider.notifier).handleEvent(Start());
       },
       icon: (const Icon(Icons.play_circle, size: 40)),
@@ -136,70 +158,81 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
       icon: (const Icon(Icons.pause_circle, size: 40)),
     );
 
-    return Hero(
-            tag: 'timer',
-            child: AnimatedSize(
-              duration: const Duration(milliseconds: 100),
-              reverseDuration: const Duration(milliseconds: 100),
-              onEnd: () {
-                _setIsVisible(height == widgetHeight);
-              },
-              child: SizedBox(
-                height: height,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        allowedEvents.when(
-                          data: (events) {
-                            return events.contains(Reset())
-                                ? resetIconButton
-                                : resetIconButtonDisabled;
-                          },
-                          error: (e, st) => Text(e.toString()),
-                          loading: () => const Center(
-                            child: CircularProgressIndicator(),
-                          ),
+    var hero = AnimatedBuilder(
+      animation: _expandTimer,
+      builder: (BuildContext context, Widget? child) {
+        var isAnimating = _controller.status != AnimationStatus.completed &&
+            _controller.status != AnimationStatus.dismissed;
+        double finalScale = isVisible ? 1.0 : 0;
+
+        return Transform.scale(
+          scale: isAnimating ? _expandTimer.value : finalScale,
+          child: SizedBox(
+            height: isAnimating
+                ? widgetHeight * _expandTimer.value
+                : widgetHeight * finalScale,
+            child: Opacity(
+              opacity: _opacity.value,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      allowedEvents.when(
+                        data: (events) {
+                          return events.contains(Reset())
+                              ? resetIconButton
+                              : resetIconButtonDisabled;
+                        },
+                        error: (e, st) => Text(e.toString()),
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: timerDisplaysize.width * 1.1,
-                                child: Center(
-                                  child: Text(
-                                    display,
-                                    style: textStyle.headlineMedium,
-                                  ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: timerDisplaysize.width * 1.1,
+                              child: Center(
+                                child: Text(
+                                  display,
+                                  style: textStyle.headlineMedium,
                                 ),
                               ),
-                              Center(
-                                  child:
-                                      Text('Rest', style: textStyle.labelSmall))
-                            ],
-                          ),
+                            ),
+                            Center(
+                                child: Text('Rest', style: textStyle.labelSmall))
+                          ],
                         ),
-                        allowedEvents.when(
-                          data: (events) {
-                            return events.contains(Start())
-                                ? playIconButton
-                                : events.contains(Pause())
-                                    ? pauseIconButton
-                                    : playIconButtonDisabled;
-                          },
-                          error: (e, st) => Text(e.toString()),
-                          loading: () => const Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                      ),
+                      allowedEvents.when(
+                        data: (events) {
+                          return events.contains(Start())
+                              ? playIconButton
+                              : events.contains(Pause())
+                                  ? pauseIconButton
+                                  : playIconButtonDisabled;
+                        },
+                        error: (e, st) => Text(e.toString()),
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                      ]),
-                ),
+                      ),
+                    ]),
               ),
             ),
-          );
+          ),
+        );
+      },
+    );
+
+    return switch (timerContext) {
+      AsyncData() => hero,
+      _ => const SizedBox(width: 0, height: 0)
+    };
   }
 }

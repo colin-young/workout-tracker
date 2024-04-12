@@ -60,18 +60,21 @@ class WorkoutRunMenu extends ConsumerWidget {
         }
       ],
       builder: (context, controller, child) {
-        return ActionChip(
-          avatar: const Icon(Icons.menu),
-          label: const Text('Routines'),
-          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-          side: BorderSide.none,
-          onPressed: () {
-            if (controller.isOpen) {
-              controller.close();
-            } else {
-              controller.open();
-            }
-          },
+        return ChipTheme(
+          data: ChipTheme.of(context).copyWith(),
+          child: ActionChip(
+            avatar: const Icon(Icons.menu),
+            label: const Text('Routines'),
+            // backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+            side: BorderSide.none,
+            onPressed: () {
+              if (controller.isOpen) {
+                controller.close();
+              } else {
+                controller.open();
+              }
+            },
+          ),
         );
       },
     );

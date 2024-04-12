@@ -112,6 +112,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     var appColorScheme =
         ColorScheme.fromSeed(seedColor: Colors.blueAccent.shade700);
+    final textTheme = Theme.of(context).textTheme;
 
     return MaterialApp.router(
       routerConfig: router,
@@ -122,6 +123,9 @@ class MyApp extends StatelessWidget {
           foregroundColor: appColorScheme.onPrimary,
           backgroundColor: appColorScheme.primary,
           elevation: 5,
+        ),
+        chipTheme: ChipThemeData(
+          secondaryLabelStyle: textTheme.labelSmall,
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: appColorScheme.primary,
