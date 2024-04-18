@@ -6,7 +6,6 @@ import 'package:workout_tracker/components/common/relative_date.dart';
 import 'package:workout_tracker/components/common/rounded_button.dart';
 import 'package:workout_tracker/controller/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
-import 'dart:developer' as developer;
 
 class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
   final int workoutRecordId;
@@ -20,160 +19,99 @@ class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
   Widget build(BuildContext context, WidgetRef ref) {
     final workoutRecordResult = ref.watch(
         getWorkoutRecordStreamProvider(workoutRecordId: workoutRecordId));
+    final isCompleteFuture =
+        ref.watch(isWorkoutCompleteProvider(workoutRecordId: workoutRecordId));
+    final finishedAtFuture =
+        ref.watch(workoutFinishedAtProvider(workoutRecordId: workoutRecordId));
+    final totalExercisesFuture = ref
+        .watch(workoutTotalExercisesProvider(workoutRecordId: workoutRecordId));
+    final totalRepsFutures =
+        ref.watch(totalWorkoutRepsProvider(workoutRecordId: workoutRecordId));
+    final totalWeightFutures =
+        ref.watch(workoutTotalWeightProvider(workoutRecordId: workoutRecordId));
+    final prefs = userPreferences(ref);
+
     var labelStyle = Theme.of(context).textTheme.bodyMedium!;
 
-    return workoutRecordResult.when(
-      data: (workoutRecord) {
-        developer.log(
-            'workoutRecord: ${workoutRecord.fromWorkoutDefinition?.name}',
-            name: 'WorkoutSummaryCard');
+    switch (isCompleteFuture) {
+      case AsyncValue(:final value?):
+        if (!value) {
+          if (userPreferences(ref).autoCloseWorkout.autoClose) {
+            final finishedAtFuture = ref.watch(
+                workoutFinishedAtProvider(workoutRecordId: workoutRecordId));
+            final finishedAt = switch (finishedAtFuture) {
+              AsyncValue(:final value?) => value,
+              _ => DateTime.now()
+            };
+            if (DateTime.now().difference(finishedAt) >
+                userPreferences(ref).autoCloseWorkout.autoCloseWorkoutAfter) {
+              ref.read(completeAllWorkoutExercisesProvider(
+                  workoutRecordId: workoutRecordId));
+            }
+          }
+        }
+    }
 
-        return Card(
-            elevation: 5.0,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(children: <Widget>[
-                Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        workoutRecord.fromWorkoutDefinition!.name,
+    return Card(
+        elevation: 5.0,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(children: <Widget>[
+            Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  switch (workoutRecordResult) {
+                    AsyncValue(:final value?) => Text(
+                        value.fromWorkoutDefinition!.name,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final isCompleteFuture = ref.watch(
-                              isWorkoutCompleteProvider(
-                                  workoutRecordId: workoutRecord.id));
-                          return isCompleteFuture.when(
-                              data: (isComplete) {
-                                if (!isComplete) {
-                                  if (userPreferences(ref)
-                                      .autoCloseWorkout
-                                      .autoClose) {
-                                    final finishedAtFuture = ref.watch(
-                                        workoutFinishedAtProvider(
-                                            workoutRecordId:
-                                                workoutRecord.id));
-                                    final finishedAt = switch (
-                                        finishedAtFuture) {
-                                      AsyncData(:final value) => value,
-                                      _ => DateTime.now()
-                                    };
-                                    if (DateTime.now()
-                                            .difference(finishedAt) >
-                                        userPreferences(ref)
-                                            .autoCloseWorkout
-                                            .autoCloseWorkoutAfter) {
-                                      ref.read(
-                                          completeAllWorkoutExercisesProvider(
-                                              workoutRecordId:
-                                                  workoutRecord.id));
-                                    }
-                                  }
-                                }
-                                return isComplete
-                                    ? const SizedBox()
-                                    : RoundedButton(
-                                        onPressed: () {
-                                          context.go(
-                                              '/workout/${workoutRecord.id}');
-                                        },
-                                        text: Text(
-                                          "Continue Current",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium,
-                                        ),
-                                        icon: Icons.play_arrow);
-                              },
-                              error: (e, st) => const SizedBox(),
-                              loading: () => const SizedBox());
-                        },
-                      )
-                    ]),
-                CardTitleDivider(child: Consumer(
-                  builder: (context, ref, child) {
-                    final finishedAtFuture = ref.watch(
-                        workoutFinishedAtProvider(
-                            workoutRecordId: workoutRecord.id));
-        
-                    return finishedAtFuture.when(
-                        data: (finishedAt) =>
-                            RelativeDate(finishedAt, style: labelStyle),
-                        error: (Object e, StackTrace st) =>
-                            Text(e.toString()),
-                        loading: () => const Center(
-                              child: CircularProgressIndicator(),
-                            ));
+                    _ => const SizedBox(width: 0, height: 0),
                   },
-                )),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final totalExercisesFuture = ref.watch(
-                              workoutTotalExercisesProvider(
-                                  workoutRecordId: workoutRecord.id));
-        
-                          return totalExercisesFuture.when(
-                              data: (exercisesCount) =>
-                                  Text('$exercisesCount exercises'),
-                              error: (e, st) => const Text('No exercises'),
-                              loading: () => const Text('loading'));
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final totalRepsFutures = ref.watch(
-                              totalWorkoutRepsProvider(
-                                  workoutRecordId: workoutRecord.id));
-        
-                          return totalRepsFutures.when(
-                              data: (exercisesCount) =>
-                                  Text('$exercisesCount reps'),
-                              error: (e, st) => const Text('No exercises'),
-                              loading: () => const Text('loading'));
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final totalWeightFutures = ref.watch(
-                              workoutTotalWeightProvider(
-                                  workoutRecordId: workoutRecord.id));
-        
-                          return totalWeightFutures.when(
-                              data: (weight) {
-                                final weightUnitsFuture = ref.watch(
-                                    workoutSetsUnitsProvider(
-                                        workoutRecordId: workoutRecord.id,
-                                        defaultUnits: userPreferences(ref)
-                                            .weightUnits));
-        
-                                return weightUnitsFuture.when(
-                                    data: (units) => Text('$weight $units'),
-                                    error: (e, st) =>
-                                        const Text('No exercises'),
-                                    loading: () => const Text('loading'));
-                              },
-                              error: (e, st) => const Text('No exercises'),
-                              loading: () => const Text('loading'));
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ]),
-            ));
-      },
-      error: (e, st) => const SizedBox(),
-      loading: () => const CircularProgressIndicator(),
-    );
+                  switch (isCompleteFuture) {
+                    AsyncValue(:final value?) => value
+                        ? const SizedBox()
+                        : RoundedButton(
+                            onPressed: () {
+                              context.go('/workout/$workoutRecordId');
+                            },
+                            text: Text(
+                              "Continue Current",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            icon: Icons.play_arrow),
+                    _ => const SizedBox(),
+                  },
+                ]),
+            CardTitleDivider(
+                child: switch (finishedAtFuture) {
+              AsyncValue(:final value?) => RelativeDate(value, style: labelStyle),
+              _ => const SizedBox(width: 0, height: 0),
+            }),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  switch (totalExercisesFuture) {
+                    AsyncValue(:final value, hasValue: true) => Text('$value exercises'),
+                    _ => const SizedBox(width: 0, height: 0),
+                  },
+                  switch (totalRepsFutures) {
+                    AsyncValue(:final value, hasValue: true) => Text('$value reps'),
+                    _ => const SizedBox(width: 0, height: 0),
+                  },
+                  switch (totalWeightFutures) {
+                    AsyncValue(:final value, hasValue: true) =>
+                      Text('$value ${prefs.weightUnits}'),
+                    _ => const Text('No exercises'),
+                  },
+                ],
+              ),
+            ),
+          ]),
+        ));
   }
 }

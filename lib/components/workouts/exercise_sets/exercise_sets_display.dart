@@ -16,16 +16,16 @@ class ExerciseSetsDisplay extends ConsumerWidget {
     final workoutSetsResult = ref.watch(getWorkoutExerciseSetsStreamProvider(
         workoutId: workoutRecordId, exerciseId: exerciseId));
 
-    return workoutSetsResult.when(
-        data: (workoutSets) => Center(
-              child: Text(
-                textAlign: TextAlign.center,
-                workoutSets.displayString(),
-                style: textStyle.bodyMedium,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-        error: (e, st) => Text(e.toString()),
-        loading: () => const Center(child: CircularProgressIndicator()));
+    return switch (workoutSetsResult) {
+      AsyncValue(:final value?) => Center(
+          child: Text(
+            textAlign: TextAlign.center,
+            value.displayString(),
+            style: textStyle.bodyMedium,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      _ => const SizedBox()
+    };
   }
 }

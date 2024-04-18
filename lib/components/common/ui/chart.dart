@@ -9,35 +9,38 @@ import 'package:workout_tracker/utility/set_entry_list_utils.dart';
 
 class ExerciseSummaryChart extends ConsumerWidget {
   final int exerciseId;
-  final Animation<double> animation;
+  final Animation<double>? animation;
   final bool showAxis;
   final bool showRange;
   final bool showTrend;
+  final bool showGridLines;
   final SetEntryValue valueFunc;
   final ValueAccumulator<double, SetEntry> setValueAccumulator;
   final ValueAccumulator<double, SetEntry>? minFunc;
   final ValueAccumulator<double, SetEntry>? maxFunc;
+  final double? measure;
 
-  const ExerciseSummaryChart({
-    super.key,
-    required this.exerciseId,
-    required this.animation,
-    required this.showAxis,
-    this.showRange = false,
-    this.showTrend = false,
+  const ExerciseSummaryChart(
+      {super.key,
+      required this.exerciseId,
+      this.animation,
+      required this.showAxis,
+      this.showRange = false,
+      this.showTrend = false,
+      this.showGridLines = true,
 
-    /// A function that accumulates the value of all sets.
-    required this.setValueAccumulator,
+      /// A function that accumulates the value of all sets.
+      required this.setValueAccumulator,
 
-    /// A function that returns the value of a single set.
-    required this.valueFunc,
+      /// A function that returns the value of a single set.
+      required this.valueFunc,
 
-    /// A function that returns the minimum of all sets.
-    this.minFunc,
+      /// A function that returns the minimum of all sets.
+      this.minFunc,
 
-    /// A function that returns the maximum of all sets.
-    this.maxFunc,
-  });
+      /// A function that returns the maximum of all sets.
+      this.maxFunc,
+      this.measure});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,7 +48,7 @@ class ExerciseSummaryChart extends ConsumerWidget {
         getAllExerciseSetsByExerciseStreamProvider(exerciseId: exerciseId));
 
     final exercises = switch (sets) {
-      AsyncData(:final value) =>
+      AsyncValue(:final value?) =>
         groupBy(value.expand((element) => element.sets), (s) {
           return DateTime(
               s.finishedAt.year, s.finishedAt.month, s.finishedAt.day);
@@ -66,7 +69,9 @@ class ExerciseSummaryChart extends ConsumerWidget {
             .trend(valueFunc, setValueAccumulator, windowSize: 5)
             .keys
             .map((t) => TimeSeriesSets(
-                time: t, value: exercises.trend(valueFunc, setValueAccumulator, windowSize: 5)[t]))
+                time: t,
+                value: exercises.trend(valueFunc, setValueAccumulator,
+                    windowSize: 5)[t]))
             .toList()
         : null;
 
@@ -75,9 +80,11 @@ class ExerciseSummaryChart extends ConsumerWidget {
       trend: trendData,
       exerciseId,
       animate: false,
-      animation: animation.value,
+      animation: animation?.value ?? 1,
       showAxis: showAxis,
       showRange: showRange,
+      showGridLines: showGridLines,
+      measure: measure,
     );
   }
 }
@@ -90,14 +97,18 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
   final List<TimeSeriesSets> data;
   final List<TimeSeriesSets>? trend;
   final bool showRange;
+  final bool showGridLines;
+  final double? measure;
 
   const SimpleTimeSeriesChart(this.exerciseId,
       {super.key,
       required this.data,
       this.trend,
+      this.measure,
       this.animate = false,
       this.showAxis = true,
       this.showRange = false,
+      this.showGridLines = true,
       this.animation = 1.0});
 
   @override
@@ -129,51 +140,98 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
           ]
         : <charts.Series<TimeSeriesSets, DateTime>>[];
 
-    final rangeSeries = [
-      charts.Series<TimeSeriesSets, DateTime>(
-        id: 'Max',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(showAxis
-            ? Theme.of(context).colorScheme.onBackground
-            : Colors.transparent),
-        domainFn: (TimeSeriesSets sets, _) => sets.time,
-        measureFn: (TimeSeriesSets sets, _) => sets.max! - sets.min!,
-        labelAccessorFn: (TimeSeriesSets sets, _) => '${sets.max! - sets.min!}',
-        data: data,
-      )..setAttribute(charts.rendererIdKey, 'rangeCap'),
-      charts.Series<TimeSeriesSets, DateTime>(
-        id: 'Min',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(showAxis
-            ? Theme.of(context).colorScheme.onBackground
-            : Colors.transparent),
-        domainFn: (TimeSeriesSets sets, _) => sets.time,
-        measureFn: (TimeSeriesSets sets, _) => sets.min,
-        data: data,
-      )..setAttribute(charts.rendererIdKey, 'rangeCap'),
-      charts.Series<TimeSeriesSets, DateTime>(
-        id: 'MaxBar',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(
-            Theme.of(context).colorScheme.onBackground.withOpacity(animation)),
-        domainFn: (TimeSeriesSets sets, _) => sets.time,
-        measureFn: (TimeSeriesSets sets, _) => sets.max! - sets.min!,
-        data: data,
-      )..setAttribute(charts.rendererIdKey, 'rangeBar'),
-      charts.Series<TimeSeriesSets, DateTime>(
-        id: 'MinBar',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.transparent),
-        domainFn: (TimeSeriesSets sets, _) => sets.time,
-        measureFn: (TimeSeriesSets sets, _) => sets.min,
-        data: data,
-      )..setAttribute(charts.rendererIdKey, 'rangeBar'),
-    ];
+    // final rangeSeries = [
+    //   charts.Series<TimeSeriesSets, DateTime>(
+    //     id: 'Max',
+    //     colorFn: (_, __) => charts.ColorUtil.fromDartColor(showAxis
+    //         ? Theme.of(context).colorScheme.onBackground
+    //         : Colors.transparent),
+    //     domainFn: (TimeSeriesSets sets, _) => sets.time,
+    //     measureFn: (TimeSeriesSets sets, _) => sets.max! - sets.min!,
+    //     labelAccessorFn: (TimeSeriesSets sets, _) => '${sets.max! - sets.min!}',
+    //     data: data,
+    //   )..setAttribute(charts.rendererIdKey, 'rangeCap'),
+    //   charts.Series<TimeSeriesSets, DateTime>(
+    //     id: 'Min',
+    //     colorFn: (_, __) => charts.ColorUtil.fromDartColor(showAxis
+    //         ? Theme.of(context).colorScheme.onBackground
+    //         : Colors.transparent),
+    //     domainFn: (TimeSeriesSets sets, _) => sets.time,
+    //     measureFn: (TimeSeriesSets sets, _) => sets.min,
+    //     data: data,
+    //   )..setAttribute(charts.rendererIdKey, 'rangeCap'),
+    //   charts.Series<TimeSeriesSets, DateTime>(
+    //     id: 'MaxBar',
+    //     colorFn: (_, __) => charts.ColorUtil.fromDartColor(
+    //         Theme.of(context).colorScheme.onBackground.withOpacity(animation)),
+    //     domainFn: (TimeSeriesSets sets, _) => sets.time,
+    //     measureFn: (TimeSeriesSets sets, _) => sets.max! - sets.min!,
+    //     data: data,
+    //   )..setAttribute(charts.rendererIdKey, 'rangeBar'),
+    //   charts.Series<TimeSeriesSets, DateTime>(
+    //     id: 'MinBar',
+    //     colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.transparent),
+    //     domainFn: (TimeSeriesSets sets, _) => sets.time,
+    //     measureFn: (TimeSeriesSets sets, _) => sets.min,
+    //     data: data,
+    //   )..setAttribute(charts.rendererIdKey, 'rangeBar'),
+    // ];
 
     final series =
         // showRange
         // ? [...dataSeries, ...rangeSeries]
         [...dataSeries, ...trendSeries];
 
+    var axisLineStyleSpec = charts.LineStyleSpec(
+              color: charts.ColorUtil.fromDartColor(
+                Theme.of(context)
+                    .colorScheme
+                    .onBackground
+                    .withOpacity(animation),
+              ),
+            );
+
+    var gridLineStyleSpec = charts.LineStyleSpec(
+              color: charts.ColorUtil.fromDartColor(Theme.of(context)
+                  .colorScheme
+                  .onBackground
+                  .withOpacity(animation * 0.25)),
+            );
+
+    var labelStyleSpec = charts.TextStyleSpec(
+                color: charts.ColorUtil.fromDartColor(Theme.of(context)
+                    .colorScheme
+                    .onBackground
+                    .withOpacity(animation)));
+
+    final charts.GridlineRendererSpec<num> gridlineRendererSpec =
+        charts.GridlineRendererSpec(
+            axisLineStyle: axisLineStyleSpec,
+            lineStyle: gridLineStyleSpec,
+            labelStyle: labelStyleSpec);
+    final charts.SmallTickRendererSpec<num> smallTickRendererSpec =
+        charts.SmallTickRendererSpec(
+            axisLineStyle: axisLineStyleSpec,
+            labelStyle: labelStyleSpec);
+
     return charts.TimeSeriesChart(
       series,
       animate: animate,
+      behaviors: [
+        ...(measure != null
+            ? [
+                charts.RangeAnnotation([
+                  charts.LineAnnotationSegment(
+                      measure!, charts.RangeAnnotationAxisType.measure,
+                      color: charts.ColorUtil.fromDartColor(Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(animation * 0.5)),
+                      dashPattern: [4, 4]),
+                ])
+              ]
+            : [])
+      ],
       animationDuration: const Duration(milliseconds: 100),
       dateTimeFactory: const charts.LocalDateTimeFactory(),
       domainAxis: charts.EndPointsTimeAxisSpec(
@@ -191,18 +249,8 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
                     .withOpacity(animation)))),
       ),
       primaryMeasureAxis: charts.NumericAxisSpec(
-        renderSpec: charts.GridlineRendererSpec(
-            lineStyle: charts.LineStyleSpec(
-              color: charts.ColorUtil.fromDartColor(Theme.of(context)
-                  .colorScheme
-                  .onBackground
-                  .withOpacity(animation * 0.25)),
-            ),
-            labelStyle: charts.TextStyleSpec(
-                color: charts.ColorUtil.fromDartColor(Theme.of(context)
-                    .colorScheme
-                    .onBackground
-                    .withOpacity(animation)))),
+        renderSpec:
+            showGridLines ? gridlineRendererSpec : smallTickRendererSpec,
       ),
       customSeriesRenderers: [
         charts.LineRendererConfig(

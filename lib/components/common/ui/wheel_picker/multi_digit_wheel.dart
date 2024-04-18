@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/components/common/digit_wheel.dart';
+import 'package:workout_tracker/components/common/ui/wheel_picker/digit_wheel.dart';
 import 'package:workout_tracker/utility/int_digits.dart';
 
 class MultiDigitWheel extends StatelessWidget {
@@ -21,7 +21,7 @@ class MultiDigitWheel extends StatelessWidget {
   Widget build(BuildContext context) {
     var textStyle = Theme.of(context).textTheme;
     var textTitle = textStyle.titleLarge;
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -31,6 +31,7 @@ class MultiDigitWheel extends StatelessWidget {
           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
             updateHundreds != null
                 ? DigitWheel(
+                    key: ValueKey('${key}100s'),
                     value: value.hundreds(),
                     textStyle: textTitle,
                     updateSelectedValue: updateHundreds!,
@@ -38,11 +39,12 @@ class MultiDigitWheel extends StatelessWidget {
                 : Container(),
             updateHundreds != null
                 ? const SizedBox(
-                    width: 16,
+                    width: 4,
                   )
                 : Container(),
             updateTens != null
                 ? DigitWheel(
+                    key: ValueKey('${key}10s'),
                     value: value.tens(),
                     textStyle: textTitle,
                     updateSelectedValue: updateTens!,
@@ -50,15 +52,19 @@ class MultiDigitWheel extends StatelessWidget {
                 : Container(),
             updateTens != null
                 ? const SizedBox(
-                    width: 16,
+                    width: 4,
                   )
                 : Container(),
             DigitWheel(
+              key: ValueKey('${key}1s'),
               value: value.ones(),
               textStyle: textTitle,
               updateSelectedValue: updateOnes,
             ),
           ]),
+        ),
+        const SizedBox(
+          width: 8,
         ),
         Expanded(
           flex: 1,

@@ -1,58 +1,74 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/components/common/rounded_display.dart';
 import 'package:workout_tracker/domain/exercise.dart';
+import 'package:workout_tracker/utility/text_ui_utilities.dart';
 
 class ExerciseSettingsDisplay extends StatelessWidget {
   const ExerciseSettingsDisplay({
     super.key,
     required this.entry,
+    this.addFunc,
   });
 
   final Exercise entry;
+  final void Function()? addFunc;
 
   @override
   Widget build(BuildContext context) {
-    final onBackgroundColor = Theme.of(context).colorScheme.onSecondary;
-    final backgroundColor = Theme.of(context).colorScheme.secondary;
+    var theme = Theme.of(context);
+    final chipTheme = theme.chipTheme;
+    final chipLabel = chipTheme.labelStyle;
+    final chipIconSize = chipTheme.iconTheme?.size ?? 4;
 
-    return Wrap(
-      alignment: WrapAlignment.spaceAround,
-      runAlignment: WrapAlignment.spaceAround,
-      children: [
-        for (var item in entry.settings)
-          RoundedDisplay(
-            width: 100,
-            background: backgroundColor,
-            child: Row(
-              children: [
-                Text(item.setting, style: Theme.of(context).textTheme.bodySmall
-                    ?.copyWith(color: onBackgroundColor),
-                    ),
-                SizedBox(
-                  height: 12,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      VerticalDivider(
-                        thickness: 1,
-                        indent: 0,
-                        endIndent: 0,
-                        color: onBackgroundColor,
+    final textWidth = entry.settings.fold(
+        TextUiUtilities.getTextSize('add', chipLabel!).width + chipIconSize,
+        (prev, curr) {
+      final size = TextUiUtilities.getTextSize(
+              '${curr.setting} | ${curr.value}', chipLabel)
+          .width;
+      return size > prev ? size : prev;
+    });
+
+    return ChipTheme(
+      data: ChipTheme.of(context).copyWith(),
+      child: Wrap(
+        alignment: WrapAlignment.spaceAround,
+        runAlignment: WrapAlignment.spaceAround,
+        runSpacing: 4.0,
+        children: [
+          ...(addFunc != null
+              ? [
+                  ActionChip(
+                    avatar: SizedBox(
+                      width: chipIconSize,
+                      height: chipIconSize,
+                      child: const Icon(
+                        Icons.add,
                       ),
-                    ],
-                  ),
-                ),
-                Text(
-                  item.value,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: onBackgroundColor),
-                ),
-              ],
-            ),
-          )
-      ],
+                    ),
+                    label: SizedBox(
+                      width: clampDouble(
+                          textWidth - chipIconSize, 0.0, double.infinity),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [Text("add")],
+                      ),
+                    ),
+                    onPressed: addFunc,
+                  )
+                ]
+              : []),
+          for (var item in entry.settings)
+            Chip(
+              label: SizedBox(
+                  width: textWidth,
+                  child:
+                      Center(child: Text('${item.setting} | ${item.value}'))),
+              visualDensity: VisualDensity.compact,
+            )
+        ],
+      ),
     );
   }
 }

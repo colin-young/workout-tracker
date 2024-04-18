@@ -93,7 +93,7 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
     final events = ref.watch(getEventsProvider);
 
     switch (events) {
-      case AsyncData(:final value):
+      case AsyncValue(:final value, hasValue: true):
         if (value == Finish()) {
           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
             final snackBar = SnackBar(
@@ -113,7 +113,7 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
     }
 
     switch (timerContext) {
-      case AsyncData(:final value):
+      case AsyncValue(:final value?):
         if (value.state != Initiated()) {
           _setIsVisible(true);
         }
@@ -205,7 +205,8 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
                               ),
                             ),
                             Center(
-                                child: Text('Rest', style: textStyle.labelSmall))
+                                child:
+                                    Text('Rest', style: textStyle.labelSmall))
                           ],
                         ),
                       ),
@@ -231,7 +232,7 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
     );
 
     return switch (timerContext) {
-      AsyncData() => hero,
+      AsyncValue(hasValue: true) => hero,
       _ => const SizedBox(width: 0, height: 0)
     };
   }

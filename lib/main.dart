@@ -41,10 +41,6 @@ void main() async {
             showcase: UserPreferencesShowcase(summaryPage: false),
           ).toJson());
 
-      await workoutDefinitionStore.add(db, routine1.toJson());
-      await workoutDefinitionStore.add(db, routine2.toJson());
-      await workoutDefinitionStore.add(db, routine3.toJson());
-
       await exerciseStore.add(db, bicepsCurl.toJson());
       await exerciseStore.add(db, seatedLegCurl.toJson());
       await exerciseStore.add(db, chestPress.toJson());
@@ -55,15 +51,19 @@ void main() async {
       await exerciseStore.add(db, forwardRaise.toJson());
       await exerciseStore.add(db, tricepPulldown.toJson());
 
+      await workoutDefinitionStore.add(db, routine1.toJson());
+      await workoutDefinitionStore.add(db, routine2.toJson());
+      await workoutDefinitionStore.add(db, routine3.toJson());
+
       final routines = [routine1, routine2, routine3];
       var prevWorkoutRecordStart = workoutStartTime;
       var setsCount = 0;
 
-      for (int i = 1; i < 40; i++) {
+      for (int i = 1; i < 4; i++) {
         var routine = routines[i % 3];
 
         final workoutStartsAt =
-            prevWorkoutRecordStart.add(Duration(days: Random().nextInt(2) + 1));
+            prevWorkoutRecordStart.add(Duration(days: Random().nextInt(2) + 7));
         final workoutSets = createExerciseSets(
             id: setsCount + 1,
             workoutId: i,
@@ -79,7 +79,7 @@ void main() async {
           lastActivityAt: workoutSets.last.sets.last.finishedAt,
         );
 
-        prevWorkoutRecordStart = workoutRecord.lastActivityAt!;
+        prevWorkoutRecordStart = workoutRecord.lastActivityAt;
 
         await workoutRecordStore.add(db, workoutRecord.toJson());
         await insertExerciseSets(workoutSets, exerciseSetsStore, db);
@@ -125,8 +125,12 @@ class MyApp extends StatelessWidget {
           elevation: 5,
         ),
         chipTheme: ChipThemeData(
-          secondaryLabelStyle: textTheme.labelSmall,
-        ),
+            labelStyle: textTheme.labelSmall,
+            secondaryLabelStyle: textTheme.labelSmall,
+            iconTheme: IconThemeData(
+              size: 16,
+              color: appColorScheme.onBackground,
+            )),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: appColorScheme.primary,
           foregroundColor: appColorScheme.onPrimary,

@@ -26,8 +26,7 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
 
   @override
   Stream<List<WorkoutDefinition>> getAllEntitiesStream() {
-    developer.log('getAllEntitiesStream',
-        name: 'WorkoutDefinitionsRepository');
+    developer.log('getAllEntitiesStream', name: 'WorkoutDefinitionsRepository');
     return _store.query().onSnapshots(database).map(
           (snapshot) => snapshot
               .map((definition) => WorkoutDefinition.fromJson(definition.value)
@@ -35,11 +34,13 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
               .toList(growable: false),
         );
   }
-  
+
   @override
   Future<List<WorkoutDefinition>> getAllEntities() async {
     final records = await _store.find(database);
-    return records.map((e) => WorkoutDefinition.fromJson(e.value)).toList();
+    return records
+        .map((e) => WorkoutDefinition.fromJson(e.value).copyWith(id: e.key))
+        .toList();
   }
 
   @override
@@ -52,10 +53,10 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
   Future update(WorkoutDefinition workoutDefinition) {
     developer.log('update', name: 'WorkoutDefinitionsRepository');
     return _store
-      .record(workoutDefinition.id)
-      .update(database, workoutDefinition.toJson());
+        .record(workoutDefinition.id)
+        .update(database, workoutDefinition.toJson());
   }
-  
+
   @override
   Future<WorkoutDefinition> getEntity(int entityId) {
     // TODO: implement getEntity
@@ -66,7 +67,8 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
 @riverpod
 Stream<List<WorkoutDefinition>> getAllEntitiesStream(
     GetAllEntitiesStreamRef ref) {
-      developer.log('getAllEntitiesStream', name: 'WorkoutDefinitionsRepository@riverpod');
+  developer.log('getAllEntitiesStream',
+      name: 'WorkoutDefinitionsRepository@riverpod');
   return ref.watch(workoutDefinitionsRepositoryProvider).getAllEntitiesStream();
 }
 
@@ -93,16 +95,14 @@ Future<int> insert(InsertRef ref,
 }
 
 @riverpod
-Future delete(DeleteRef ref,
-    {required int workoutDefinitionId}) {
+Future delete(DeleteRef ref, {required int workoutDefinitionId}) {
   return ref
       .watch(workoutDefinitionsRepositoryProvider)
       .delete(workoutDefinitionId);
 }
 
 @riverpod
-Future update(UpdateRef ref,
-    {required WorkoutDefinition workoutDefinition}) {
+Future update(UpdateRef ref, {required WorkoutDefinition workoutDefinition}) {
   return ref
       .watch(workoutDefinitionsRepositoryProvider)
       .update(workoutDefinition);

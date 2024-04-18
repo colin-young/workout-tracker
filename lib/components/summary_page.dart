@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:workout_tracker/components/workouts/exercise_sets/workout_exercise_card_view.dart';
 import 'package:workout_tracker/components/workout_summary_card.dart';
 import 'package:workout_tracker/controller/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
-import 'package:workout_tracker/data/repositories/user_preferences_repository.dart';
 import 'dart:developer' as developer;
 
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
@@ -15,25 +13,9 @@ import 'package:workout_tracker/utility/separated_list.dart';
 class SummaryPage extends ConsumerWidget with UserPreferencesState {
   SummaryPage({super.key});
 
-  final GlobalKey _one = GlobalKey();
-  final GlobalKey _two = GlobalKey();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final workoutRecordAsync = ref.watch(getLastworkoutRecordProvider);
-    final prefs = userPreferences(ref);
-
-    if (!prefs.showcase.summaryPage) {
-      switch (workoutRecordAsync) {
-        case AsyncData():
-          WidgetsBinding.instance.addPostFrameCallback(
-              (_) => ShowCaseWidget.of(context).startShowCase([_one, _two]));
-          ref.read(updateUserPreferencesProvider(
-              userPreferences: prefs.copyWith(
-                  showcase: prefs.showcase.copyWith(summaryPage: true))));
-      }
-    }
-
     return workoutRecordAsync.when(
         data: (workoutRecord) {
           developer.log('workoutId: ${workoutRecord.id}', name: 'SummaryPage');

@@ -41,20 +41,19 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
   Widget build(BuildContext context) {
     final int workoutRecordId = int.parse(widget.workoutId);
     final workoutResult = ref.watch(
-        workoutCurrentExerciseProvider(workoutRecordId: workoutRecordId));
+        workoutCurrentExerciseStreamProvider(workoutRecordId: workoutRecordId));
     final exercises =
         ref.watch(getExerciseAddListProvider(workoutRecordId: workoutRecordId));
 
     return CustomScaffold(
         appBar: AppBar(
           title: switch (workoutResult) {
-            AsyncData() => const Text('Add Exercise'),
-            AsyncError(:final error) => Text(error.toString()),
-            _ => Container()
+            AsyncValue(hasValue: true) => const Text('Add Exercise'),
+            AsyncValue(:final error) => Text(error.toString()),
           },
           actions: [
             switch (exercises) {
-              AsyncData(:final value) => _selected.length < value.length
+              AsyncValue(:final value?) => _selected.length < value.length
                   ? IconButton(
                       icon: const Icon(Icons.playlist_add_check),
                       onPressed: () {
@@ -78,7 +77,7 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
           child: Consumer(
             builder: (context, ref, child) {
               return switch (exercises) {
-                AsyncData(:final value) => ExerciseListWithTile(
+                AsyncValue(:final value?) => ExerciseListWithTile(
                     onTap: selectItem,
                     isItemSelected: isItemSelected,
                     workoutRecordId: workoutRecordId,

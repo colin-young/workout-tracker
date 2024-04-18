@@ -16,12 +16,14 @@ class WorkoutManager extends ConsumerWidget {
         child: Column(
           children: [
             SetRecorder(
+              key: ValueKey('setRecorder$workoutRecordId'),
               workoutRecordId: workoutRecordId,
             ),
             const SizedBox(
               height: 16,
             ),
             UpcomingExercises(workoutRecordId: workoutRecordId),
+            const SizedBox(height: 16,),
             CompletedExercises(workoutRecordId: workoutRecordId),
           ],
         ),

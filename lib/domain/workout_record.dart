@@ -13,7 +13,7 @@ abstract class WorkoutRecord implements _$WorkoutRecord {
       {@Default(-1) int id,
       WorkoutDefinition? fromWorkoutDefinition,
       required DateTime startedAt,
-      DateTime? lastActivityAt,
+      required DateTime lastActivityAt,
       @Default(false) bool isActive}) = _WorkoutRecord;
 
   factory WorkoutRecord.fromJson(Map<String, dynamic> json) =>

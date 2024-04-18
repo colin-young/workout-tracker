@@ -72,7 +72,7 @@ class ExerciseSetsController extends _$ExerciseSetsController {
     state = const AsyncLoading();
 
     final currentSets = await ref.read(
-        workoutCurrentExerciseProvider(workoutRecordId: workoutRecordId)
+        workoutCurrentExerciseStreamProvider(workoutRecordId: workoutRecordId)
             .future);
 
     state = await AsyncValue.guard(() async {
@@ -89,6 +89,8 @@ class ExerciseSetsController extends _$ExerciseSetsController {
       } else {
         // TODO report error
       }
+
+      ref.invalidate(getAllExerciseSetsByExerciseStreamProvider);
 
       developer.log('returning', name: 'ExerciseSetsController.addWorkoutSet');
       return await ref.watch(getAllExerciseSetsStreamProvider.future);

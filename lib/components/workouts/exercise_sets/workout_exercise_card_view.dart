@@ -8,6 +8,7 @@ import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/utility/relative_date.dart';
 import 'package:workout_tracker/utility/set_entry_list_utils.dart';
 import 'package:workout_tracker/utility/set_entry_utils.dart';
+import 'package:workout_tracker/utility/text_ui_utilities.dart';
 
 class WorkoutExerciseCardView extends StatelessWidget {
   const WorkoutExerciseCardView({
@@ -148,15 +149,6 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
     }
   }
 
-  Size _textSize(String text, TextStyle style) {
-    final TextPainter textPainter = TextPainter(
-        text: TextSpan(text: text, style: style),
-        maxLines: 1,
-        textDirection: TextDirection.ltr)
-      ..layout(minWidth: 0, maxWidth: double.infinity);
-    return textPainter.size;
-  }
-
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
@@ -167,12 +159,16 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
 
     const chipsHeight = 24.0;
     final cardHeightClosed = max(
-        _textSize(widget.workoutExercise.exercise.name, headingStyle!).height +
+        TextUiUtilities.getTextSize(
+                    widget.workoutExercise.exercise.name, headingStyle!)
+                .height +
             widget.inset +
-            _textSize('dummy string', subHeadingStyle!).height +
+            TextUiUtilities.getTextSize('dummy string', subHeadingStyle!)
+                .height +
             widget.inset,
         widget.workoutExercise.sets.length *
-            _textSize('1 dummy entry', setEntryStyle!).height);
+            TextUiUtilities.getTextSize('1 dummy entry', setEntryStyle!)
+                .height);
 
     return GestureDetector(
       onTap: () {
@@ -233,9 +229,11 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
                               key: UniqueKey(),
                               padding: EdgeInsets.fromLTRB(
                                   widget.inset,
-                                  chipsHeight + chipLinePadding,
+                                  (chipsHeight + chipLinePadding) *
+                                      _expandDetailPanel.value,
                                   widget.inset,
-                                  chipsHeight + chipLinePadding),
+                                  (chipsHeight + chipLinePadding) *
+                                      _expandDetailPanel.value),
                               child: Opacity(
                                   key: UniqueKey(),
                                   opacity: _opacityTween.value *

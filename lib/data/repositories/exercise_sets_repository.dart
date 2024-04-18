@@ -11,8 +11,17 @@ import 'package:workout_tracker/domain/exercise_sets.dart';
 part 'exercise_sets_repository.g.dart';
 
 @riverpod
-ExerciseSetsRepository exerciseSetsRepository(ExerciseSetsRepositoryRef ref) =>
-    ExerciseSetsRepository(database: ref.watch(databaseProvider));
+ExerciseSetsRepository exerciseSetsRepository(ExerciseSetsRepositoryRef ref) {
+  developer.log('entering',
+      name: 'ExerciseSetsRepository.exerciseSetsRepository');
+
+  ref.onDispose(() {
+    developer.log('disposing',
+        name: 'ExerciseSetsRepository.exerciseSetsRepository');
+  });
+
+  return ExerciseSetsRepository(database: ref.watch(databaseProvider));
+}
 
 class ExerciseSetsRepository implements Repository<ExerciseSets> {
   final Database database;
@@ -36,10 +45,7 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
 
   @override
   Stream<List<ExerciseSets>> getAllEntitiesStream() {
-    return _store
-        .query()
-        .onSnapshots(database)
-        .map(
+    return _store.query().onSnapshots(database).map(
           (snapshot) => snapshot
               .map((definition) => ExerciseSets.fromJson(definition.value)
                   .copyWith(id: definition.key))
@@ -178,7 +184,8 @@ Stream<List<ExerciseSets>> getAllExerciseSetsByExerciseStream(
 Future<bool> canCompleteSets(CanCompleteSetsRef ref,
     {required workoutRecordId}) async {
   final currentWorkoutExercise = await ref.watch(
-      workoutCurrentExerciseProvider(workoutRecordId: workoutRecordId).future);
+      workoutCurrentExerciseStreamProvider(workoutRecordId: workoutRecordId)
+          .future);
 
   return currentWorkoutExercise?.sets.isNotEmpty ?? false;
 }
@@ -261,13 +268,13 @@ Stream<List<ExerciseSets>> getCompletedExerciseSetsStream(
 Stream<List<ExerciseSets>> getIncompleteExerciseSetsStream(
     GetIncompleteExerciseSetsStreamRef ref,
     {required int workoutId}) async* {
-  // developer.log('entering',
-  //     name: 'ExerciseSetsRepository.getIncompleteExerciseSetsStream');
+  developer.log('entering',
+      name: 'ExerciseSetsRepository.getIncompleteExerciseSetsStream');
 
-  // ref.onDispose(() {
-  //   developer.log('disposing',
-  //       name: 'ExerciseSetsRepository.getIncompleteExerciseSetsStream');
-  // });
+  ref.onDispose(() {
+    developer.log('disposing',
+        name: 'ExerciseSetsRepository.getIncompleteExerciseSetsStream');
+  });
 
   final sets = ref
       .watch(exerciseSetsRepositoryProvider)
@@ -308,7 +315,7 @@ Stream<List<ExerciseSets>> getUpcomingExerciseSetsStream(
 
 @riverpod
 Future deleteExerciseSets(DeleteExerciseSetsRef ref,
-    {required int exerciseId}) {
+    {required int exerciseId}) async {
   // developer.log('entering', name: 'ExerciseSetsRepository.deleteExerciseSets');
 
   // ref.onDispose(() {
@@ -316,7 +323,11 @@ Future deleteExerciseSets(DeleteExerciseSetsRef ref,
   //       name: 'ExerciseSetsRepository.deleteExerciseSets');
   // });
 
-  return ref.read(exerciseSetsRepositoryProvider).delete(exerciseId);
+  var delete = await ref.read(exerciseSetsRepositoryProvider).delete(exerciseId);
+
+  ref.invalidate(exerciseSetsRepositoryProvider);
+
+  return delete;
 }
 
 @riverpod
@@ -333,19 +344,23 @@ Future updateExerciseSets(UpdateExerciseSetsRef ref,
 }
 
 @riverpod
-Stream<ExerciseSets?> workoutCurrentExercise(WorkoutCurrentExerciseRef ref,
+Stream<ExerciseSets?> workoutCurrentExerciseStream(
+    WorkoutCurrentExerciseStreamRef ref,
     {required int workoutRecordId}) async* {
-  // developer.log('entering', name: 'WorkoutRecordRepository.workoutCurrentExercise');
+  developer.log('entering',
+      name: 'WorkoutRecordRepository.workoutCurrentExerciseStream');
 
-  // ref.onDispose(() {
-  //   developer.log('disposing', name: 'WorkoutRecordRepository.workoutCurrentExercise');
-  // });
-
+  ref.onDispose(() {
+    developer.log('disposing',
+        name: 'WorkoutRecordRepository.workoutCurrentExerciseStream');
+  });
   final workout = await ref.watch(
       getIncompleteExerciseSetsStreamProvider(workoutId: workoutRecordId)
           .future);
 
   if (workout.isNotEmpty) {
+    developer.log('first item: ${workout.first.id}, ${workout.first.exercise.name}',
+        name: 'WorkoutRecordRepository.workoutCurrentExerciseStream');
     yield workout.first;
   }
 }

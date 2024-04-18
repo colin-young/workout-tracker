@@ -79,17 +79,17 @@ const routine1 = WorkoutDefinition(id: 1, name: "Routine 1", exercises: [
   WorkoutExercise(id: 5, order: 4, exercise: chestPress),
   WorkoutExercise(id: 5, order: 5, exercise: pecFly),
 ]);
-const routine2 = WorkoutDefinition(name: "Routine 2", exercises: [
+const routine2 = WorkoutDefinition(id: 2, name: "Routine 2", exercises: [
   WorkoutExercise(id: 3, order: 1, exercise: chestPress),
   WorkoutExercise(id: 4, order: 2, exercise: pecFly),
 ]);
-const routine3 = WorkoutDefinition(name: "Routine 3", exercises: [
+const routine3 = WorkoutDefinition(id: 3, name: "Routine 3", exercises: [
   WorkoutExercise(order: 1, exercise: chestPress),
   WorkoutExercise(order: 2, exercise: pecFly),
   WorkoutExercise(order: 3, exercise: bicepsCurl),
 ]);
 const workoutDefinitions = [routine1, routine2, routine3];
-final workoutStartTime = DateTime.now().subtract(const Duration(days: 60));
+final workoutStartTime = DateTime.now().subtract(const Duration(days: 4 * 7));
 
 List<SetEntry> generateSets(DateTime startTime) {
   final setCount = Random().nextInt(2) + 2;
@@ -153,36 +153,3 @@ final workoutRecord1 = WorkoutRecord(
 
 var prevWorkoutRecord = workoutRecord1;
 final routines = [routine1, routine2, routine3];
-
-final workout2StartsAt =
-    workoutRecord1.lastActivityAt!.add(Duration(days: Random().nextInt(2)));
-final workout2Sets = createExerciseSets(
-    id: routine1.exercises.length + 1,
-    workoutId: 2,
-    routine: routine2,
-    startTime: workout2StartsAt);
-
-final workoutRecord2 = WorkoutRecord(
-  id: 2,
-  fromWorkoutDefinition: routine2,
-  startedAt: workout2StartsAt,
-  lastActivityAt: workout2Sets.last.sets.last.finishedAt,
-);
-
-final workout3StartsAt =
-    workoutRecord1.lastActivityAt!.add(Duration(days: Random().nextInt(2)));
-final workout3Sets = createExerciseSets(
-    id: routine1.exercises.length + routine2.exercises.length + 1,
-    workoutId: 3,
-    routine: routine3,
-    startTime: workout3StartsAt,
-    isComplete: false);
-
-final workoutRecord3 = WorkoutRecord(
-  id: 3,
-  fromWorkoutDefinition: routine3,
-  startedAt: DateTime.now(),
-  lastActivityAt: workout2Sets.any((element) => element.isComplete)
-      ? workout2Sets.last.sets.last.finishedAt
-      : null,
-);

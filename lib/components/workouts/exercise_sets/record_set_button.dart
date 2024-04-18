@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/common/rounded_button.dart';
 import 'package:workout_tracker/components/common/rounded_display.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
+import 'package:workout_tracker/controller/timer_controller.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
+import 'package:workout_tracker/timer/timer_context.dart';
+import 'package:workout_tracker/timer/timer_event.dart';
 
 class RecordSetButton extends ConsumerWidget {
   const RecordSetButton({
@@ -89,6 +92,18 @@ class RecordSetButton extends ConsumerWidget {
                       .read(exerciseSetsControllerProvider.notifier)
                       .addWorkoutSet(
                           workoutRecordId: workoutRecordId, newSet: workoutSet);
+                  ref.read(getAllowedEventsProvider.future).then((value) {
+                    if (value
+                        .any((element) => element.name == Running().name)) {
+                      ref
+                          .read(timerControllerProvider.notifier)
+                          .handleEvent(Reset());
+                    } else {
+                      ref
+                          .read(timerControllerProvider.notifier)
+                          .handleEvent(Start());
+                    }
+                  });
                 },
               )
             ],

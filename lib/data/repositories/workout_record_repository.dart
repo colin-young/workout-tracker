@@ -1,18 +1,60 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
 import 'package:workout_tracker/data/workout_definition/workout_definitions_repository.dart';
+import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
 import 'dart:developer' as developer;
 
 import 'package:workout_tracker/domain/workout_record.dart';
-import 'package:workout_tracker/utility/exercise_sets_extensions.dart';
 
 part 'workout_record_repository.g.dart';
+
+@riverpod
+class WorkoutRecordNotifier extends _$WorkoutRecordNotifier {
+  @override
+  Future<int> build() async {
+    return -1;
+  }
+
+  Future<int> addWorkoutRecord(WorkoutRecord workoutRecord) async {
+    state = const AsyncLoading();
+
+    final entityId =
+        ref.read(workoutRecordRepositoryProvider).insert(workoutRecord);
+
+    state = await AsyncValue.guard(() async {
+      return entityId;
+    });
+
+    ref.invalidate(workoutRecordRepositoryProvider);
+
+    return entityId;
+  }
+
+  Future<void> addExerciseSets(
+      {required int workoutRecordId, required ExerciseSets sets}) async {
+    ref.read(exerciseSetsRepositoryProvider).insert(sets);
+    final lastUpdatedSet =
+        sets.sets.sorted((a, b) => -a.finishedAt.compareTo(b.finishedAt));
+
+    if (lastUpdatedSet.isNotEmpty) {
+      final workoutRecord = await ref
+          .read(workoutRecordRepositoryProvider)
+          .getEntity(workoutRecordId);
+      ref.read(workoutRecordRepositoryProvider).update(workoutRecord.copyWith(
+          lastActivityAt: lastUpdatedSet.first.finishedAt));
+    }
+
+    await future;
+    ref.invalidate(getLastworkoutRecordProvider);
+  }
+}
 
 @riverpod
 WorkoutRecordRepository workoutRecordRepository(
@@ -93,6 +135,7 @@ Future<WorkoutRecord> getWorkoutRecord(GetWorkoutRecordRef ref,
       ? ref.watch(workoutRecordRepositoryProvider).getEntity(workoutRecordId)
       : Future.value(WorkoutRecord(
           startedAt: DateTime.now(),
+          lastActivityAt: DateTime.now(),
           fromWorkoutDefinition:
               const WorkoutDefinition(name: "", exercises: []),
         ));
@@ -125,11 +168,11 @@ Stream<WorkoutRecord> getWorkoutRecordStream(GetWorkoutRecordStreamRef ref,
 //   return ref.watch(workoutRecordRepositoryProvider).delete(workoutRecordId);
 // }
 
-// @riverpod
-// Future updateWorkoutRecord(UpdateWorkoutRecordRef ref, {required WorkoutRecord workoutRecord}) {
-//   developer.log('updateWorkoutRecord', name: 'workoutRecordRepositoryProvider');
-//   return ref.watch(workoutRecordRepositoryProvider).update(workoutRecord);
-// }
+@riverpod
+Future<void> updateWorkoutRecord(UpdateWorkoutRecordRef ref,
+    {required WorkoutRecord workoutRecord}) {
+  return ref.watch(workoutRecordRepositoryProvider).update(workoutRecord);
+}
 
 @riverpod
 Future<DateTime> workoutFinishedAt(WorkoutFinishedAtRef ref,
@@ -245,18 +288,12 @@ Future<int> totalWorkoutReps(TotalWorkoutRepsRef ref,
 
 @riverpod
 Stream<WorkoutRecord> getLastworkoutRecord(GetLastworkoutRecordRef ref) async* {
-  var allrecords = await ref
-      .watch(getAllExerciseSetsStreamProvider.selectAsync((value) async {
-    value.sort((a, b) => a.latestDateTime().compareTo(b.latestDateTime()));
-    return value;
-  }));
+  final workoutRecords =
+      (await ref.read(workoutRecordRepositoryProvider).getAllEntities())
+          .sorted((a, b) => -a.startedAt.compareTo(b.startedAt));
 
-  if ((await allrecords).isNotEmpty) {
-    final lastRecord = await allrecords;
-    final workoutRecord = await ref.watch(
-        getWorkoutRecordProvider(workoutRecordId: lastRecord.first.workoutId)
-            .future);
-    yield workoutRecord;
+  if (workoutRecords.isNotEmpty) {
+    yield workoutRecords.first;
   }
 }
 
@@ -271,7 +308,7 @@ Stream<List<WorkoutDefinitionDate>> getLastWorkoutDate(
   final allDefinitions =
       await ref.watch(workoutDefinitionsRepositoryProvider).getAllEntities();
   final allWorkouts =
-      await ref.read(workoutRecordRepositoryProvider).getAllEntities();
+      await ref.watch(workoutRecordRepositoryProvider).getAllEntities();
   allWorkouts.sort((a, b) => -a.id.compareTo(b.id));
 
   final definitionDates = allDefinitions.map((definition) async {

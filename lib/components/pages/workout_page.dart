@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/workouts/workout_manager.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
-import 'package:workout_tracker/controller/timer_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
-import 'package:workout_tracker/timer/timer_context.dart';
-import 'package:workout_tracker/timer/timer_event.dart';
-import 'dart:developer' as developer;
 
 class WorkoutPage extends ConsumerWidget {
   const WorkoutPage({required this.title, required this.workoutId, super.key});
@@ -19,32 +14,19 @@ class WorkoutPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int workoutRecordId = int.parse(workoutId);
+    final workoutResult = ref.watch(
+        workoutCurrentExerciseStreamProvider(workoutRecordId: workoutRecordId));
 
     return CustomScaffold(
       appBar: AppBar(
-        title: Consumer(builder: (_, WidgetRef ref, __) {
-          final workoutResult = ref.watch(
-              workoutCurrentExerciseProvider(workoutRecordId: workoutRecordId));
-
-          return switch (workoutResult) {
-            AsyncData(:final value) => Text(value?.exercise.name ?? ''),
-            AsyncError(:final error) => Text(error.toString()),
-            _ => Container()
-          };
-        }),
-        actions: [
-          IconButton(
-              icon: const Icon(Icons.add_circle_outline),
-              onPressed: () {
-                context.go('/workout/$workoutId/addExercise');
-              }),
-        ],
+        title: switch (workoutResult) {
+          AsyncValue(:final value, hasValue: true) => Text(value?.exercise.name ?? ''),
+          AsyncError(:final error) => Text(error.toString()),
+          _ => Container()
+        },
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: WorkoutManager(
-          workoutRecordId: workoutRecordId,
-        ),
+      body: WorkoutManager(
+        workoutRecordId: workoutRecordId,
       ),
       floatingActionButton: CompleteSetsFAB(workoutRecordId: workoutRecordId),
     );
@@ -65,11 +47,11 @@ class CompleteSetsFAB extends ConsumerWidget {
         ref.watch(canCompleteSetsProvider(workoutRecordId: workoutRecordId));
 
     return switch (canComplete) {
-      AsyncData(:final value) => value
+      AsyncValue(:final value?) => value
           ? FloatingActionButton(
               onPressed: () {
                 ref
-                    .read(workoutCurrentExerciseProvider(
+                    .read(workoutCurrentExerciseStreamProvider(
                             workoutRecordId: workoutRecordId)
                         .future)
                     .then((value) {
@@ -77,19 +59,6 @@ class CompleteSetsFAB extends ConsumerWidget {
                     ref
                         .read(exerciseSetsControllerProvider.notifier)
                         .completeWorkoutSet(workoutSetId: value.id);
-                  }
-                });
-                ref.read(getAllowedEventsProvider.future).then((value) {
-                  if (value.any((element) => element.name == Running().name)) {
-                    ref
-                        .read(timerControllerProvider.notifier)
-                        .handleEvent(Reset());
-                  } else {
-                    developer.log('start event fired',
-                        name: 'WorkoutPage.FloatingActionButton.onPressed');
-                    ref
-                        .read(timerControllerProvider.notifier)
-                        .handleEvent(Start());
                   }
                 });
               },
