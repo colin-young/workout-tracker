@@ -31,7 +31,7 @@ class SummaryPage extends ConsumerWidget with UserPreferencesState {
                   WorkoutSummaryCard(workoutRecord.id),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Card.filled(
+                    child: Card(
                       elevation: 3,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),

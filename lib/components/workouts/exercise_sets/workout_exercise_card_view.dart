@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:workout_tracker/components/common/ui/chart.dart';
 import 'package:workout_tracker/components/common/ui/chart/exercise_chart_type.dart';
@@ -39,13 +40,11 @@ class ClosedWorkoutExerciseCard extends StatefulWidget {
       required this.detailPanelColor,
       required this.backgroundColor,
       this.chartHeight = 240,
-      this.animationDuration = const Duration(milliseconds: 1000),
       this.chartOpacityBackground = 0.125,
       this.chartType = ExerciseChartType.oneRM});
 
   final double inset;
   final ExerciseSets workoutExercise;
-  final Duration animationDuration;
   final double chartOpacityBackground;
   final int chartHeight;
   final Color detailPanelColor;
@@ -63,6 +62,8 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
   late final chartOpacityRangeSize = 1 - widget.chartOpacityBackground;
   late final chartHeightOpen = widget.chartHeight;
   final chipLinePadding = 8.0;
+  final openDuration = const Duration(milliseconds: 500);
+  final closeDuration = const Duration(milliseconds: 250);
 
   late ExerciseChartType chartType;
   late bool showRange = false;
@@ -94,23 +95,23 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
 
   var isOpen = false;
   final colorForwardCurve =
-      const Interval(0.25, 1.0, curve: Curves.fastOutSlowIn);
+      const Interval(0.25, 1.0, curve: Easing.standard);
   final colorReverseCurve =
-      const Interval(0.25, 1.0, curve: Curves.fastOutSlowIn).flipped;
+      const Interval(0.25, 1.0, curve: Easing.standard);
 
   late final AnimationController _controller = AnimationController(
-    duration: widget.animationDuration,
+    duration: openDuration,
     reverseDuration:
-        Duration(milliseconds: (widget.animationDuration.inMilliseconds ~/ 2)),
+        closeDuration,
     vsync: this,
   );
 
   late final Animation<double> _expandDetailPanel =
       Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
     parent: _controller,
-    curve: const Interval(0, 0.75, curve: Curves.fastEaseInToSlowEaseOut),
+    curve: const Interval(0, 0.75, curve: Easing.emphasizedDecelerate),
     reverseCurve:
-        const Interval(0.0, 0.75, curve: Curves.fastEaseInToSlowEaseOut)
+        const Interval(0.0, 0.75, curve: Easing.emphasizedAccelerate)
             .flipped,
   ));
 
@@ -174,14 +175,15 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
       onTap: () {
         toggleState();
       },
-      child: Card.outlined(
+      child: Card(
+        elevation: 0,
         margin: EdgeInsets.zero,
         clipBehavior: Clip.hardEdge,
         child: Stack(
           children: [
             Column(
               children: [
-                Card.outlined(
+                Card(
                   shape: ContinuousRectangleBorder(
                       side: BorderSide(
                     color: widget.detailPanelColor,

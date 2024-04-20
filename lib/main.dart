@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
@@ -110,35 +111,91 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    var appColorScheme =
-        ColorScheme.fromSeed(seedColor: Colors.blueAccent.shade700);
-    final textTheme = Theme.of(context).textTheme;
-
     return MaterialApp.router(
       routerConfig: router,
       title: 'Workout Tracker',
-      theme: ThemeData(
-        colorScheme: appColorScheme,
-        appBarTheme: AppBarTheme(
-          foregroundColor: appColorScheme.onPrimary,
-          backgroundColor: appColorScheme.primary,
-          elevation: 5,
+      theme: FlexThemeData.light(
+        scheme: FlexScheme.bahamaBlue,
+        subThemesData: const FlexSubThemesData(
+          interactionEffects: false,
+          blendOnColors: false,
+          useTextTheme: true,
+          elevatedButtonSecondarySchemeColor: SchemeColor.onPrimary,
+          inputDecoratorBorderType: FlexInputBorderType.underline,
+          inputDecoratorUnfocusedBorderIsColored: false,
+          alignedDropdown: true,
+          tooltipRadius: 4.0,
+          tooltipSchemeColor: SchemeColor.inverseSurface,
+          tooltipOpacity: 0.9,
+          useInputDecoratorThemeInDialogs: true,
+          snackBarElevation: 6.0,
+          snackBarBackgroundSchemeColor: SchemeColor.inverseSurface,
+          navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationBarMutedUnselectedLabel: false,
+          navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
+          navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
+          navigationBarMutedUnselectedIcon: false,
+          navigationBarIndicatorSchemeColor: SchemeColor.secondaryContainer,
+          navigationBarIndicatorOpacity: 1.00,
+          navigationRailSelectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationRailUnselectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationRailMutedUnselectedLabel: false,
+          navigationRailSelectedIconSchemeColor: SchemeColor.onSurface,
+          navigationRailUnselectedIconSchemeColor: SchemeColor.onSurface,
+          navigationRailMutedUnselectedIcon: false,
+          navigationRailIndicatorSchemeColor: SchemeColor.secondaryContainer,
+          navigationRailIndicatorOpacity: 1.00,
+          navigationRailBackgroundSchemeColor: SchemeColor.surface,
+          navigationRailLabelType: NavigationRailLabelType.none,
         ),
-        chipTheme: ChipThemeData(
-            labelStyle: textTheme.labelSmall,
-            secondaryLabelStyle: textTheme.labelSmall,
-            iconTheme: IconThemeData(
-              size: 16,
-              color: appColorScheme.onBackground,
-            )),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: appColorScheme.primary,
-          foregroundColor: appColorScheme.onPrimary,
-        ),
-        bottomSheetTheme: const BottomSheetThemeData(),
-        bottomAppBarTheme: const BottomAppBarTheme(),
+        keyColors: const FlexKeyColors(),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
+        swapLegacyOnMaterial3: true,
+        // To use the Playground font, add GoogleFonts package and uncomment
+        // fontFamily: GoogleFonts.notoSans().fontFamily,
       ),
+      darkTheme: FlexThemeData.dark(
+        scheme: FlexScheme.bahamaBlue,
+        subThemesData: const FlexSubThemesData(
+          interactionEffects: false,
+          useTextTheme: true,
+          elevatedButtonSecondarySchemeColor: SchemeColor.onPrimary,
+          inputDecoratorBorderType: FlexInputBorderType.underline,
+          inputDecoratorUnfocusedBorderIsColored: false,
+          alignedDropdown: true,
+          tooltipRadius: 4.0,
+          tooltipSchemeColor: SchemeColor.inverseSurface,
+          tooltipOpacity: 0.9,
+          useInputDecoratorThemeInDialogs: true,
+          snackBarElevation: 6.0,
+          snackBarBackgroundSchemeColor: SchemeColor.inverseSurface,
+          navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationBarMutedUnselectedLabel: false,
+          navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
+          navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
+          navigationBarMutedUnselectedIcon: false,
+          navigationBarIndicatorSchemeColor: SchemeColor.secondaryContainer,
+          navigationBarIndicatorOpacity: 1.00,
+          navigationRailSelectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationRailUnselectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationRailMutedUnselectedLabel: false,
+          navigationRailSelectedIconSchemeColor: SchemeColor.onSurface,
+          navigationRailUnselectedIconSchemeColor: SchemeColor.onSurface,
+          navigationRailMutedUnselectedIcon: false,
+          navigationRailIndicatorSchemeColor: SchemeColor.secondaryContainer,
+          navigationRailIndicatorOpacity: 1.00,
+          navigationRailBackgroundSchemeColor: SchemeColor.surface,
+          navigationRailLabelType: NavigationRailLabelType.none,
+        ),
+        keyColors: const FlexKeyColors(),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        useMaterial3: true,
+        swapLegacyOnMaterial3: true,
+      ),
+      themeMode: ThemeMode.system,
     );
   }
 }

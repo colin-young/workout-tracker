@@ -18,11 +18,11 @@ class ExerciseSettingsDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     final chipTheme = theme.chipTheme;
-    final chipLabel = chipTheme.labelStyle;
+    final chipLabel = chipTheme.labelStyle ?? theme.textTheme.labelLarge ?? theme.textTheme.bodyLarge!;
     final chipIconSize = chipTheme.iconTheme?.size ?? 4;
 
     final textWidth = entry.settings.fold(
-        TextUiUtilities.getTextSize('add', chipLabel!).width + chipIconSize,
+        TextUiUtilities.getTextSize('add', chipLabel).width + chipIconSize,
         (prev, curr) {
       final size = TextUiUtilities.getTextSize(
               '${curr.setting} | ${curr.value}', chipLabel)

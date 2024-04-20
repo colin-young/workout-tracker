@@ -232,7 +232,7 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
               ]
             : [])
       ],
-      animationDuration: const Duration(milliseconds: 100),
+      animationDuration: const Duration(milliseconds: 300),
       dateTimeFactory: const charts.LocalDateTimeFactory(),
       domainAxis: charts.EndPointsTimeAxisSpec(
         renderSpec: charts.SmallTickRendererSpec(

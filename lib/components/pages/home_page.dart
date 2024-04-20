@@ -29,20 +29,7 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: ShowCaseWidget(
-          onComplete: (index, key) {
-            if (index == 1) {
-              SystemChrome.setSystemUIOverlayStyle(
-                SystemUiOverlayStyle.light.copyWith(
-                  statusBarIconBrightness: Brightness.dark,
-                  statusBarColor: Colors.white,
-                ),
-              );
-            }
-          },
-          blurValue: 1,
-          builder: Builder(builder: (context) => SummaryPage()),
-          ),
+      body: SummaryPage(),
     );
   }
 }

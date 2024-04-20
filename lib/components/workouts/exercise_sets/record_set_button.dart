@@ -22,9 +22,9 @@ class RecordSetButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var displayTextColor = Theme.of(context).colorScheme.onSecondaryContainer;
+    var displayTextColor = Theme.of(context).colorScheme.onSurface;
     var displayBackgroundColor =
-        Theme.of(context).colorScheme.secondaryContainer;
+        Theme.of(context).colorScheme.surface;
 
     var largeTitleText = Theme.of(context).textTheme.titleMedium;
     var mediumTitleText = Theme.of(context).textTheme.bodySmall;

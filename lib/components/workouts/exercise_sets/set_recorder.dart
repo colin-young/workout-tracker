@@ -12,6 +12,7 @@ import 'package:workout_tracker/domain/set_entry.dart';
 import 'package:workout_tracker/utility/int_digits.dart';
 import 'package:workout_tracker/utility/set_entry_list_utils.dart';
 import 'package:workout_tracker/utility/set_entry_utils.dart';
+import 'package:workout_tracker/utility/text_ui_utilities.dart';
 
 class SetRecorder extends ConsumerStatefulWidget {
   const SetRecorder({
@@ -139,141 +140,154 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
         }
     }
 
-    const bottomPadding = 64.0 + 22.0;
+    final exerciseResultsHeight =
+        TextUiUtilities.getTextSize('0', textStyle.bodyMedium!).height;
+    const recorderButton = 68.0;
+    const digitWheelHeight = 140.0;
+    const cardPadding = 8.0;
 
     return SizedBox(
-      height: 390,
+      height: digitWheelHeight * 2 +
+          recorderButton +
+          exerciseResultsHeight +
+          cardPadding * 2,
       child: Card(
+          margin: const EdgeInsets.all(0),
           clipBehavior: Clip.hardEdge,
-          child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Stack(children: [
-                switch (currentExerciseResult) {
-                  AsyncValue(:final value?) => Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, bottomPadding),
-                      child: Opacity(
-                        opacity: 0.25,
-                        child: AnimatedSwitcher(
-                          transitionBuilder: (child, animation) =>
-                              SlideTransition(
-                            position: (animation.value == 1
-                                    ? slideOutTween
-                                    : slideInTween)
-                                .animate(animation),
-                            child: child,
-                          ),
-                          switchInCurve: slideInCurve,
-                          switchOutCurve: slideOutCurve,
-                          duration: animationDuration,
-                          child: IgnorePointer(
-                            key: ValueKey('workoutChart${value.exercise.id}'),
-                            child: ExerciseSummaryChart(
-                              key: ValueKey(
-                                  'workoutChart${value.exercise.id}.chart'),
-                              exerciseId: value.exercise.id,
-                              showAxis: true,
-                              // TODO get from user prefs
-                              showRange: true,
-                              // TODO get from user prefs
-                              showTrend: true,
-                              showGridLines: false,
-                              setValueAccumulator: SetEntryListUtils.average,
-                              valueFunc: SetEntryUtils.oneRMEpley,
-                              minFunc: SetEntryListUtils.min,
-                              maxFunc: SetEntryListUtils.max,
-                              measure: SetEntryUtils.oneRMEpley(setEntry),
+          child:
+              // Chart
+              Padding(
+                  padding: const EdgeInsets.all(cardPadding),
+                  child: Stack(children: [
+                    switch (currentExerciseResult) {
+                      AsyncValue(:final value?) => Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              0, 0, 0, recorderButton + exerciseResultsHeight),
+                          child: Opacity(
+                            opacity: 0.25,
+                            child: AnimatedSwitcher(
+                              transitionBuilder: (child, animation) =>
+                                  SlideTransition(
+                                position: (animation.value == 1
+                                        ? slideOutTween
+                                        : slideInTween)
+                                    .animate(animation),
+                                child: child,
+                              ),
+                              switchInCurve: slideInCurve,
+                              switchOutCurve: slideOutCurve,
+                              duration: animationDuration,
+                              child: IgnorePointer(
+                                key: ValueKey(
+                                    'workoutChart${value.exercise.id}'),
+                                child: ExerciseSummaryChart(
+                                  key: ValueKey(
+                                      'workoutChart${value.exercise.id}.chart'),
+                                  exerciseId: value.exercise.id,
+                                  showAxis: true,
+                                  // TODO get from user prefs
+                                  showRange: true,
+                                  // TODO get from user prefs
+                                  showTrend: true,
+                                  showGridLines: false,
+                                  setValueAccumulator:
+                                      SetEntryListUtils.average,
+                                  valueFunc: SetEntryUtils.oneRMEpley,
+                                  minFunc: SetEntryListUtils.min,
+                                  maxFunc: SetEntryListUtils.max,
+                                  measure: SetEntryUtils.oneRMEpley(setEntry),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  _ => const SizedBox()
-                },
-                switch (currentExerciseResult) {
-                  AsyncValue(:final value?) => SizedBox(
-                      height: double.infinity,
-                      child: Flex(
-                        direction: Axis.horizontal,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                      _ => const SizedBox()
+                    },
+                    // Settings
+                    switch (currentExerciseResult) {
+                      AsyncValue(:final value?) => Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: SizedBox(
+                            height: digitWheelHeight * 2,
+                            child: Flex(
+                              direction: Axis.horizontal,
                               mainAxisAlignment: MainAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                SizedBox(
-                                    width: 100,
-                                    child: AnimatedSwitcher(
-                                      duration: const Duration(milliseconds: 500),
-                                      switchInCurve: slideInCurve,
-                                      switchOutCurve: slideOutCurve,
-                                      child: ExerciseSettingsDisplay(
-                                        key: ValueKey('settings${value.exercise.id}'),
-                                          entry: value.exercise),
-                                    )),
-                                const SizedBox(
-                                  height: bottomPadding + 24,
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 24.0),
+                                  child: SizedBox(
+                                      width: 150,
+                                      child: AnimatedSwitcher(
+                                        duration: const Duration(milliseconds: 500),
+                                        switchInCurve: slideInCurve,
+                                        switchOutCurve: slideOutCurve,
+                                        child: Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: ExerciseSettingsDisplay(
+                                              key: ValueKey(
+                                                  'settings${value.exercise.id}'),
+                                              entry: value.exercise),
+                                        ),
+                                      )),
                                 )
                               ],
                             ),
-                          )
-                        ],
+                          ),
                       ),
+                      _ => const SizedBox(),
+                    },
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: digitWheelHeight,
+                          child: MultiDigitWheel(
+                            key: ValueKey('${_exerciseId}reps'),
+                            suffix: 'reps',
+                            value: setEntry.reps,
+                            updateTens: updateRepsTens,
+                            updateOnes: updateRepsOnes,
+                          ),
+                        ),
+                        SizedBox(
+                          height: digitWheelHeight,
+                          child: MultiDigitWheel(
+                            key: ValueKey('${_exerciseId}weight'),
+                            suffix: prefs.weightUnits,
+                            value: setEntry.weight,
+                            updateHundreds: updateWeightHundreds,
+                            updateTens: updateWeightTens,
+                            updateOnes: updateWeightOnes,
+                          ),
+                        ),
+                        RecordSetButton(
+                          workoutSet: setEntry,
+                          textStyle: textTitle,
+                          workoutRecordId: widget.workoutRecordId,
+                        ),
+                        SizedBox(
+                          height: exerciseResultsHeight,
+                          child: switch (currentExerciseResult) {
+                            AsyncValue(:final value?) => value.exercise.id < 0
+                                ? SizedBox(
+                                    height: exerciseResultsHeight,
+                                    child: Center(
+                                        child: Text(
+                                      'Error: ${value.exercise.id}',
+                                      style: textStyle.bodyMedium,
+                                    )),
+                                  )
+                                : ExerciseSetsDisplay(
+                                    workoutRecordId: widget.workoutRecordId,
+                                    exerciseId: value.exercise.id),
+                            AsyncValue(:final error) => Text(error.toString()),
+                          },
+                        ),
+                      ],
                     ),
-                  _ => const SizedBox(),
-                },
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 140,
-                      child: MultiDigitWheel(
-                        key: ValueKey('${_exerciseId}reps'),
-                        suffix: 'reps',
-                        value: setEntry.reps,
-                        updateTens: updateRepsTens,
-                        updateOnes: updateRepsOnes,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 140,
-                      child: MultiDigitWheel(
-                        key: ValueKey('${_exerciseId}weight'),
-                        suffix: prefs.weightUnits,
-                        value: setEntry.weight,
-                        updateHundreds: updateWeightHundreds,
-                        updateTens: updateWeightTens,
-                        updateOnes: updateWeightOnes,
-                      ),
-                    ),
-                    RecordSetButton(
-                      workoutSet: setEntry,
-                      textStyle: textTitle,
-                      workoutRecordId: widget.workoutRecordId,
-                    ),
-                    SizedBox(
-                      height: 22,
-                      child: switch (currentExerciseResult) {
-                        AsyncValue(:final value?) => value.exercise.id < 0
-                            ? SizedBox(
-                                height: 22,
-                                child: Center(
-                                    child: Text(
-                                  'Error: ${value.exercise.id}',
-                                  style: textStyle.bodyMedium,
-                                )),
-                              )
-                            : ExerciseSetsDisplay(
-                                workoutRecordId: widget.workoutRecordId,
-                                exerciseId: value.exercise.id),
-                        AsyncValue(:final error) => Text(error.toString()),
-                      },
-                    ),
-                  ],
-                ),
-              ]))),
+                  ]))),
     );
   }
 }

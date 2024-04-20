@@ -12,7 +12,7 @@ class TimerWidget extends ConsumerStatefulWidget {
 
   const TimerWidget(
       {super.key,
-      this.animationDuration = const Duration(milliseconds: 1000),
+      this.animationDuration = const Duration(milliseconds: 300),
       this.isVisible = false});
 
   @override
@@ -50,18 +50,18 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
   late final Animation<double> _expandTimer =
       Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
     parent: _controller,
-    curve: const Interval(0, 0.75, curve: Curves.fastEaseInToSlowEaseOut),
+    curve: const Interval(0, 0.75, curve: Easing.standardDecelerate),
     reverseCurve:
-        const Interval(0.25, 1.0, curve: Curves.fastEaseInToSlowEaseOut)
+        const Interval(0.25, 1.0, curve: Easing.standardAccelerate)
             .flipped,
   ));
 
   late final Animation<double> _opacity = Tween(begin: 0.0, end: 1.0).animate(
     CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+        curve: const Interval(0.5, 1.0, curve: Easing.standardDecelerate),
         reverseCurve:
-            const Interval(0.0, 0.5, curve: Curves.fastOutSlowIn).flipped),
+            const Interval(0.0, 0.5, curve: Easing.standardAccelerate).flipped),
   );
 
   Future<void> _setIsVisible(bool visible) async {

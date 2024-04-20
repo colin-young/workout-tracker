@@ -72,7 +72,7 @@ class _DigitWheelState extends State<DigitWheel> {
             surroundingOpacity: 0.5,
             magnification: 1.2,
             shiftAnimationStyle: const WheelShiftAnimationStyle(
-                duration: Duration(milliseconds: 500),
+                duration: Duration(milliseconds: 300),
                 curve: Easing.standard)),
       ),
     );
