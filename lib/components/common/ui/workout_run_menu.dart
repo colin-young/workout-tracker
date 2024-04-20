@@ -21,88 +21,92 @@ class WorkoutRunMenu extends ConsumerWidget {
       _ => -1
     }));
 
+    var startArbitraryWorkoutMenuButton = MenuItemButton(
+      leadingIcon: const Icon(Icons.play_arrow),
+      child: const Text('Start new workout'),
+      onPressed: () {
+        ref
+            .read(workoutRecordNotifierProvider.notifier)
+            .addWorkoutRecord(WorkoutRecord(
+                startedAt: DateTime.now(),
+                lastActivityAt: DateTime.now(),
+                isActive: true))
+            .then((value) {
+          context.go('/workout/$value');
+        });
+      },
+    );
+
+    var startDefinedWorkoutMenuButtons = switch (workoutDefinitionsResult) {
+      AsyncValue(:final value?) => value
+          .map((i) => MenuItemButton(
+              leadingIcon: const Icon(Icons.play_arrow),
+              onPressed: () {
+                ref
+                    .read(workoutRecordNotifierProvider.notifier)
+                    .addWorkoutRecord(WorkoutRecord(
+                      startedAt: DateTime.now(),
+                      lastActivityAt: DateTime.now(),
+                      fromWorkoutDefinition: i.definition,
+                      isActive: true,
+                    ))
+                    .then((workoutId) {
+                  Future.wait(i.definition.exercises.map((e) => ref
+                      .read(workoutRecordNotifierProvider.notifier)
+                      .addExerciseSets(
+                          workoutRecordId: workoutId,
+                          sets: ExerciseSets(
+                              workoutId: workoutId,
+                              order: e.order,
+                              exercise: e.exercise,
+                              sets: [],
+                              isComplete: false)))).then((value) {
+                    context.go('/workout/$workoutId');
+                  });
+                });
+              },
+              child: Text(i.date == null
+                  ? 'Start ${i.definition.name}'
+                  : 'Start ${i.definition.name} - ${i.date!.getRelativeDateString()}')))
+          .toList(),
+      _ => [],
+    };
+
+    var currentWorkoutMenuButtons = switch (isCompleteResult) {
+      AsyncValue(:final value?) => value
+          ? []
+          : switch (lastWorkoutRecordResult) {
+              AsyncValue(:final value?) => [
+                  MenuItemButton(
+                    leadingIcon: const Icon(Icons.play_arrow),
+                    onPressed: () {
+                      context.go('/workout/${value.id}');
+                    },
+                    child: const Text('Resume Current'),
+                  ),
+                  MenuItemButton(
+                    leadingIcon: const Icon(Icons.playlist_add_check),
+                    onPressed: () {
+                      ref.read(completeAllWorkoutExercisesProvider(
+                          workoutRecordId: value.id));
+                    },
+                    child: const Text('Mark Current Completed'),
+                  ),
+                ],
+              _ => []
+            },
+      _ => []
+    };
+
+    var startWorkoutMenuButtons = switch (isCompleteResult) {
+      AsyncValue(:final value?) => value,
+      _ => false
+    }
+        ? [...startDefinedWorkoutMenuButtons, startArbitraryWorkoutMenuButton]
+        : [];
+
     return MenuAnchor(
-      menuChildren: [
-        ...(switch (isCompleteResult) {
-          AsyncValue(:final value?) => value,
-          _ => false
-        }
-            ? switch (workoutDefinitionsResult) {
-                AsyncValue(:final value?) => value
-                    .map((i) => MenuItemButton(
-                        leadingIcon: const Icon(Icons.play_arrow),
-                        onPressed: () {
-                          ref
-                              .read(workoutRecordNotifierProvider.notifier)
-                              .addWorkoutRecord(WorkoutRecord(
-                                startedAt: DateTime.now(),
-                                lastActivityAt: DateTime.now(),
-                                fromWorkoutDefinition: i.definition,
-                                isActive: true,
-                              ))
-                              .then((workoutId) {
-                            Future.wait(i.definition.exercises.map((e) => ref
-                                .read(workoutRecordNotifierProvider.notifier)
-                                .addExerciseSets(
-                                    workoutRecordId: workoutId,
-                                    sets: ExerciseSets(
-                                        workoutId: workoutId,
-                                        order: e.order,
-                                        exercise: e.exercise,
-                                        sets: [],
-                                        isComplete: false)))).then((value) {
-                              context.go('/workout/$workoutId');
-                            });
-                          });
-                        },
-                        child: Text(i.date == null
-                            ? 'Start ${i.definition.name}'
-                            : 'Start ${i.definition.name} - ${i.date!.getRelativeDateString()}')))
-                    .toList(),
-                _ => [],
-              }
-            : []),
-        MenuItemButton(
-          leadingIcon: const Icon(Icons.play_arrow),
-          child: const Text('Start new workout'),
-          onPressed: () {
-            ref
-                .read(workoutRecordNotifierProvider.notifier)
-                .addWorkoutRecord(WorkoutRecord(
-                    startedAt: DateTime.now(),
-                    lastActivityAt: DateTime.now(),
-                    isActive: true))
-                .then((value) {
-              context.go('/workout/$value');
-            });
-          },
-        ),
-        ...switch (isCompleteResult) {
-          AsyncValue(:final value?) => value
-              ? []
-              : switch (lastWorkoutRecordResult) {
-                  AsyncValue(:final value?) => [
-                      MenuItemButton(
-                        leadingIcon: const Icon(Icons.play_arrow),
-                        onPressed: () {
-                          context.go('/workout/${value.id}');
-                        },
-                        child: const Text('Resume Current'),
-                      ),
-                      MenuItemButton(
-                        leadingIcon: const Icon(Icons.playlist_add_check),
-                        onPressed: () {
-                          ref.read(completeAllWorkoutExercisesProvider(
-                              workoutRecordId: value.id));
-                        },
-                        child: const Text('Mark Current Completed'),
-                      ),
-                    ],
-                  _ => []
-                },
-          _ => []
-        }
-      ],
+      menuChildren: [...startWorkoutMenuButtons, ...currentWorkoutMenuButtons],
       builder: (context, controller, child) {
         return ChipTheme(
           data: ChipTheme.of(context).copyWith(),
