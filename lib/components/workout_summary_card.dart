@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:workout_tracker/components/common/ui/card_title_divider.dart';
 import 'package:workout_tracker/components/common/relative_date.dart';
 import 'package:workout_tracker/components/common/rounded_button.dart';
 import 'package:workout_tracker/controller/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
+import 'package:workout_tracker/utility/workout_utilities.dart';
 
 class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
   final int workoutRecordId;
@@ -64,7 +66,7 @@ class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
                 children: <Widget>[
                   switch (workoutRecordResult) {
                     AsyncValue(:final value?) => Text(
-                        value.fromWorkoutDefinition!.name,
+                        value.name(),
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     _ => const SizedBox(width: 0, height: 0),

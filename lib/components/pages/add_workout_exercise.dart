@@ -5,6 +5,7 @@ import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/exercises/exercise_list_with_tile.dart';
 import 'package:workout_tracker/controller/exercise_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
+import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 
@@ -40,36 +41,36 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
   @override
   Widget build(BuildContext context) {
     final int workoutRecordId = int.parse(widget.workoutId);
-    final workoutResult = ref.watch(
-        workoutCurrentExerciseStreamProvider(workoutRecordId: workoutRecordId));
     final exercises =
         ref.watch(getExerciseAddListProvider(workoutRecordId: workoutRecordId));
 
+    var removeAllButton = IconButton(
+        icon: const Icon(Icons.playlist_remove),
+        onPressed: () {
+          setState(() {
+            _selected = [];
+          });
+        });
+    addAllButton(List<Exercise> selected) => IconButton(
+        icon: const Icon(Icons.playlist_add_check),
+        onPressed: () {
+          setState(() {
+            _selected = [...selected];
+          });
+        });
     return CustomScaffold(
         appBar: AppBar(
-          title: switch (workoutResult) {
-            AsyncValue(hasValue: true) => const Text('Add Exercise'),
-            AsyncValue(:final error) => Text(error.toString()),
-          },
+          title: const Text('Add Exercise'),
           actions: [
-            switch (exercises) {
+            ...(switch (exercises) {
               AsyncValue(:final value?) => _selected.length < value.length
-                  ? IconButton(
-                      icon: const Icon(Icons.playlist_add_check),
-                      onPressed: () {
-                        setState(() {
-                          _selected = [...value];
-                        });
-                      })
-                  : IconButton(
-                      icon: const Icon(Icons.playlist_remove),
-                      onPressed: () {
-                        setState(() {
-                          _selected = [];
-                        });
-                      }),
-              _ => Container()
-            },
+                  ? [
+                      addAllButton(value),
+                      ...(_selected.isNotEmpty ? [removeAllButton] : [])
+                    ]
+                  : [removeAllButton],
+              _ => [Container()]
+            }),
           ],
         ),
         body: Padding(
@@ -115,16 +116,20 @@ class AddSelectedExercises extends ConsumerWidget {
             .read(
                 getWorkoutSetsStreamProvider(workoutId: workoutRecordId).future)
             .then((value) {
-          var lastSortOrder = value.last.order;
-          for (final exercise in selected) {
-            lastSortOrder++;
-            ref.read(exerciseSetsRepositoryProvider).insert(ExerciseSets(
-                workoutId: workoutRecordId,
-                order: lastSortOrder,
-                exercise: exercise,
-                sets: [],
-                isComplete: false));
-          }
+          var lastSortOrder = value.isNotEmpty ? value.last.order : 0;
+
+          ref.read(workoutRecordNotifierProvider.notifier).addExercises(
+                workoutRecordId: workoutRecordId,
+                exercises: selected.map<ExerciseSets>((e) {
+                  lastSortOrder++;
+                  return ExerciseSets(
+                      workoutId: workoutRecordId,
+                      order: lastSortOrder,
+                      exercise: e,
+                      sets: [],
+                      isComplete: false);
+                }).toList(),
+              );
         });
 
         context.pop();

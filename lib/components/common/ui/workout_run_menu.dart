@@ -60,7 +60,23 @@ class WorkoutRunMenu extends ConsumerWidget {
                             : 'Start ${i.definition.name} - ${i.date!.getRelativeDateString()}')))
                     .toList(),
                 _ => [],
-              } : []),
+              }
+            : []),
+        MenuItemButton(
+          leadingIcon: const Icon(Icons.play_arrow),
+          child: const Text('Start new workout'),
+          onPressed: () {
+            ref
+                .read(workoutRecordNotifierProvider.notifier)
+                .addWorkoutRecord(WorkoutRecord(
+                    startedAt: DateTime.now(),
+                    lastActivityAt: DateTime.now(),
+                    isActive: true))
+                .then((value) {
+              context.go('/workout/$value');
+            });
+          },
+        ),
         ...switch (isCompleteResult) {
           AsyncValue(:final value?) => value
               ? []

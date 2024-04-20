@@ -26,7 +26,9 @@ class SetEntryListUtils {
 }
 
 extension ExerciseSetsTrend on Map<DateTime, List<SetEntry>>? {
-  Map<DateTime, double?> trend(SetEntryValue valueFunc, ValueAccumulator<double, SetEntry> setValueAccumulator, {int windowSize = 5}) =>
+  Map<DateTime, double?> trend(SetEntryValue valueFunc,
+          ValueAccumulator<double, SetEntry> setValueAccumulator,
+          {int windowSize = 5}) =>
       this!.keys.fold(
           (window: <double>[], index: 0, trend: <DateTime, double?>{}), (({
                 List<double> window,

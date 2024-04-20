@@ -29,8 +29,8 @@ class ExerciseListWithTile extends StatelessWidget {
               leading: Icon(exercises[index].exerciseType!.icon),
               title: Text(exercises[index].name),
               trailing: Icon(isItemSelected(exercises, index)
-                  ? Icons.check_circle_outline_rounded
-                  : Icons.circle_outlined),
+                  ? Icons.check_box_outlined
+                  : Icons.check_box_outline_blank),
             )));
   }
 }

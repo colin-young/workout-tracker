@@ -237,6 +237,8 @@ Stream<List<ExerciseSets>> getWorkoutSetsStream(GetWorkoutSetsStreamRef ref,
   await for (final set in sets) {
     if (set.isNotEmpty) {
       yield set;
+    } else {
+      yield [];
     }
   }
 }

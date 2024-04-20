@@ -54,6 +54,17 @@ class WorkoutRecordNotifier extends _$WorkoutRecordNotifier {
     await future;
     ref.invalidate(getLastworkoutRecordProvider);
   }
+
+  Future<void> addExercises(
+      {required int workoutRecordId,
+      required List<ExerciseSets> exercises}) async {
+    for (final exercise in exercises) {
+      addExerciseSets(workoutRecordId: workoutRecordId, sets: exercise);
+    }
+
+    await future;
+    ref.invalidate(getLastworkoutRecordProvider);
+  }
 }
 
 @riverpod
