@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/workouts/workout_manager.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
+import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 
 class WorkoutPage extends ConsumerWidget {
   const WorkoutPage({required this.title, required this.workoutId, super.key});
@@ -20,7 +22,8 @@ class WorkoutPage extends ConsumerWidget {
     return CustomScaffold(
       appBar: AppBar(
         title: switch (workoutResult) {
-          AsyncValue(:final value, hasValue: true) => Text(value?.exercise.name ?? ''),
+          AsyncValue(:final value, hasValue: true) =>
+            Text(value?.exercise.name ?? ''),
           AsyncError(:final error) => Text(error.toString()),
           _ => Container()
         },
@@ -54,11 +57,11 @@ class CompleteSetsFAB extends ConsumerWidget {
                     .read(workoutCurrentExerciseStreamProvider(
                             workoutRecordId: workoutRecordId)
                         .future)
-                    .then((value) {
-                  if (value != null) {
+                    .then((sets) {
+                  if (sets != null) {
                     ref
                         .read(exerciseSetsControllerProvider.notifier)
-                        .completeWorkoutSet(workoutSetId: value.id);
+                        .completeWorkoutSet(workoutSetId: sets.id);
                   }
                 });
               },

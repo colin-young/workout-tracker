@@ -113,7 +113,6 @@ class WorkoutRunMenu extends ConsumerWidget {
           child: ActionChip(
             avatar: const Icon(Icons.menu),
             label: const Text('Routines'),
-            // backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             side: BorderSide.none,
             onPressed: () {
               if (controller.isOpen) {

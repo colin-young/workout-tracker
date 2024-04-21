@@ -62,6 +62,9 @@ class ExerciseSetsController extends _$ExerciseSetsController {
       await ref
           .watch(exerciseSetsRepositoryProvider)
           .update(exercise.copyWith(isComplete: true));
+
+      ref.invalidate(getAllExerciseSetsByExerciseStreamProvider);
+
       return await ref.watch(getAllExerciseSetsStreamProvider.future);
     });
   }
