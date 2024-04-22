@@ -113,11 +113,24 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var dataColor =
+        charts.ColorUtil.fromDartColor(Theme.of(context).colorScheme.primary);
+    var trendColor = charts.ColorUtil.fromDartColor(
+        Theme.of(context).colorScheme.tertiary.withOpacity(0.75));
+    var axisColor = charts.ColorUtil.fromDartColor(
+      Theme.of(context).colorScheme.onBackground.withOpacity(animation),
+    );
+    var gridlineColor = charts.ColorUtil.fromDartColor(Theme.of(context)
+        .colorScheme
+        .onBackground
+        .withOpacity(animation * 0.25));
+
     final dataSeries = [
       charts.Series<TimeSeriesSets, DateTime>(
         id: 'Sets',
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(
-            Theme.of(context).colorScheme.primary),
+        seriesColor: dataColor,
+        fillColorFn: (datum, index) =>
+            charts.ColorUtil.fromDartColor(Theme.of(context).colorScheme.error),
         domainFn: (TimeSeriesSets sets, _) => sets.time,
         measureFn: (TimeSeriesSets sets, _) => sets.value,
         measureLowerBoundFn: (TimeSeriesSets sets, _) =>
@@ -131,8 +144,7 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
         ? [
             charts.Series<TimeSeriesSets, DateTime>(
               id: 'Trend',
-              colorFn: (_, __) => charts.ColorUtil.fromDartColor(
-                  Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+              seriesColor: trendColor,
               domainFn: (TimeSeriesSets sets, _) => sets.time,
               measureFn: (TimeSeriesSets sets, _) => sets.value,
               data: trend!,
@@ -183,26 +195,16 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
         [...dataSeries, ...trendSeries];
 
     var axisLineStyleSpec = charts.LineStyleSpec(
-              color: charts.ColorUtil.fromDartColor(
-                Theme.of(context)
-                    .colorScheme
-                    .onBackground
-                    .withOpacity(animation),
-              ),
-            );
+      color: axisColor,
+    );
 
     var gridLineStyleSpec = charts.LineStyleSpec(
-              color: charts.ColorUtil.fromDartColor(Theme.of(context)
-                  .colorScheme
-                  .onBackground
-                  .withOpacity(animation * 0.25)),
-            );
+      color: gridlineColor,
+    );
 
     var labelStyleSpec = charts.TextStyleSpec(
-                color: charts.ColorUtil.fromDartColor(Theme.of(context)
-                    .colorScheme
-                    .onBackground
-                    .withOpacity(animation)));
+        color: charts.ColorUtil.fromDartColor(
+            Theme.of(context).colorScheme.onBackground.withOpacity(animation)));
 
     final charts.GridlineRendererSpec<num> gridlineRendererSpec =
         charts.GridlineRendererSpec(
@@ -211,8 +213,7 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
             labelStyle: labelStyleSpec);
     final charts.SmallTickRendererSpec<num> smallTickRendererSpec =
         charts.SmallTickRendererSpec(
-            axisLineStyle: axisLineStyleSpec,
-            labelStyle: labelStyleSpec);
+            axisLineStyle: axisLineStyleSpec, labelStyle: labelStyleSpec);
 
     return charts.TimeSeriesChart(
       series,
@@ -225,9 +226,9 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
                       measure!, charts.RangeAnnotationAxisType.measure,
                       color: charts.ColorUtil.fromDartColor(Theme.of(context)
                           .colorScheme
-                          .primary
-                          .withOpacity(animation * 0.5)),
-                      dashPattern: [4, 4]),
+                          .tertiary
+                          .withOpacity(animation * 0.75)),
+                      dashPattern: [6, 6]),
                 ])
               ]
             : [])
@@ -237,16 +238,9 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
       domainAxis: charts.EndPointsTimeAxisSpec(
         renderSpec: charts.SmallTickRendererSpec(
             lineStyle: charts.LineStyleSpec(
-              color: charts.ColorUtil.fromDartColor(Theme.of(context)
-                  .colorScheme
-                  .onBackground
-                  .withOpacity(animation)),
+              color: gridlineColor,
             ),
-            labelStyle: charts.TextStyleSpec(
-                color: charts.ColorUtil.fromDartColor(Theme.of(context)
-                    .colorScheme
-                    .onBackground
-                    .withOpacity(animation)))),
+            labelStyle: charts.TextStyleSpec(color: gridlineColor)),
       ),
       primaryMeasureAxis: charts.NumericAxisSpec(
         renderSpec:
@@ -255,7 +249,7 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
       customSeriesRenderers: [
         charts.LineRendererConfig(
             customRendererId: 'trend',
-            dashPattern: [4, 4],
+            dashPattern: [6, 6],
             strokeWidthPx: animation * 2),
         charts.BarRendererConfig(
           customRendererId: 'rangeBar',

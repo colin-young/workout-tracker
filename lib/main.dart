@@ -149,7 +149,10 @@ class MyApp extends StatelessWidget {
           navigationRailBackgroundSchemeColor: SchemeColor.surface,
           navigationRailLabelType: NavigationRailLabelType.none,
         ),
-        keyColors: const FlexKeyColors(),
+        // keyColors: const FlexKeyColors(
+        //   useSecondary: true,
+        //   useTertiary: true,
+        // ),
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         swapLegacyOnMaterial3: true,
