@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/summary_page.dart';
 

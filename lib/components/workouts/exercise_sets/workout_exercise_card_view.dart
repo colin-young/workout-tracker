@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:workout_tracker/components/common/ui/chart.dart';
 import 'package:workout_tracker/components/common/ui/chart/exercise_chart_type.dart';

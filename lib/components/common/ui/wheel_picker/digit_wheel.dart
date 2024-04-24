@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:wheel_picker/wheel_picker.dart';
-import 'package:workout_tracker/utility/color_extensions.dart';
 
 class DigitWheel extends StatefulWidget {
   const DigitWheel({

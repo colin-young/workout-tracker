@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:workout_tracker/components/common/ui/card_title_divider.dart';
 import 'package:workout_tracker/components/common/relative_date.dart';
 import 'package:workout_tracker/components/common/rounded_button.dart';
@@ -88,7 +87,8 @@ class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
                 ]),
             CardTitleDivider(
                 child: switch (finishedAtFuture) {
-              AsyncValue(:final value?) => RelativeDate(value, style: labelStyle),
+              AsyncValue(:final value?) =>
+                RelativeDate(value, style: labelStyle),
               _ => const SizedBox(width: 0, height: 0),
             }),
             Padding(
@@ -98,11 +98,13 @@ class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   switch (totalExercisesFuture) {
-                    AsyncValue(:final value, hasValue: true) => Text('$value exercises'),
+                    AsyncValue(:final value, hasValue: true) =>
+                      Text('$value exercises'),
                     _ => const SizedBox(width: 0, height: 0),
                   },
                   switch (totalRepsFutures) {
-                    AsyncValue(:final value, hasValue: true) => Text('$value reps'),
+                    AsyncValue(:final value, hasValue: true) =>
+                      Text('$value reps'),
                     _ => const SizedBox(width: 0, height: 0),
                   },
                   switch (totalWeightFutures) {
