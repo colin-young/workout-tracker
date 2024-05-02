@@ -27,7 +27,28 @@ class WorkoutDefinitionController extends _$WorkoutDefinitionController {
     state = await AsyncValue.guard(() async {
       return definitionsRepository.getAllEntities();
     });
+
+    await future;
+    ref.invalidateSelf();
+    ref.invalidate(workoutDefinitionsRepositoryProvider);
+
     return id;
+  }
+
+  Future<void> updateWorkoutDefinition({required WorkoutDefinition definition}) async {
+    state = const AsyncLoading();
+    final definitionsRepository =
+        ref.watch(workoutDefinitionsRepositoryProvider);
+    
+    await definitionsRepository.update(definition);
+
+    state = await AsyncValue.guard(() async {
+      return definitionsRepository.getAllEntities();
+    });
+
+    await future;
+    ref.invalidateSelf();
+    ref.invalidate(workoutDefinitionsRepositoryProvider);
   }
 
   Future<List<WorkoutDefinition>> getWorkoutDefinitions() async {
@@ -37,5 +58,20 @@ class WorkoutDefinitionController extends _$WorkoutDefinitionController {
     var definitions = definitionsRepository.getAllEntities();
     state = await AsyncValue.guard(() async => definitions);
     return definitions;
+  }
+
+  Future<void> deleteWorkoutDefinition({required int definitionId}) async {
+    final definitionsRepository =
+        ref.watch(workoutDefinitionsRepositoryProvider);
+    
+    await definitionsRepository.delete(definitionId);
+
+    state = await AsyncValue.guard(() async {
+      return definitionsRepository.getAllEntities();
+    });
+
+    await future;
+    ref.invalidateSelf();
+    ref.invalidate(workoutDefinitionsRepositoryProvider);
   }
 }

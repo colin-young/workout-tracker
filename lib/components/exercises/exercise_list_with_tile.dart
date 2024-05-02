@@ -5,12 +5,10 @@ class ExerciseListWithTile extends StatelessWidget {
   const ExerciseListWithTile({
     super.key,
     required this.exercises,
-    required this.workoutRecordId,
     required this.onTap,
     required this.isItemSelected,
   });
 
-  final int workoutRecordId;
   final List<Exercise> exercises;
   final void Function(List<Exercise>, int) onTap;
   final bool Function(List<Exercise>, int) isItemSelected;

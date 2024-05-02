@@ -39,7 +39,7 @@ class RoundedButton extends StatelessWidget {
                   size: iconSize,
                 ),
                 const SizedBox(
-                  width: 8,
+                  width: 16,
                 ),
                 text
               ]),

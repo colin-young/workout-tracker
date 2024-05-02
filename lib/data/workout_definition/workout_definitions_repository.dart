@@ -58,52 +58,18 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
   }
 
   @override
-  Future<WorkoutDefinition> getEntity(int entityId) {
-    // TODO: implement getEntity
-    throw UnimplementedError();
+  Future<WorkoutDefinition> getEntity(int entityId) async {
+    var definitionRecord = await _store.record(entityId).get(database);
+    var definition =
+        WorkoutDefinition.fromJson(definitionRecord!).copyWith(id: entityId);
+    return definition;
   }
 }
 
 @riverpod
-Stream<List<WorkoutDefinition>> getAllEntitiesStream(
-    GetAllEntitiesStreamRef ref) {
-  developer.log('getAllEntitiesStream',
-      name: 'WorkoutDefinitionsRepository@riverpod');
-  return ref.watch(workoutDefinitionsRepositoryProvider).getAllEntitiesStream();
-}
-
-// @riverpod
-// Stream<List<WorkoutDefinition>> getAllEntitiesWithDateStream(
-//     GetAllEntitiesStreamRef ref) async* {
-//   developer.log('getAllEntitiesStream',
-//       name: 'WorkoutDefinitionsRepository@riverpod');
-//   final definitions = ref.watch(workoutDefinitionsRepositoryProvider).getAllEntitiesStream();
-
-//   await for (final definitionList in definitions) {
-//     for (final definition in definitionList) {
-//       yield ref.watch(getLastWorkoutDateProvider(workoutDefinitionId: definition.id));
-//     }
-//   }
-// }
-
-@riverpod
-Future<int> insert(InsertRef ref,
-    {required WorkoutDefinition workoutDefinition}) {
-  return ref
-      .watch(workoutDefinitionsRepositoryProvider)
-      .insert(workoutDefinition);
-}
-
-@riverpod
-Future delete(DeleteRef ref, {required int workoutDefinitionId}) {
-  return ref
-      .watch(workoutDefinitionsRepositoryProvider)
-      .delete(workoutDefinitionId);
-}
-
-@riverpod
-Future update(UpdateRef ref, {required WorkoutDefinition workoutDefinition}) {
-  return ref
-      .watch(workoutDefinitionsRepositoryProvider)
-      .update(workoutDefinition);
+Future<WorkoutDefinition> getWorkoutDefinition(GetWorkoutDefinitionRef ref,
+    {required int entityId}) async {
+  return entityId > 0
+      ? ref.watch(workoutDefinitionsRepositoryProvider).getEntity(entityId)
+      : Future.value(const WorkoutDefinition(name: "", exercises: []));
 }

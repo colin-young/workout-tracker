@@ -177,7 +177,7 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
       child: Card(
         elevation: 0,
         margin: EdgeInsets.zero,
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
             Column(

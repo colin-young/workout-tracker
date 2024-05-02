@@ -43,11 +43,15 @@ class SettingsEditSubForm extends StatelessWidget {
                     .toList(),
               )
             : const SizedBox(),
-        RoundedButton(
-            text: const Text("Add Setting"),
-            icon: Icons.add,
+        TextButton(
             onPressed: () =>
-                addSetting(const ExerciseSetting(setting: "", value: ""))),
+                addSetting(const ExerciseSetting(setting: "", value: "")), child: const Row(
+                  children: [
+                    Icon(Icons.add),
+                    SizedBox(width: 8,),
+                    Text("Add Setting"),
+                  ],
+                ),),
       ],
     );
   }

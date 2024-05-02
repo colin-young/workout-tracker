@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/ui/card_title_divider.dart';
 import 'package:workout_tracker/components/common/relative_date.dart';
@@ -81,7 +82,7 @@ class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
                               "Continue Current",
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
-                            icon: Icons.play_arrow),
+                            icon: FontAwesomeIcons.personWalkingArrowRight),
                     _ => const SizedBox(),
                   },
                 ]),

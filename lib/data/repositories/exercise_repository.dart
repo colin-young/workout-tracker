@@ -61,6 +61,11 @@ class ExerciseRepository implements Repository<Exercise> {
 }
 
 @riverpod
+Future<List<Exercise>> getExercises(GetExercisesRef ref) async {
+  return ref.watch(exerciseRepositoryProvider).getAllEntities();
+}
+
+@riverpod
 Future<Exercise> getExercise(GetExerciseRef ref,
     {required int entityId}) async {
   return entityId > 0

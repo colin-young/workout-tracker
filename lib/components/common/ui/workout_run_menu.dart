@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
@@ -22,7 +23,6 @@ class WorkoutRunMenu extends ConsumerWidget {
     }));
 
     var startArbitraryWorkoutMenuButton = MenuItemButton(
-      leadingIcon: const Icon(Icons.play_arrow),
       child: const Text('Start new workout'),
       onPressed: () {
         ref
@@ -40,7 +40,6 @@ class WorkoutRunMenu extends ConsumerWidget {
     var startDefinedWorkoutMenuButtons = switch (workoutDefinitionsResult) {
       AsyncValue(:final value?) => value
           .map((i) => MenuItemButton(
-              leadingIcon: const Icon(Icons.play_arrow),
               onPressed: () {
                 ref
                     .read(workoutRecordNotifierProvider.notifier)
@@ -78,7 +77,7 @@ class WorkoutRunMenu extends ConsumerWidget {
           : switch (lastWorkoutRecordResult) {
               AsyncValue(:final value?) => [
                   MenuItemButton(
-                    leadingIcon: const Icon(Icons.play_arrow),
+                    leadingIcon: const Icon(FontAwesomeIcons.personWalkingArrowRight),
                     onPressed: () {
                       context.go('/workout/${value.id}');
                     },
@@ -92,21 +91,41 @@ class WorkoutRunMenu extends ConsumerWidget {
                     },
                     child: const Text('Mark Current Completed'),
                   ),
+                  const Divider(),
                 ],
               _ => []
             },
       _ => []
     };
 
+    var routineManagerButtons = [
+      MenuItemButton(
+        leadingIcon: const Icon(FontAwesomeIcons.personWalkingArrowLoopLeft),
+        onPressed: () {
+          context.go('/routines');
+        },
+        child: const Text('Manage Routines'),
+      ),
+    ];
+
     var startWorkoutMenuButtons = switch (isCompleteResult) {
       AsyncValue(:final value?) => value,
       _ => false
     }
-        ? [...startDefinedWorkoutMenuButtons, startArbitraryWorkoutMenuButton]
+        ? [
+            Center(child: Text('Start a Routine', style: Theme.of(context).textTheme.titleLarge,)),
+            ...startDefinedWorkoutMenuButtons,
+            startArbitraryWorkoutMenuButton,
+            const Divider(),
+          ]
         : [];
 
     return MenuAnchor(
-      menuChildren: [...startWorkoutMenuButtons, ...currentWorkoutMenuButtons],
+      menuChildren: [
+        ...startWorkoutMenuButtons,
+        ...currentWorkoutMenuButtons,
+        ...routineManagerButtons
+      ],
       builder: (context, controller, child) {
         return ChipTheme(
           data: ChipTheme.of(context).copyWith(),

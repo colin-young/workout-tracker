@@ -16,7 +16,7 @@ class ExerciseController extends _$ExerciseController {
     return definitionsRepository.getAllEntitiesStream();
   }
 
-  Future<int> createExercise(
+  Future<int> createExerciseOld(
       {required String name,
       required ExerciseType exerciseType,
       required String note,
@@ -31,8 +31,31 @@ class ExerciseController extends _$ExerciseController {
     state = await AsyncValue.guard(() async {
       return definitionsRepository.getAllEntitiesStream();
     });
+
+    await future;
+    ref.invalidate(exerciseRepositoryProvider);
+
     return id;
   }
+
+  Future<int> createExercise({required Exercise newExercise}) async {
+    final definitionsRepository = ref.watch(exerciseRepositoryProvider);
+
+    state = const AsyncLoading();
+    var id = await definitionsRepository.insert(newExercise);
+
+    state = await AsyncValue.guard(() async {
+      return definitionsRepository.getAllEntitiesStream();
+    });
+
+    await future;
+    ref.invalidate(exerciseRepositoryProvider);
+
+    return id;
+  }
+
+  // Future<void> updateExercise({required Exercise exercise}) async {
+  // }
 
   Future<Stream<List<Exercise>>> getExercises() async {
     final definitionsRepository = ref.watch(exerciseRepositoryProvider);

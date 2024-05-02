@@ -81,7 +81,6 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
                 AsyncValue(:final value?) => ExerciseListWithTile(
                     onTap: selectItem,
                     isItemSelected: isItemSelected,
-                    workoutRecordId: workoutRecordId,
                     exercises: value,
                   ),
                 _ => Container()

@@ -89,7 +89,7 @@ const routine3 = WorkoutDefinition(id: 3, name: "Routine 3", exercises: [
   WorkoutExercise(order: 3, exercise: bicepsCurl),
 ]);
 const workoutDefinitions = [routine1, routine2, routine3];
-final workoutStartTime = DateTime.now().subtract(const Duration(days: 4 * 7));
+final workoutStartTime = DateTime.now().subtract(const Duration(days: 8 * 7));
 
 List<SetEntry> generateSets(DateTime startTime) {
   final setCount = Random().nextInt(2) + 2;
