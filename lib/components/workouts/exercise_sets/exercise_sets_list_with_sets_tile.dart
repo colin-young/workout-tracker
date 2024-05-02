@@ -158,13 +158,11 @@ class IncompleteExercisesList extends ConsumerWidget {
           workoutRecordId: workoutRecordId,
           textStyle: textStyle,
           swapEnabled: upcomingExercises.isNotEmpty,
-          actionChips: [
-            ActionChip(
-              label: const Text('Add'),
-              avatar: const Icon(Icons.add_outlined),
+          actions: [
+            TextButton(
               onPressed: () {
                 context.go('/workout/$workoutRecordId/addExercise');
-              },
+              }, child: const Text('Add Exercise'),
             ),
           ],
         ),

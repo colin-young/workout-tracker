@@ -8,13 +8,13 @@ class ActionCardHeader extends ConsumerWidget {
     required this.workoutRecordId,
     required this.textStyle,
     required this.swapEnabled,
-    this.actionChips,
+    this.actions,
   });
 
   final int workoutRecordId;
   final TextTheme textStyle;
   final bool swapEnabled;
-  final List<ActionChip>? actionChips;
+  final List<Widget>? actions;
   final String title;
 
   @override
@@ -35,12 +35,12 @@ class ActionCardHeader extends ConsumerWidget {
                             .onSecondaryContainer)),
               ]),
           const SizedBox(height: 8),
-          ...(actionChips != null
+          ...(actions != null
               ? [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: actionChips!,
+                    children: actions!,
                   )
                 ]
               : []),

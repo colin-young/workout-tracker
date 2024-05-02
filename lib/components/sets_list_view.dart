@@ -9,22 +9,24 @@ class SetsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: entries.length,
-      itemBuilder: (BuildContext context, int index) {
-        var entry = entries[index];
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              '${entry.reps.toString()} reps @ ${entries[index].weight}${entries[index].units}',
-              style: itemStyle,
-            ),
-          ],
-        );
-      },
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: entries
+            .map((e) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${e.reps.toString()} reps @ ${e.weight}${e.units}',
+                      style: itemStyle,
+                    ),
+                  ],
+                ))
+            .toList(),
+      ),
     );
   }
 }

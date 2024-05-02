@@ -77,7 +77,8 @@ class WorkoutRunMenu extends ConsumerWidget {
           : switch (lastWorkoutRecordResult) {
               AsyncValue(:final value?) => [
                   MenuItemButton(
-                    leadingIcon: const Icon(FontAwesomeIcons.personWalkingArrowRight),
+                    leadingIcon:
+                        const Icon(FontAwesomeIcons.personWalkingArrowRight),
                     onPressed: () {
                       context.go('/workout/${value.id}');
                     },
@@ -98,13 +99,25 @@ class WorkoutRunMenu extends ConsumerWidget {
       _ => []
     };
 
-    var routineManagerButtons = [
+    var commonButtons = [
       MenuItemButton(
         leadingIcon: const Icon(FontAwesomeIcons.personWalkingArrowLoopLeft),
         onPressed: () {
           context.go('/routines');
         },
         child: const Text('Manage Routines'),
+      ),
+      MenuItemButton(
+        child: const Text('Manage Exercises'),
+        onPressed: () {
+          context.go('/exercises');
+        },
+      ),
+      MenuItemButton(
+        child: const Text('Licenses'),
+        onPressed: () {
+          context.go('/licenses');
+        },
       ),
     ];
 
@@ -113,7 +126,11 @@ class WorkoutRunMenu extends ConsumerWidget {
       _ => false
     }
         ? [
-            Center(child: Text('Start a Routine', style: Theme.of(context).textTheme.titleLarge,)),
+            Center(
+                child: Text(
+              'Start a Routine',
+              style: Theme.of(context).textTheme.titleLarge,
+            )),
             ...startDefinedWorkoutMenuButtons,
             startArbitraryWorkoutMenuButton,
             const Divider(),
@@ -124,23 +141,18 @@ class WorkoutRunMenu extends ConsumerWidget {
       menuChildren: [
         ...startWorkoutMenuButtons,
         ...currentWorkoutMenuButtons,
-        ...routineManagerButtons
+        ...commonButtons
       ],
       builder: (context, controller, child) {
-        return ChipTheme(
-          data: ChipTheme.of(context).copyWith(),
-          child: ActionChip(
-            avatar: const Icon(Icons.menu),
-            label: const Text('Routines'),
-            side: BorderSide.none,
-            onPressed: () {
-              if (controller.isOpen) {
-                controller.close();
-              } else {
-                controller.open();
-              }
-            },
-          ),
+        return IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            if (controller.isOpen) {
+              controller.close();
+            } else {
+              controller.open();
+            }
+          },
         );
       },
     );

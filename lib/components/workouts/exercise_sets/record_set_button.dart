@@ -23,8 +23,7 @@ class RecordSetButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var displayTextColor = Theme.of(context).colorScheme.onSurface;
-    var displayBackgroundColor =
-        Theme.of(context).colorScheme.surface;
+    var displayBackgroundColor = Theme.of(context).colorScheme.surface;
 
     var largeTitleText = Theme.of(context).textTheme.titleMedium;
     var mediumTitleText = Theme.of(context).textTheme.bodySmall;
@@ -84,9 +83,7 @@ class RecordSetButton extends ConsumerWidget {
                       ],
                     ),
                   ]),
-              RoundedButton(
-                text: const Text("Record Set"),
-                icon: Icons.check,
+              FilledButton(
                 onPressed: () async {
                   await ref
                       .read(exerciseSetsControllerProvider.notifier)
@@ -105,6 +102,15 @@ class RecordSetButton extends ConsumerWidget {
                     }
                   });
                 },
+                child: const Row(
+                  children: [
+                    Icon(Icons.check),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text('Record Set'),
+                  ],
+                ),
               )
             ],
           ),

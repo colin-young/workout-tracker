@@ -224,11 +224,11 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
                 charts.RangeAnnotation([
                   charts.LineAnnotationSegment(
                       measure!, charts.RangeAnnotationAxisType.measure,
-                      color: charts.ColorUtil.fromDartColor(Theme.of(context)
-                          .colorScheme
-                          .tertiary
-                          .withOpacity(animation * 0.75)),
-                      dashPattern: [6, 6]),
+                      color: charts.ColorUtil.fromDartColor(
+                        Theme.of(context).colorScheme.primary
+                        .withOpacity(animation * 0.75)
+                      ),
+                      dashPattern: [4, 4]),
                 ])
               ]
             : [])
