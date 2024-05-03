@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workout_tracker/components/common/rounded_button.dart';
 import 'package:workout_tracker/components/common/rounded_display.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
 import 'package:workout_tracker/controller/timer_controller.dart';

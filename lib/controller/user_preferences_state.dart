@@ -9,5 +9,5 @@ mixin UserPreferencesState {
           weightUnits: "unknown",
           autoCloseWorkout: UserPreferencesAutoCloseWorkout(
               autoClose: true, autoCloseWorkoutAfter: Duration()),
-          showcase: UserPreferencesShowcase(summaryPage: false));
+          timerLength: Duration());
 }

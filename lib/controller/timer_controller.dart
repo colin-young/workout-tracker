@@ -12,7 +12,7 @@ part 'timer_controller.g.dart';
 class TimerController extends _$TimerController {
   @override
   Future<void> build() async {
-    final timerMachine = ref.watch(getTimerProvider.future);
+    final timerMachine = ref.watch(getTimerProvider().future);
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => timerMachine);
   }
@@ -20,7 +20,7 @@ class TimerController extends _$TimerController {
   Future<void> handleEvent(TimerEvent event) async {
     state = const AsyncLoading();
 
-    final timerMachine = await ref.watch(getTimerProvider.future);
+    final timerMachine = await ref.watch(getTimerProvider().future);
 
     state = await AsyncValue.guard(() async {
       timerMachine.handleEvent(event);
@@ -29,16 +29,15 @@ class TimerController extends _$TimerController {
 }
 
 @riverpod
-Future<TimerMachine> getTimer(GetTimerRef ref) async {
+Future<TimerMachine> getTimer(GetTimerRef ref, {Duration timerDuration = Duration.zero}) async {
   return TimerMachine.create(
       context:
-          // TODO Read default timer duration from UserPrefs.
-          TimerContext.init(duration: const Duration(minutes: 1, seconds: 15)));
+          TimerContext.init(duration: timerDuration));
 }
 
 @riverpod
 Stream<TimerState> getState(GetStateRef ref) async* {
-  final timer = await ref.watch(getTimerProvider.future);
+  final timer = await ref.watch(getTimerProvider().future);
 
   yield Initiated();
 
@@ -49,7 +48,7 @@ Stream<TimerState> getState(GetStateRef ref) async* {
 
 @riverpod
 Stream<TimerContext> getContext(GetContextRef ref) async* {
-  final timer = await ref.watch(getTimerProvider.future);
+  final timer = await ref.watch(getTimerProvider().future);
 
   yield TimerContext.init(duration: Duration.zero);
 
@@ -60,7 +59,7 @@ Stream<TimerContext> getContext(GetContextRef ref) async* {
 
 @riverpod
 Stream<List<Event>> getAllowedEvents(GetAllowedEventsRef ref) async* {
-  final timer = await ref.watch(getTimerProvider.future);
+  final timer = await ref.watch(getTimerProvider().future);
 
   yield timer.allowedEvents();
 
@@ -71,7 +70,7 @@ Stream<List<Event>> getAllowedEvents(GetAllowedEventsRef ref) async* {
 
 @riverpod
 Stream<Event> getEvents(GetEventsRef ref) async* {
-  final timer = await ref.watch(getTimerProvider.future);
+  final timer = await ref.watch(getTimerProvider().future);
 
   await for (final event in timer.streamEvent) {
     yield event;

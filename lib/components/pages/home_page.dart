@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/common/ui/workout_run_menu.dart';
+import 'package:workout_tracker/timer/timer_set_dialog.dart';
 import 'package:workout_tracker/components/summary_page.dart';
-import 'package:workout_tracker/controller/timer_controller.dart';
-import 'package:workout_tracker/timer/timer_context.dart';
-import 'package:workout_tracker/timer/timer_event.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({
@@ -25,20 +23,16 @@ class HomePage extends ConsumerWidget {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                ref.read(getAllowedEventsProvider.future).then((value) {
-                  if (value.any((element) => element.name == Running().name)) {
-                    ref
-                        .read(timerControllerProvider.notifier)
-                        .handleEvent(Reset());
-                  } else {
-                    ref
-                        .read(timerControllerProvider.notifier)
-                        .handleEvent(Start());
-                  }
-                });
+              onPressed: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const TimerSetDialog(
+                        buttonPadding: 24.0, gridSpacing: 4.0);
+                  },
+                );
               },
-              icon: const Icon(Icons.timer)),
+              icon: const Icon(Icons.timer_outlined)),
           const WorkoutRunMenu()
         ],
       ),

@@ -33,7 +33,7 @@ class CustomScaffold extends Scaffold {
       : super(
             bottomSheet: Consumer(
               builder: (context, ref, child) {
-                final timerResult = ref.watch(getTimerProvider);
+                final timerResult = ref.watch(getTimerProvider());
 
                 return switch (timerResult) {
                   AsyncValue(:final value?) => TimerWidget(

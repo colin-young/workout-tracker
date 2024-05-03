@@ -88,7 +88,7 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
 
   @override
   Widget build(BuildContext context) {
-    final timerContext = ref.watch(getTimerProvider);
+    final timerContext = ref.watch(getTimerProvider());
     final allowedEvents = ref.watch(getAllowedEventsProvider);
     final events = ref.watch(getEventsProvider);
 

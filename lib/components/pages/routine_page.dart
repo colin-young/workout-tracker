@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
 import 'package:workout_tracker/components/workouts/routines/routine_manager.dart';
 

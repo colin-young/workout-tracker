@@ -39,7 +39,7 @@ void main() async {
             weightUnits: "lbs",
             autoCloseWorkout: UserPreferencesAutoCloseWorkout(
                 autoClose: true, autoCloseWorkoutAfter: Duration(hours: 12)),
-            showcase: UserPreferencesShowcase(summaryPage: false),
+            timerLength: Duration(minutes: 1, seconds: 30),
           ).toJson());
 
       await exerciseStore.add(db, bicepsCurl.toJson());
@@ -116,6 +116,7 @@ class MyApp extends StatelessWidget {
       title: 'Workout Tracker',
       theme: FlexThemeData.light(
         scheme: FlexScheme.bahamaBlue,
+        transparentStatusBar: false,
         subThemesData: const FlexSubThemesData(
           interactionEffects: false,
           blendOnColors: false,
@@ -131,8 +132,10 @@ class MyApp extends StatelessWidget {
           useInputDecoratorThemeInDialogs: true,
           snackBarElevation: 6.0,
           snackBarBackgroundSchemeColor: SchemeColor.inverseSurface,
+          appBarBackgroundSchemeColor: SchemeColor.primaryContainer,
           menuRadius: 16.0,
           menuPadding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 16.0),
+          menuBarShadowColor: Color(0x00000000),
           menuIndicatorRadius: 8.0,
           navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
           navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
@@ -153,21 +156,19 @@ class MyApp extends StatelessWidget {
           navigationRailBackgroundSchemeColor: SchemeColor.surface,
           navigationRailLabelType: NavigationRailLabelType.none,
         ),
-        // keyColors: const FlexKeyColors(
-        //   useSecondary: true,
-        //   useTertiary: true,
-        // ),
+        keyColors: const FlexKeyColors(
+          useSecondary: true,
+          useTertiary: true,
+        ),
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         swapLegacyOnMaterial3: true,
-        // To use the Playground font, add GoogleFonts package and uncomment
-        // fontFamily: GoogleFonts.notoSans().fontFamily,
       ),
       darkTheme: FlexThemeData.dark(
         scheme: FlexScheme.bahamaBlue,
+        transparentStatusBar: false,
         subThemesData: const FlexSubThemesData(
           interactionEffects: false,
-          blendOnColors: false,
           useTextTheme: true,
           splashType: FlexSplashType.inkRipple,
           elevatedButtonSecondarySchemeColor: SchemeColor.onPrimary,
@@ -182,6 +183,7 @@ class MyApp extends StatelessWidget {
           snackBarBackgroundSchemeColor: SchemeColor.inverseSurface,
           menuRadius: 16.0,
           menuPadding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 16.0),
+          menuBarShadowColor: Color(0x00000000),
           menuIndicatorRadius: 8.0,
           navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
           navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
@@ -202,7 +204,10 @@ class MyApp extends StatelessWidget {
           navigationRailBackgroundSchemeColor: SchemeColor.surface,
           navigationRailLabelType: NavigationRailLabelType.none,
         ),
-        keyColors: const FlexKeyColors(),
+        keyColors: const FlexKeyColors(
+          useSecondary: true,
+          useTertiary: true,
+        ),
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         swapLegacyOnMaterial3: true,

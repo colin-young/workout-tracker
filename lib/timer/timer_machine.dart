@@ -36,7 +36,7 @@ class TimerMachine extends Machine<TimerContext, TimerState, TimerEvent> {
             _timer?.cancel();
           }
           super.handleEvent(Finish());
-          super.handleEvent(Reset());
+          super.handleEvent(Reset(duration: context.timerDuration));
         }
       } else {
         if (_timer != null) {
@@ -50,28 +50,30 @@ class TimerMachine extends Machine<TimerContext, TimerState, TimerEvent> {
     } else {
       _timer?.cancel();
     }
-
-    // super.handleEvent(UpdateDisplay());
   }
 
   factory TimerMachine.create({required TimerContext context}) {
     return TimerMachine._(
         state: Initiated(),
         events: {
-          Initiated(): {Start(): Running(), UpdateDisplay(): Initiated()},
+          Initiated(): {
+            Start(): Running(),
+            UpdateDisplay(): Initiated(),
+            Reset(duration: context.timerDuration): Initiated()
+          },
           Running(): {
             Finish(): Finished(),
             Pause(): Paused(),
-            Reset(): Initiated(),
+            Reset(duration: context.timerDuration): Initiated(),
             UpdateDisplay(): Running(),
           },
           Paused(): {
             Start(): Running(),
-            Reset(): Initiated(),
+            Reset(duration: context.timerDuration): Initiated(),
             UpdateDisplay(): Paused(),
           },
           Finished(): {
-            Reset(): Initiated(),
+            Reset(duration: context.timerDuration): Initiated(),
             UpdateDisplay(): Finished(),
           }
         },

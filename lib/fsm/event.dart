@@ -2,10 +2,10 @@
 // based on https://github.com/SandroMaglione/dart-state-chart
 import 'package:workout_tracker/fsm/state.dart';
 
-typedef EventAction<C, S extends MachineState> = C Function(C ctx, S prevState, S nextState)?;
+typedef EventAction<C> = C Function(C ctx)?;
 
 abstract class Event<C, S extends MachineState> {
-  final EventAction<C, S> action;
+  final EventAction<C> action;
   final String name;
   final bool includeInStream;
 

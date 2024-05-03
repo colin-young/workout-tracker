@@ -55,7 +55,7 @@ abstract class Machine<C, S extends MachineState<C>, E extends Event> {
     /// Apply `event` action
     final action = event.action;
     final actionContext = action != null
-        ? (action(context, state, nextState) ?? context)
+        ? (action(context) ?? context)
         : context;
     context = actionContext;
 
