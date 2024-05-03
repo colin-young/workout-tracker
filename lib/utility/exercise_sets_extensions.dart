@@ -5,7 +5,7 @@ extension SetsDisplayString on ExerciseSets? {
     return this
             ?.sets
             .map((element) =>
-                '${element.reps}⨉${element.weight} ${element.units}')
+                '${element.reps}⨉${element.weight} ${element.units}') // NON-NLS
             .join(', ') ??
         'No sets recorded';
   }

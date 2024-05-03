@@ -49,7 +49,7 @@ class ExerciseViewCard extends StatelessWidget {
               ],
             ),
             entry.note != null && entry.note!.isNotEmpty
-                ? const CardTitleDivider(child: Text("Notes"))
+                ? const CardTitleDivider(child: Text('Notes'))
                 : const SizedBox(),
             entry.note != null
                 ? Padding(

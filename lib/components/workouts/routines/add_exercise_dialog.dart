@@ -53,7 +53,7 @@ class _AddExerciseDialogState extends ConsumerState<AddExerciseDialog> {
     final exercisesResult = ref.watch(getExercisesProvider);
     
     return AlertDialog(
-      title: const Text('Select Exercises'),
+      title: const Text('Select exercises'),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
         height: MediaQuery.of(context).size.width * 0.85,
@@ -61,14 +61,14 @@ class _AddExerciseDialogState extends ConsumerState<AddExerciseDialog> {
             duration: const Duration(milliseconds: 200),
             child: isAdding
                 ? ExerciseEditForm(
-                    exercise: const Exercise(name: '', settings: []),
+                    exercise: const Exercise(name: '', settings: []), // NON-NLS
                     cancelLabel: 'Discard',
                     onCancel: () {
                       setState(() {
                         isAdding = false;
                       });
                     },
-                    saveLabel: 'Add Exercise',
+                    saveLabel: 'Add exercise',
                     afterSave: () {
                       setState(() {
                         isAdding = false;
@@ -92,7 +92,7 @@ class _AddExerciseDialogState extends ConsumerState<AddExerciseDialog> {
                   isAdding = !isAdding;
                 });
               },
-              child: const Text('Add Exercise')),
+              child: const Text('Add exercise')),
         TextButton(
             onPressed: () {
               Navigator.of(context).pop();

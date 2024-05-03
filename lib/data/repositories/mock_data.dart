@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/exercise_setting.dart';
 import 'package:workout_tracker/domain/exercise_type.dart';
@@ -11,54 +10,54 @@ import 'package:workout_tracker/domain/exercise_sets.dart';
 
 const bicepsCurl = Exercise(
     id: 1,
-    name: "Biceps Curl",
+    name: 'Biceps Curl',
     exerciseType: ExerciseType.dumbbell,
-    note: "Lorem ipsum dolor sit amet.",
+    note: 'Lorem ipsum dolor sit amet.',
     settings: []);
 const seatedLegCurl = Exercise(
     id: 2,
-    name: "Seated Leg Curl",
+    name: 'Seated Leg Curl',
     exerciseType: ExerciseType.machine,
-    note: "Sample note content.",
+    note: 'Sample note content.',
     settings: [
-      ExerciseSetting(setting: "lower", value: "3"),
-      ExerciseSetting(setting: "middle", value: "6"),
-      ExerciseSetting(setting: "upper", value: "3"),
-      ExerciseSetting(setting: "seat", value: "4")
+      ExerciseSetting(setting: 'lower', value: '3'),
+      ExerciseSetting(setting: 'middle', value: '6'),
+      ExerciseSetting(setting: 'upper', value: '3'),
+      ExerciseSetting(setting: 'seat', value: '4')
     ]);
 const chestPress = Exercise(
     id: 3,
-    name: "Chest Press",
+    name: 'Chest Press',
     exerciseType: ExerciseType.machine,
     settings: []);
 const pecFly = Exercise(
-    id: 4, name: "Pec Fly", exerciseType: ExerciseType.machine, settings: []);
+    id: 4, name: 'Pec Fly', exerciseType: ExerciseType.machine, settings: []);
 const legExtension = Exercise(
     id: 5,
-    name: "Leg Extension",
+    name: 'Leg Extension',
     exerciseType: ExerciseType.machine,
     settings: [
-      ExerciseSetting(setting: "lower", value: "1"),
-      ExerciseSetting(setting: "upper", value: "2")
+      ExerciseSetting(setting: 'lower', value: '1'),
+      ExerciseSetting(setting: 'upper', value: '2')
     ]);
 const benchDip = Exercise(
     id: 6,
-    name: "Bench Dip",
+    name: 'Bench Dip',
     exerciseType: ExerciseType.bodyWeight,
     settings: []);
 const shoulderPress = Exercise(
     id: 7,
-    name: "Shoulder Press",
+    name: 'Shoulder Press',
     exerciseType: ExerciseType.dumbbell,
     settings: []);
 const forwardRaise = Exercise(
     id: 8,
-    name: "Forward Raise",
+    name: 'Forward Raise',
     exerciseType: ExerciseType.dumbbell,
     settings: []);
 const tricepPulldown = Exercise(
     id: 9,
-    name: "Tricep Pulldown",
+    name: 'Tricep Pulldown',
     exerciseType: ExerciseType.machine,
     settings: []);
 const exerciseList = [
@@ -72,18 +71,18 @@ const exerciseList = [
   forwardRaise,
   tricepPulldown,
 ];
-const routine1 = WorkoutDefinition(id: 1, name: "Routine 1", exercises: [
+const routine1 = WorkoutDefinition(id: 1, name: 'Routine 1', exercises: [
   WorkoutExercise(id: 1, order: 1, exercise: bicepsCurl),
   WorkoutExercise(id: 2, order: 2, exercise: seatedLegCurl),
   WorkoutExercise(id: 5, order: 3, exercise: legExtension),
   WorkoutExercise(id: 5, order: 4, exercise: chestPress),
   WorkoutExercise(id: 5, order: 5, exercise: pecFly),
 ]);
-const routine2 = WorkoutDefinition(id: 2, name: "Routine 2", exercises: [
+const routine2 = WorkoutDefinition(id: 2, name: 'Routine 2', exercises: [
   WorkoutExercise(id: 3, order: 1, exercise: chestPress),
   WorkoutExercise(id: 4, order: 2, exercise: pecFly),
 ]);
-const routine3 = WorkoutDefinition(id: 3, name: "Routine 3", exercises: [
+const routine3 = WorkoutDefinition(id: 3, name: 'Routine 3', exercises: [
   WorkoutExercise(order: 1, exercise: chestPress),
   WorkoutExercise(order: 2, exercise: pecFly),
   WorkoutExercise(order: 3, exercise: bicepsCurl),
@@ -112,7 +111,7 @@ SetEntry generateSetEntry(
     SetEntry(
         reps: Random().nextInt(10) + 5,
         weight: Random().nextInt(100) + 20,
-        units: "lbs",
+        units: 'lbs',
         finishedAt: previousSetStartTime.add(setDuration));
 
 Iterable<ExerciseSets> createExerciseSets(

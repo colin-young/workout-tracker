@@ -2,7 +2,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
-import 'dart:developer' as developer;
 
 import 'package:workout_tracker/domain/exercise.dart';
 
@@ -17,7 +16,7 @@ class ExerciseRepository implements Repository<Exercise> {
   late final StoreRef<int, Map<String, dynamic>> _store;
 
   ExerciseRepository({required this.database}) {
-    _store = intMapStoreFactory.store('exercise_store');
+    _store = intMapStoreFactory.store('exercise_store'); // NON-NLS
   }
 
   @override
@@ -25,7 +24,6 @@ class ExerciseRepository implements Repository<Exercise> {
 
   @override
   Stream<List<Exercise>> getAllEntitiesStream() {
-    developer.log('getAllEntitiesStream', name: 'ExerciseRepository');
     return _store.query().onSnapshots(database).map(
           (snapshot) => snapshot
               .map((definition) => Exercise.fromJson(definition.value)
@@ -42,13 +40,11 @@ class ExerciseRepository implements Repository<Exercise> {
 
   @override
   Future<int> insert(Exercise exercise) {
-    developer.log('insert', name: 'ExerciseRepository');
     return _store.add(database, exercise.toJson());
   }
 
   @override
   Future update(Exercise exercise) {
-    developer.log('update', name: 'ExerciseRepository');
     return _store.record(exercise.id).update(database, exercise.toJson());
   }
 
@@ -70,7 +66,7 @@ Future<Exercise> getExercise(GetExerciseRef ref,
     {required int entityId}) async {
   return entityId > 0
       ? ref.watch(exerciseRepositoryProvider).getEntity(entityId)
-      : Future.value(const Exercise(name: "", settings: []));
+      : Future.value(const Exercise(name: '', settings: [])); // NON-NLS
 }
 
 // @riverpod
@@ -82,18 +78,15 @@ Future<Exercise> getExercise(GetExerciseRef ref,
 @riverpod
 Future<int> insertExercise(InsertExerciseRef ref,
     {required Exercise exercise}) {
-  developer.log('insertExercise', name: 'exerciseRepositoryProvider');
   return ref.watch(exerciseRepositoryProvider).insert(exercise);
 }
 
 @riverpod
 Future deleteExercise(DeleteExerciseRef ref, {required int exerciseId}) {
-  developer.log('deleteExercise', name: 'exerciseRepositoryProvider');
   return ref.watch(exerciseRepositoryProvider).delete(exerciseId);
 }
 
 @riverpod
 Future updateExercise(UpdateExerciseRef ref, {required Exercise exercise}) {
-  developer.log('updateExercise', name: 'exerciseRepositoryProvider');
   return ref.watch(exerciseRepositoryProvider).update(exercise);
 }

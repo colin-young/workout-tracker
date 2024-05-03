@@ -183,7 +183,6 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
         );
 
     const buttonRowHeight = 64;
-    const dividerHeight = 16;
     const footerHeight = 36;
 
     return Card(
@@ -215,7 +214,7 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
                   opacity: fadeInDelayed.value,
                   child: TextFormField(
                     controller: nameController,
-                    decoration: inputDecoration("Name"),
+                    decoration: inputDecoration('Name'),
                   ),
                 ),
                 Stack(
@@ -333,7 +332,7 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
                                                   );
                                                 },
                                                 child:
-                                                    const Text('Change Exercises'),
+                                                    const Text('Change exercises'),
                                               ),
                                             ),
                                             itemCount: _exercises.length,

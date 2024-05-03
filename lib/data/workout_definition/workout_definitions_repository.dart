@@ -3,7 +3,6 @@ import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
-import 'dart:developer' as developer;
 
 part 'workout_definitions_repository.g.dart';
 
@@ -17,7 +16,7 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
   late final StoreRef<int, Map<String, dynamic>> _store;
 
   WorkoutDefinitionsRepository({required this.database}) {
-    _store = intMapStoreFactory.store('workout_definition_store');
+    _store = intMapStoreFactory.store('workout_definition_store'); // NON-NLS
   }
 
   @override
@@ -26,7 +25,6 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
 
   @override
   Stream<List<WorkoutDefinition>> getAllEntitiesStream() {
-    developer.log('getAllEntitiesStream', name: 'WorkoutDefinitionsRepository');
     return _store.query().onSnapshots(database).map(
           (snapshot) => snapshot
               .map((definition) => WorkoutDefinition.fromJson(definition.value)
@@ -45,13 +43,11 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
 
   @override
   Future<int> insert(WorkoutDefinition workoutDefinition) {
-    developer.log('insert', name: 'WorkoutDefinitionsRepository');
     return _store.add(database, workoutDefinition.toJson());
   }
 
   @override
   Future update(WorkoutDefinition workoutDefinition) {
-    developer.log('update', name: 'WorkoutDefinitionsRepository');
     return _store
         .record(workoutDefinition.id)
         .update(database, workoutDefinition.toJson());
@@ -71,5 +67,5 @@ Future<WorkoutDefinition> getWorkoutDefinition(GetWorkoutDefinitionRef ref,
     {required int entityId}) async {
   return entityId > 0
       ? ref.watch(workoutDefinitionsRepositoryProvider).getEntity(entityId)
-      : Future.value(const WorkoutDefinition(name: "", exercises: []));
+      : Future.value(const WorkoutDefinition(name: '', exercises: [])); // NON-NLS
 }

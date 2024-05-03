@@ -41,7 +41,7 @@ class _ExerciseEditFormState extends ConsumerState<ExerciseEditForm> {
     super.initState();
     _exercise = widget.exercise;
     nameController.text = _exercise.name;
-    noteController.text = _exercise.note ?? '';
+    noteController.text = _exercise.note ?? ''; // NON-NLS
 
     nameController.addListener(() {
       updateExercise(_exercise.copyWith(name: nameController.text));
@@ -109,7 +109,7 @@ class _ExerciseEditFormState extends ConsumerState<ExerciseEditForm> {
                 children: ([
                   TextFormField(
                     controller: nameController,
-                    decoration: inputDecoration("Name"),
+                    decoration: inputDecoration('Name'),
                     onChanged: (value) {
                       setState(() {
                         updateExercise(_exercise.copyWith(name: value));
@@ -123,7 +123,7 @@ class _ExerciseEditFormState extends ConsumerState<ExerciseEditForm> {
                               _exercise.copyWith(exerciseType: newType));
                         });
                       },
-                      decoration: inputDecoration("Type"),
+                      decoration: inputDecoration('Type'),
                       value: _exercise.exerciseType,
                       items: ExerciseType.values
                           .map((exerciseType) => DropdownMenuItem(
@@ -146,7 +146,7 @@ class _ExerciseEditFormState extends ConsumerState<ExerciseEditForm> {
                           .toList()),
                   TextFormField(
                     controller: noteController,
-                    decoration: inputDecoration("Note"),
+                    decoration: inputDecoration('Note'),
                     maxLines: null,
                     onChanged: (value) {
                       setState(() {

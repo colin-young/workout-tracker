@@ -51,7 +51,10 @@ class _DigitWheelState extends State<DigitWheel> {
           borderRadius: BorderRadius.all(Radius.circular(6))),
       child: WheelPicker(
         builder: (context, index) {
-          return Text("$index", style: textStyle);
+          return Text(
+            "$index", // NON-NLS
+            style: textStyle,
+          );
         },
         controller: wheelController,
         selectedIndexColor: Theme.of(context).colorScheme.onSurface,
@@ -70,8 +73,7 @@ class _DigitWheelState extends State<DigitWheel> {
             surroundingOpacity: 0.5,
             magnification: 1.2,
             shiftAnimationStyle: const WheelShiftAnimationStyle(
-                duration: Duration(milliseconds: 300),
-                curve: Easing.standard)),
+                duration: Duration(milliseconds: 300), curve: Easing.standard)),
       ),
     );
   }

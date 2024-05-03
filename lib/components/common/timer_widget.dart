@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/controller/timer_controller.dart';
 import 'package:workout_tracker/timer/timer_context.dart';
 import 'package:workout_tracker/timer/timer_event.dart';
-import 'dart:developer' as developer;
 
 class TimerWidget extends ConsumerStatefulWidget {
   final Duration animationDuration;
@@ -24,14 +23,12 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
   late bool isVisible;
 
   double widgetHeight = 72.0;
-  String display = '';
+  String display = ''; // NON-NLS
 
   @override
   void initState() {
     super.initState();
     isVisible = widget.isVisible;
-    developer.log('Animation: ${_controller.value}',
-        name: 'TimerWidget.initState');
   }
 
   @override
@@ -52,8 +49,7 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
     parent: _controller,
     curve: const Interval(0, 0.75, curve: Easing.standardDecelerate),
     reverseCurve:
-        const Interval(0.25, 1.0, curve: Easing.standardAccelerate)
-            .flipped,
+        const Interval(0.25, 1.0, curve: Easing.standardAccelerate).flipped,
   ));
 
   late final Animation<double> _opacity = Tween(begin: 0.0, end: 1.0).animate(
@@ -123,11 +119,14 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
     var textStyle = Theme.of(context).textTheme;
 
     final Size timerDisplaysize = (TextPainter(
-            text: TextSpan(text: "00:00", style: textStyle.headlineMedium),
-            maxLines: 1,
-            textScaler: MediaQuery.of(context).textScaler,
-            textDirection: TextDirection.ltr)
-          ..layout())
+      text: TextSpan(
+        text: '00:00', // NON-NLS
+        style: textStyle.headlineMedium,
+      ),
+      maxLines: 1,
+      textScaler: MediaQuery.of(context).textScaler,
+      textDirection: TextDirection.ltr,
+    )..layout())
         .size;
     var resetIconButton = IconButton(
       iconSize: 40,

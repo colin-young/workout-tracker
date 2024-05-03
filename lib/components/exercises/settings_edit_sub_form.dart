@@ -24,7 +24,7 @@ class SettingsEditSubForm extends StatelessWidget {
     return Column(
       children: [
         settings.isNotEmpty
-            ? const CardTitleDivider(child: Text("Settings"))
+            ? const CardTitleDivider(child: Text('Settings'))
             : const SizedBox(),
         settings.isNotEmpty
             ? Column(
@@ -44,11 +44,11 @@ class SettingsEditSubForm extends StatelessWidget {
             : const SizedBox(),
         TextButton(
             onPressed: () =>
-                addSetting(const ExerciseSetting(setting: "", value: "")), child: const Row(
+                addSetting(const ExerciseSetting(setting: '', value: '')), child: const Row( // NON-NLS
                   children: [
                     Icon(Icons.add),
                     SizedBox(width: 8,),
-                    Text("Add Setting"),
+                    Text('Add setting'),
                   ],
                 ),),
       ],

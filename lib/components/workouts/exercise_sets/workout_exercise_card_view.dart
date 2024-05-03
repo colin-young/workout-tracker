@@ -163,11 +163,11 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
                     widget.workoutExercise.exercise.name, headingStyle!)
                 .height +
             widget.inset +
-            TextUiUtilities.getTextSize('dummy string', subHeadingStyle!)
+            TextUiUtilities.getTextSize('dummy string', subHeadingStyle!) // NON-NLS
                 .height +
             widget.inset,
         widget.workoutExercise.sets.length *
-            TextUiUtilities.getTextSize('1 dummy entry', setEntryStyle!)
+            TextUiUtilities.getTextSize('1 dummy entry', setEntryStyle!) // NON-NLS
                 .height);
 
     return GestureDetector(
@@ -363,7 +363,7 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
                                 ),
                               ],
                             )
-                          : const Text("in progress"),
+                          : const Text('in progress'),
                     ],
                   ),
                   Expanded(

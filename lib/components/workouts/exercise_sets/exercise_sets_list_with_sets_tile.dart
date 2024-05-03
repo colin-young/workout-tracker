@@ -42,7 +42,7 @@ class ExerciseSetsListWithSetsTile extends ConsumerWidget {
               shrinkWrap: true,
               itemCount: _workoutSets.length,
               itemBuilder: (context, index) => Dismissible(
-                    key: Key('$index'),
+                    key: Key('$index'), // NON-NLS
                     onDismissed: (direction) async {
                       await ref.read(deleteExerciseSetsProvider(
                               exerciseId: _workoutSets[index].id)
@@ -57,7 +57,7 @@ class ExerciseSetsListWithSetsTile extends ConsumerWidget {
                               padding: const EdgeInsets.only(right: 12),
                               child: ActionChip(
                                 avatar: const Icon(Icons.swap_vert),
-                                label: const Text('Make Current'),
+                                label: const Text('Make current'),
                                 onPressed: () {
                                   ref
                                       .read(exerciseSetsControllerProvider
@@ -154,15 +154,15 @@ class IncompleteExercisesList extends ConsumerWidget {
 
     return WorkoutTrackerCard(
         header: ActionCardHeader(
-          title: 'Up Next',
+          title: 'Up next',
           workoutRecordId: workoutRecordId,
           textStyle: textStyle,
           swapEnabled: upcomingExercises.isNotEmpty,
           actions: [
             TextButton(
               onPressed: () {
-                context.go('/workout/$workoutRecordId/addExercise');
-              }, child: const Text('Add Exercise'),
+                context.go('/workout/$workoutRecordId/addExercise'); // NON-NLS
+              }, child: const Text('Add exercise'),
             ),
           ],
         ),

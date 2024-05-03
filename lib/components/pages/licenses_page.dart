@@ -11,7 +11,7 @@ class LicencesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: AppBar(
-        title: const Text("Licences"),
+        title: const Text('Licences'),
       ),
       body: ListView.builder(
         physics: const BouncingScrollPhysics(),

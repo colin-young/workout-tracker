@@ -1,23 +1,15 @@
 import 'dart:async';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sembast/sembast.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/sembast_repository.dart';
-import 'dart:developer' as developer;
-
 import 'package:workout_tracker/domain/exercise_sets.dart';
 
 part 'exercise_sets_repository.g.dart';
 
 @riverpod
 ExerciseSetsRepository exerciseSetsRepository(ExerciseSetsRepositoryRef ref) {
-  developer.log('entering',
-      name: 'ExerciseSetsRepository.exerciseSetsRepository');
-
   ref.onDispose(() {
-    developer.log('disposing',
-        name: 'ExerciseSetsRepository.exerciseSetsRepository');
   });
 
   return ExerciseSetsRepository(database: ref.watch(databaseProvider));
@@ -31,7 +23,7 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
   Stream<ExerciseSets> get streamExerciseSets => _setsController.stream;
 
   ExerciseSetsRepository({required this.database}) {
-    _store = intMapStoreFactory.store('exercise_sets_store');
+    _store = intMapStoreFactory.store('exercise_sets_store'); // NON-NLS
   }
 
   Future<void> close() async {
@@ -57,8 +49,8 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
     return _store
         .query(
             finder: Finder(
-                filter: Filter.equals('workoutId', workoutId),
-                sortOrders: [SortOrder('workoutId'), SortOrder('order')]))
+                filter: Filter.equals('workoutId', workoutId), // NON-NLS
+                sortOrders: [SortOrder('workoutId'), SortOrder('order')])) // NON-NLS
         .onSnapshots(database)
         .map(
           (snapshot) => snapshot
@@ -85,7 +77,6 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
 
   @override
   Future update(ExerciseSets exercise) async {
-    developer.log('', name: 'exerciseSetsRepositoryProvider.update');
     var update =
         await _store.record(exercise.id).update(database, exercise.toJson());
     _setsController.add(exercise);
@@ -270,13 +261,6 @@ Stream<List<ExerciseSets>> getCompletedExerciseSetsStream(
 Stream<List<ExerciseSets>> getIncompleteExerciseSetsStream(
     GetIncompleteExerciseSetsStreamRef ref,
     {required int workoutId}) async* {
-  developer.log('entering',
-      name: 'ExerciseSetsRepository.getIncompleteExerciseSetsStream');
-
-  ref.onDispose(() {
-    developer.log('disposing',
-        name: 'ExerciseSetsRepository.getIncompleteExerciseSetsStream');
-  });
 
   final sets = ref
       .watch(exerciseSetsRepositoryProvider)
@@ -349,20 +333,11 @@ Future updateExerciseSets(UpdateExerciseSetsRef ref,
 Stream<ExerciseSets?> workoutCurrentExerciseStream(
     WorkoutCurrentExerciseStreamRef ref,
     {required int workoutRecordId}) async* {
-  developer.log('entering',
-      name: 'WorkoutRecordRepository.workoutCurrentExerciseStream');
-
-  ref.onDispose(() {
-    developer.log('disposing',
-        name: 'WorkoutRecordRepository.workoutCurrentExerciseStream');
-  });
   final workout = await ref.watch(
       getIncompleteExerciseSetsStreamProvider(workoutId: workoutRecordId)
           .future);
 
   if (workout.isNotEmpty) {
-    developer.log('first item: ${workout.first.id}, ${workout.first.exercise.name}',
-        name: 'WorkoutRecordRepository.workoutCurrentExerciseStream');
     yield workout.first;
   }
 }

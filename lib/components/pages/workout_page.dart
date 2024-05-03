@@ -21,7 +21,7 @@ class WorkoutPage extends ConsumerWidget {
       appBar: AppBar(
         title: switch (workoutResult) {
           AsyncValue(:final value, hasValue: true) =>
-            Text(value?.exercise.name ?? ''),
+            Text(value?.exercise.name ?? ''), // NON-NLS
           AsyncError(:final error) => Text(error.toString()),
           _ => Container()
         },
@@ -49,7 +49,7 @@ class CompleteSetsFAB extends ConsumerWidget {
 
     return switch (canComplete) {
       AsyncValue(:final value?) => value
-          ? FloatingActionButton(
+          ? FloatingActionButton.extended(
               onPressed: () {
                 ref
                     .read(workoutCurrentExerciseStreamProvider(
@@ -63,7 +63,8 @@ class CompleteSetsFAB extends ConsumerWidget {
                   }
                 });
               },
-              child: const Icon(Icons.check),
+              label: const Text('Complete sets'),
+              icon: const Icon(Icons.check),
             )
           : Container(),
       _ => Container()

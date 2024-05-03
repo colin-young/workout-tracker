@@ -60,7 +60,7 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
         });
     return CustomScaffold(
         appBar: AppBar(
-          title: const Text('Add Exercise'),
+          title: const Text('Add exercise'),
           actions: [
             ...(switch (exercises) {
               AsyncValue(:final value?) => _selected.length < value.length
@@ -109,7 +109,7 @@ class AddSelectedExercises extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return FloatingActionButton(
+    return FloatingActionButton.extended(
       onPressed: () {
         ref
             .read(
@@ -133,7 +133,8 @@ class AddSelectedExercises extends ConsumerWidget {
 
         context.pop();
       },
-      child: const Icon(Icons.playlist_add_check),
+      label: const Text('Add to workout'),
+      icon: const Icon(Icons.playlist_add_check),
     );
   }
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/ui/card_title_divider.dart';
 import 'package:workout_tracker/components/common/relative_date.dart';
-import 'package:workout_tracker/components/common/rounded_button.dart';
 import 'package:workout_tracker/controller/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/utility/workout_utilities.dart';
@@ -74,15 +72,12 @@ class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
                   switch (isCompleteFuture) {
                     AsyncValue(:final value?) => value
                         ? const SizedBox()
-                        : RoundedButton(
+                        : FilledButton.tonal(
                             onPressed: () {
-                              context.go('/workout/$workoutRecordId');
+                              context.go('/workout/$workoutRecordId'); // NON-NLS
                             },
-                            text: Text(
-                              "Continue Current",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            icon: FontAwesomeIcons.personWalkingArrowRight),
+                            child: const Text('Continue current'),
+                          ),
                     _ => const SizedBox(),
                   },
                 ]),
@@ -100,17 +95,17 @@ class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
                 children: [
                   switch (totalExercisesFuture) {
                     AsyncValue(:final value, hasValue: true) =>
-                      Text('$value exercises'),
+                      Text('$value exercises'), // NON-NLS
                     _ => const SizedBox(width: 0, height: 0),
                   },
                   switch (totalRepsFutures) {
                     AsyncValue(:final value, hasValue: true) =>
-                      Text('$value reps'),
+                      Text('$value reps'), // NON-NLS
                     _ => const SizedBox(width: 0, height: 0),
                   },
                   switch (totalWeightFutures) {
                     AsyncValue(:final value, hasValue: true) =>
-                      Text('$value ${prefs.weightUnits}'),
+                      Text('$value ${prefs.weightUnits}'), // NON-NLS
                     _ => const Text('No exercises'),
                   },
                 ],

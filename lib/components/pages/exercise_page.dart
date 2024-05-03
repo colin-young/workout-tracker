@@ -12,9 +12,9 @@ class ExercisePage extends StatelessWidget {
 
   IconData getExerciseIcon(String icon) {
     switch (icon) {
-      case 'dumbbell':
+      case 'dumbbell': // NON-NLS
         return FontAwesomeIcons.dumbbell;
-      case 'machine':
+      case 'machine': // NON-NLS
         return FontAwesomeIcons.gears;
       default:
         return FontAwesomeIcons.question;
@@ -25,7 +25,7 @@ class ExercisePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: AppBar(
-        title: const Text("Exercises"),
+        title: const Text('Exercises'),
       ),
       body: Consumer(builder: (_, WidgetRef ref, __) {
         final exerciseResult = ref.watch(exerciseControllerProvider);
@@ -52,7 +52,7 @@ class ExercisePage extends StatelessWidget {
                             var entry = items[index];
                             return GestureDetector(
                               onDoubleTap: () => context
-                                  .go('/exercises/exercise/${entry.id}/edit'),
+                                  .go('/exercises/exercise/${entry.id}/edit'), // NON-NLS
                               child: ExerciseViewCard(entry: entry),
                             );
                           },
@@ -63,14 +63,12 @@ class ExercisePage extends StatelessWidget {
             error: (e, st) => Text(e.toString()),
             loading: () => const Center(child: CircularProgressIndicator()));
       }),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          context.go('/exercises/exercise/-1/edit');
+          context.go('/exercises/exercise/-1/edit'); // NON-NLS
         },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
+        label: const Text('Add exercise'),
+        icon: const Icon(Icons.add),
       ),
     );
   }

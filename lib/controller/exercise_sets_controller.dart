@@ -6,7 +6,6 @@ import 'package:workout_tracker/data/repositories/workout_record_repository.dart
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
-import 'dart:developer' as developer;
 
 import 'package:workout_tracker/utility/exercise_sets_extensions.dart';
 
@@ -71,7 +70,6 @@ class ExerciseSetsController extends _$ExerciseSetsController {
 
   Future<void> addWorkoutSet(
       {required int workoutRecordId, required SetEntry newSet}) async {
-    developer.log('executing', name: 'ExerciseSetsController.addWorkoutSet');
     state = const AsyncLoading();
 
     final currentSets = await ref.read(
@@ -95,7 +93,6 @@ class ExerciseSetsController extends _$ExerciseSetsController {
 
       ref.invalidate(getAllExerciseSetsByExerciseStreamProvider);
 
-      developer.log('returning', name: 'ExerciseSetsController.addWorkoutSet');
       return await ref.watch(getAllExerciseSetsStreamProvider.future);
     });
   }
@@ -156,8 +153,6 @@ class ExerciseSetsController extends _$ExerciseSetsController {
   int addToExerciseSetsList(
       ExerciseSets value, int currentOrder, List<ExerciseSets> newExercises,
       {String action = 'Adding'}) {
-    developer.log('$action ${value.exercise.name} at order: $currentOrder',
-        name: 'ExerciseSetsController.reorderExercises');
 
     if (value.order != currentOrder) {
       newExercises.add(value.copyWith(order: currentOrder));

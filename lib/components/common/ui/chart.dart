@@ -148,7 +148,10 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
               domainFn: (TimeSeriesSets sets, _) => sets.time,
               measureFn: (TimeSeriesSets sets, _) => sets.value,
               data: trend!,
-            )..setAttribute(charts.rendererIdKey, 'trend')
+            )..setAttribute(
+                charts.rendererIdKey,
+                'trend', // NON-NLS
+              )
           ]
         : <charts.Series<TimeSeriesSets, DateTime>>[];
 
@@ -224,10 +227,10 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
                 charts.RangeAnnotation([
                   charts.LineAnnotationSegment(
                       measure!, charts.RangeAnnotationAxisType.measure,
-                      color: charts.ColorUtil.fromDartColor(
-                        Theme.of(context).colorScheme.primary
-                        .withOpacity(animation * 0.75)
-                      ),
+                      color: charts.ColorUtil.fromDartColor(Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(animation * 0.75)),
                       dashPattern: [4, 4]),
                 ])
               ]
@@ -248,16 +251,16 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
       ),
       customSeriesRenderers: [
         charts.LineRendererConfig(
-            customRendererId: 'trend',
+            customRendererId: 'trend', // NON-NLS
             dashPattern: [6, 6],
             strokeWidthPx: animation * 2),
         charts.BarRendererConfig(
-          customRendererId: 'rangeBar',
+          customRendererId: 'rangeBar', // NON-NLS
           groupingType: charts.BarGroupingType.stacked,
           maxBarWidthPx: 2,
         ),
         charts.BarTargetLineRendererConfig(
-          customRendererId: 'rangeCap',
+          customRendererId: 'rangeCap', // NON-NLS
           groupingType: charts.BarGroupingType.stacked,
           strokeWidthPx: 2,
           maxBarWidthPx: 6,

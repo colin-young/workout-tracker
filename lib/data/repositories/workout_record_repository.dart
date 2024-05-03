@@ -9,7 +9,6 @@ import 'package:workout_tracker/data/repositories/sembast_repository.dart';
 import 'package:workout_tracker/data/workout_definition/workout_definitions_repository.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
-import 'dart:developer' as developer;
 
 import 'package:workout_tracker/domain/workout_record.dart';
 
@@ -77,7 +76,7 @@ class WorkoutRecordRepository implements Repository<WorkoutRecord> {
   late final StoreRef<int, Map<String, dynamic>> _store;
 
   WorkoutRecordRepository({required this.database}) {
-    _store = intMapStoreFactory.store('workout_record_store');
+    _store = intMapStoreFactory.store('workout_record_store'); // NON-NLS
   }
 
   @override
@@ -86,7 +85,6 @@ class WorkoutRecordRepository implements Repository<WorkoutRecord> {
 
   @override
   Stream<List<WorkoutRecord>> getAllEntitiesStream() {
-    developer.log('getAllEntitiesStream', name: 'WorkoutRecordRepository');
     return _store.query().onSnapshots(database).map(
           (snapshot) => snapshot
               .map((definition) => WorkoutRecord.fromJson(definition.value)
@@ -105,13 +103,11 @@ class WorkoutRecordRepository implements Repository<WorkoutRecord> {
 
   @override
   Future<int> insert(WorkoutRecord workoutRecord) {
-    developer.log('insert', name: 'WorkoutRecordRepository');
     return _store.add(database, workoutRecord.toJson());
   }
 
   @override
   Future update(WorkoutRecord workoutRecord) {
-    developer.log('update', name: 'WorkoutRecordRepository');
     return _store
         .record(workoutRecord.id)
         .update(database, workoutRecord.toJson());
@@ -148,7 +144,7 @@ Future<WorkoutRecord> getWorkoutRecord(GetWorkoutRecordRef ref,
           startedAt: DateTime.now(),
           lastActivityAt: DateTime.now(),
           fromWorkoutDefinition:
-              const WorkoutDefinition(name: "", exercises: []),
+              const WorkoutDefinition(name: '', exercises: []), // NON-NLS
         ));
 }
 
@@ -239,14 +235,14 @@ Future<String> workoutSetsUnits(WorkoutSetsUnitsRef ref,
       getAllWorkoutExerciseSetsProvider(workoutRecordId: workoutRecordId)
           .future);
   if (workoutSets.isEmpty) {
-    return '';
+    return ''; // NON-NLS
   }
   return workoutSets.fold(defaultUnits, (previousValue, element) {
     var nextValue = element.sets.fold(defaultUnits, (prev, curr) {
-      return prev == '' || prev == curr.units ? curr.units : 'unknown';
+      return prev == '' || prev == curr.units ? curr.units : 'unknown'; // NON-NLS
     });
 
-    return previousValue == '' || previousValue == nextValue
+    return previousValue == '' || previousValue == nextValue // NON-NLS
         ? nextValue
         : 'unknown';
   });

@@ -43,8 +43,8 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
 
   int get remainingLength => 4 - setValue.length;
   bool get canInput => setValue.length < 4;
-  int minutes() => int.parse(setValue.padLeft(4, '0').substring(0, 2));
-  int seconds() => int.parse(setValue.padLeft(4, '0').substring(2, 4));
+  int minutes() => int.parse(setValue.padLeft(4, '0').substring(0, 2)); // NON-NLS
+  int seconds() => int.parse(setValue.padLeft(4, '0').substring(2, 4)); // NON-NLS
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +57,8 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
         .textTheme
         .labelLarge!
         .copyWith(textBaseline: TextBaseline.alphabetic);
-    final textStyle = TextUiUtilities.getFilledButtonTextStyle(context, '00');
-    final textSize = TextUiUtilities.getTextSize('00', textStyle);
+    final textStyle = TextUiUtilities.getFilledButtonTextStyle(context, '00'); // NON-NLS
+    final textSize = TextUiUtilities.getTextSize('00', textStyle); // NON-NLS
 
     addDigit(digit) => FilledButton.tonal(
         onPressed: canInput &&
@@ -74,7 +74,7 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
         2 * widget.gridSpacing;
     var height =
         width + widget.gridSpacing + textSize.width + widget.buttonPadding * 2;
-    final inputHeight = TextUiUtilities.getTextSize('00', inputStyle).height;
+    final inputHeight = TextUiUtilities.getTextSize('00', inputStyle).height; // NON-NLS
     const spacerHeight = 24.0;
 
     return AlertDialog(
@@ -224,17 +224,17 @@ class InputKeypad extends StatelessWidget {
         shrinkWrap: true,
         crossAxisCount: 3,
         children: [
-          addDigit('7'),
-          addDigit('8'),
-          addDigit('9'),
-          addDigit('4'),
-          addDigit('5'),
-          addDigit('6'),
-          addDigit('1'),
-          addDigit('2'),
-          addDigit('3'),
-          addDigit('00'),
-          addDigit('0'),
+          addDigit('7'), // NON-NLS
+          addDigit('8'), // NON-NLS
+          addDigit('9'), // NON-NLS
+          addDigit('4'), // NON-NLS
+          addDigit('5'), // NON-NLS
+          addDigit('6'), // NON-NLS
+          addDigit('1'), // NON-NLS
+          addDigit('2'), // NON-NLS
+          addDigit('3'), // NON-NLS
+          addDigit('00'), // NON-NLS
+          addDigit('0'), // NON-NLS
           FilledButton.tonal(
             onPressed: delete,
             child: Center(

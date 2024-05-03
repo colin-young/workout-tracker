@@ -19,14 +19,14 @@ void main() async {
 
   final appPath = await getApplicationDocumentsDirectory();
   appPath.createSync(recursive: true);
-  final dbPath = join(appPath.path, 'workout_tracker.db');
+  final dbPath = join(appPath.path, 'workout_tracker.db'); // NON-NLS
 
   var mainStore = StoreRef.main();
   var workoutDefinitionStore =
-      intMapStoreFactory.store('workout_definition_store');
-  var exerciseStore = intMapStoreFactory.store('exercise_store');
-  var exerciseSetsStore = intMapStoreFactory.store('exercise_sets_store');
-  var workoutRecordStore = intMapStoreFactory.store('workout_record_store');
+      intMapStoreFactory.store('workout_definition_store'); // NON-NLS
+  var exerciseStore = intMapStoreFactory.store('exercise_store'); // NON-NLS
+  var exerciseSetsStore = intMapStoreFactory.store('exercise_sets_store'); // NON-NLS
+  var workoutRecordStore = intMapStoreFactory.store('workout_record_store'); // NON-NLS
 
   // TODO remove mock data, handle no data case for all stores
   final database = await databaseFactoryIo.openDatabase(dbPath, version: 1,
@@ -36,7 +36,7 @@ void main() async {
       await mainStore.record(UserPreferences.storeName).put(
           db,
           const UserPreferences(
-            weightUnits: "lbs",
+            weightUnits: 'lbs',
             autoCloseWorkout: UserPreferencesAutoCloseWorkout(
                 autoClose: true, autoCloseWorkoutAfter: Duration(hours: 12)),
             timerLength: Duration(minutes: 1, seconds: 30),
@@ -113,7 +113,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: router,
-      title: 'Workout Tracker',
+      title: 'Workout tracker',
+// Theme config for FlexColorScheme version 7.3.x. Make sure you use
+// same or higher package version, but still same major version. If you
+// use a lower package version, some properties may not be supported.
+// In that case remove them after copying this theme to your app.
       theme: FlexThemeData.light(
         scheme: FlexScheme.bahamaBlue,
         transparentStatusBar: false,
@@ -125,6 +129,7 @@ class MyApp extends StatelessWidget {
           elevatedButtonSecondarySchemeColor: SchemeColor.onPrimary,
           inputDecoratorBorderType: FlexInputBorderType.underline,
           inputDecoratorUnfocusedBorderIsColored: false,
+          fabSchemeColor: SchemeColor.primary,
           alignedDropdown: true,
           tooltipRadius: 4.0,
           tooltipSchemeColor: SchemeColor.inverseSurface,
@@ -163,6 +168,8 @@ class MyApp extends StatelessWidget {
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         swapLegacyOnMaterial3: true,
+        // To use the Playground font, add GoogleFonts package and uncomment
+        // fontFamily: GoogleFonts.notoSans().fontFamily,
       ),
       darkTheme: FlexThemeData.dark(
         scheme: FlexScheme.bahamaBlue,
@@ -174,6 +181,7 @@ class MyApp extends StatelessWidget {
           elevatedButtonSecondarySchemeColor: SchemeColor.onPrimary,
           inputDecoratorBorderType: FlexInputBorderType.underline,
           inputDecoratorUnfocusedBorderIsColored: false,
+          fabSchemeColor: SchemeColor.primary,
           alignedDropdown: true,
           tooltipRadius: 4.0,
           tooltipSchemeColor: SchemeColor.inverseSurface,
@@ -211,7 +219,11 @@ class MyApp extends StatelessWidget {
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         swapLegacyOnMaterial3: true,
+        // To use the Playground font, add GoogleFonts package and uncomment
+        // fontFamily: GoogleFonts.notoSans().fontFamily,
       ),
+// If you do not have a themeMode switch, uncomment this line
+// to let the device system mode control the theme mode:
       themeMode: ThemeMode.system,
     );
   }

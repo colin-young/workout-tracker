@@ -41,7 +41,7 @@ class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
                 lastActivityAt: DateTime.now(),
                 isActive: true))
             .then((value) {
-          context.go('/workout/$value');
+          context.go('/workout/$value'); // NON-NLS
         });
       },
     );
@@ -69,7 +69,7 @@ class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
                               exercise: e.exercise,
                               sets: [],
                               isComplete: false)))).then((value) {
-                    context.go('/workout/$workoutId');
+                    context.go('/workout/$workoutId'); // NON-NLS
                   });
                 });
               },
@@ -85,19 +85,19 @@ class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
           ? []
           : switch (lastWorkoutRecordResult) {
               AsyncValue(:final value?) => [
-                  Center(child: Text('Current Routine', style: titleStyle)),
+                  Center(child: Text('Current routine', style: titleStyle)),
                   MenuItemButton(
                     onPressed: () {
-                      context.go('/workout/${value.id}');
+                      context.go('/workout/${value.id}'); // NON-NLS
                     },
-                    child: const Text('Resume Current'),
+                    child: const Text('Resume current'),
                   ),
                   MenuItemButton(
                     onPressed: () {
                       ref.read(completeAllWorkoutExercisesProvider(
                           workoutRecordId: value.id));
                     },
-                    child: const Text('Mark Current Completed'),
+                    child: const Text('Mark current completed'),
                   ),
                 ],
               _ => []
@@ -117,7 +117,7 @@ class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
             },
           );
         },
-        child: const Text('Start New Timer'),
+        child: const Text('Start new timer'),
       ),
       MenuItemButton(
         onPressed: () {
@@ -135,20 +135,20 @@ class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
       Center(child: Text('Setup', style: titleStyle)),
       MenuItemButton(
         onPressed: () {
-          context.go('/routines');
+          context.go('/routines'); // NON-NLS
         },
-        child: const Text('Manage Routines'),
+        child: const Text('Manage routines'),
       ),
       MenuItemButton(
-        child: const Text('Manage Exercises'),
+        child: const Text('Manage exercises'),
         onPressed: () {
-          context.go('/exercises');
+          context.go('/exercises'); // NON-NLS
         },
       ),
       MenuItemButton(
         child: const Text('Licenses'),
         onPressed: () {
-          context.go('/licenses');
+          context.go('/licenses'); // NON-NLS
         },
       ),
     ];
@@ -160,7 +160,7 @@ class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
         ? [
             Center(
                 child: Text(
-              'Start a Routine',
+              'Start a routine',
               style: Theme.of(context).textTheme.titleLarge,
             )),
             ...startDefinedWorkoutMenuButtons,

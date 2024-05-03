@@ -10,47 +10,47 @@ import 'package:workout_tracker/components/pages/workout_page.dart';
 final GoRouter router = GoRouter(
   routes: [
     GoRoute(
-        name: "home",
-        path: "/",
-        builder: (context, state) => const HomePage(title: "Summary"),
+        name: 'home', // NON-NLS
+        path: '/', // NON-NLS
+        builder: (context, state) => const HomePage(title: 'Summary'), // NON-NLS
         routes: [
           GoRoute(
-              name: 'exercises',
-              path: 'exercises',
+              name: 'exercises', // NON-NLS
+              path: 'exercises', // NON-NLS
               builder: (context, state) => const ExercisePage(),
               routes: [
                 GoRoute(
-                  name: 'exerciseEdit',
-                  path: 'exercise/:exerciseId/edit',
+                  name: 'exerciseEdit', // NON-NLS
+                  path: 'exercise/:exerciseId/edit', // NON-NLS
                   builder: (context, state) => ExerciseEditPage(
-                    exerciseId: state.pathParameters['exerciseId']!,
-                    title: 'Exercise Name',
+                    exerciseId: state.pathParameters['exerciseId']!, // NON-NLS
+                    title: 'Exercise Name', // NON-NLS
                   ),
                 ),
               ]),
           GoRoute(
-              name: 'routines',
-              path: 'routines',
+              name: 'routines', // NON-NLS
+              path: 'routines', // NON-NLS
               builder: (context, state) => const RoutinePage(),
               routes: const []),
           GoRoute(
-              name: 'workout',
-              path: 'workout/:workoutId',
+              name: 'workout', // NON-NLS
+              path: 'workout/:workoutId', // NON-NLS
               builder: (context, state) => WorkoutPage(
-                  title: "Workout",
-                  workoutId: state.pathParameters['workoutId']!),
+                  title: 'Workout', // NON-NLS
+                  workoutId: state.pathParameters['workoutId']!), // NON-NLS
               routes: [
                 GoRoute(
-                  name: 'addWorkoutExercise',
-                  path: 'addExercise',
+                  name: 'addWorkoutExercise', // NON-NLS
+                  path: 'addExercise', // NON-NLS
                   builder: (context, state) => AddWorkoutExercise(
-                      title: 'Add Exercise',
-                      workoutId: state.pathParameters['workoutId']!),
+                      title: 'Add Exercise', // NON-NLS
+                      workoutId: state.pathParameters['workoutId']!), // NON-NLS
                 )
               ]),
           GoRoute(
-            name: 'licenses',
-            path: 'licenses',
+            name: 'licenses', // NON-NLS
+            path: 'licenses', // NON-NLS
             builder: (context, state) => const LicencesPage(),
           )
         ]),

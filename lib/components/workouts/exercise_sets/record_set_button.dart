@@ -82,7 +82,7 @@ class RecordSetButton extends ConsumerWidget {
                       ],
                     ),
                   ]),
-              FilledButton(
+              FilledButton.tonal(
                 onPressed: () async {
                   await ref
                       .read(exerciseSetsControllerProvider.notifier)
@@ -107,7 +107,7 @@ class RecordSetButton extends ConsumerWidget {
                     SizedBox(
                       width: 8,
                     ),
-                    Text('Record Set'),
+                    Text('Record set'),
                   ],
                 ),
               )

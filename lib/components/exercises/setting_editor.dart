@@ -23,8 +23,8 @@ class SettingEditor extends StatefulWidget {
 class _SettingEditorState extends State<SettingEditor> {
   final settingNameController = TextEditingController();
   final settingValueController = TextEditingController();
-  String setting = '';
-  String value = '';
+  String setting = ''; // NON-NLS
+  String value = ''; // NON-NLS
 
   @override
   void dispose() {
@@ -60,7 +60,7 @@ class _SettingEditorState extends State<SettingEditor> {
         Expanded(
             child: TextFormField(
           controller: settingNameController,
-          decoration: widget.inputDecoration("Name"),
+          decoration: widget.inputDecoration('Name'),
         )),
         const SizedBox(
           width: 8,
@@ -68,7 +68,7 @@ class _SettingEditorState extends State<SettingEditor> {
         Expanded(
             child: TextFormField(
           controller: settingValueController,
-          decoration: widget.inputDecoration("Setting"),
+          decoration: widget.inputDecoration('Setting'),
         )),
         LineItemDeleteButton(
           deleteItem: widget.deleteItem,

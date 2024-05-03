@@ -10,7 +10,7 @@ class RoutinePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomScaffold(
       appBar: AppBar(
-        title: const Text("Routines"),
+        title: const Text('Routines'),
       ),
       body: const RoutineManager(),
       floatingActionButton: FloatingActionButton.extended(
@@ -18,7 +18,7 @@ class RoutinePage extends ConsumerWidget {
           // TODO create new, empty routine
           // context.go('/routines/routine/-1/edit');
         },
-        label: const Text('New Routine'),
+        label: const Text('New routine'),
         icon: const Icon(Icons.add),
       ),
     );

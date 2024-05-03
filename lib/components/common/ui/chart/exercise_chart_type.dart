@@ -1,7 +1,7 @@
 enum ExerciseChartType {
   oneRM(label: '1 RM'),
-  totalWeight(label: 'Total Weight'),
-  totalWeightPerSet(label: 'Weight Per Set');
+  totalWeight(label: 'Total weight'),
+  totalWeightPerSet(label: 'Weight per set');
 
   const ExerciseChartType({required this.label});
 

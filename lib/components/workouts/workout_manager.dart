@@ -24,7 +24,7 @@ class WorkoutManager extends ConsumerWidget {
         // if no exercises, assume this is a new arbirtrary workout and immediately show add exercises screen
         if (value.isEmpty) {
           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            context.go('/workout/$workoutRecordId/addExercise');
+            context.go('/workout/$workoutRecordId/addExercise'); // NON-NLS
           });
         }
 
@@ -39,7 +39,7 @@ class WorkoutManager extends ConsumerWidget {
           });
 
           SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            context.go('/');
+            context.go('/'); // NON-NLS
           });
         }
     }

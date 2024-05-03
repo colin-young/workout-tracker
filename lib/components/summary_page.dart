@@ -4,7 +4,6 @@ import 'package:workout_tracker/components/workouts/exercise_sets/workout_exerci
 import 'package:workout_tracker/components/workout_summary_card.dart';
 import 'package:workout_tracker/controller/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
-import 'dart:developer' as developer;
 
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/utility/exercise_sets_extensions.dart';
@@ -18,8 +17,6 @@ class SummaryPage extends ConsumerWidget with UserPreferencesState {
     final workoutRecordAsync = ref.watch(getLastworkoutRecordProvider);
     return workoutRecordAsync.when(
         data: (workoutRecord) {
-          developer.log('workoutId: ${workoutRecord.id}', name: 'SummaryPage');
-
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
@@ -40,7 +37,7 @@ class SummaryPage extends ConsumerWidget with UserPreferencesState {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Recent Exercises',
+                              'Recent exercises',
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                             const SizedBox(

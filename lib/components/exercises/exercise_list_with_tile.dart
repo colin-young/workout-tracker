@@ -20,7 +20,7 @@ class ExerciseListWithTile extends StatelessWidget {
         itemCount: exercises.length,
         itemBuilder: (context, index) => Card(
             child: ListTile(
-              key: Key('$index'),
+              key: Key('$index'), // NON-NLS
               onTap: () {
                 onTap(exercises, index);
               },

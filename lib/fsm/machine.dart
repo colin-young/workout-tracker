@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:workout_tracker/fsm/event.dart';
 import 'package:workout_tracker/fsm/state.dart';
-import 'dart:developer' as developer;
 
 abstract class Machine<C, S extends MachineState<C>, E extends Event> {
   Machine({required this.state, required this.events, required this.context});
@@ -40,7 +39,6 @@ abstract class Machine<C, S extends MachineState<C>, E extends Event> {
     }
 
     if (event.includeInStream) {
-      developer.log('${event.name} added to _eventController', name: 'Machine.handleEvent');
       _eventController.add(event);
     }
 
