@@ -21,19 +21,8 @@ class HomePage extends ConsumerWidget {
         title: Text(
           title,
         ),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return const TimerSetDialog(
-                        buttonPadding: 24.0, gridSpacing: 4.0);
-                  },
-                );
-              },
-              icon: const Icon(Icons.timer_outlined)),
-          const WorkoutRunMenu()
+        actions: const [
+          WorkoutRunMenu()
         ],
       ),
       body: SummaryPage(),

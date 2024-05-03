@@ -61,7 +61,9 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
     final textSize = TextUiUtilities.getTextSize('00', textStyle);
 
     addDigit(digit) => FilledButton.tonal(
-        onPressed: canInput
+        onPressed: canInput &&
+                (int.parse(digit) > 0 || setValue.isNotEmpty) &&
+                (digit.length <= 4 - setValue.length)
             ? () {
                 addToSetValue(digit);
               }
@@ -87,24 +89,17 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
         Consumer(
           builder: (BuildContext context, WidgetRef ref, Widget? child) =>
               TextButton(
-                  onPressed: () {
-                    ref.read(getAllowedEventsProvider.future).then((value) {
-                      if (value
-                          .any((element) => element.name == Reset(duration: setDuration).name)) {
-                        ref
-                            .read(timerControllerProvider.notifier)
-                            .handleEvent(Reset(duration: setDuration));
-                        ref
-                            .read(timerControllerProvider.notifier)
-                            .handleEvent(Start());
-                      } else {
-                        ref
-                            .read(timerControllerProvider.notifier)
-                            .handleEvent(Start());
-                      }
-                    });
-                    context.pop();
-                  },
+                  onPressed: setValue.isNotEmpty
+                      ? () {
+                          ref
+                              .read(timerControllerProvider.notifier)
+                              .handleEvent(Reset(duration: setDuration));
+                          ref
+                              .read(timerControllerProvider.notifier)
+                              .handleEvent(Start());
+                          context.pop();
+                        }
+                      : null,
                   child: const Text('Start timer')),
         ),
       ],

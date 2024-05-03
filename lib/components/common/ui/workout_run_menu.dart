@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:workout_tracker/controller/timer_controller.dart';
+import 'package:workout_tracker/controller/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/domain/workout_record.dart';
+import 'package:workout_tracker/timer/timer_event.dart';
+import 'package:workout_tracker/timer/timer_set_dialog.dart';
+import 'package:workout_tracker/utility/duration_extensions.dart';
 import 'package:workout_tracker/utility/relative_date.dart';
 
-class WorkoutRunMenu extends ConsumerWidget {
+class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
   const WorkoutRunMenu({
     super.key,
   });
@@ -21,6 +25,11 @@ class WorkoutRunMenu extends ConsumerWidget {
       AsyncValue(:final value?) => value.id,
       _ => -1
     }));
+
+    var theme = Theme.of(context);
+    var titleStyle = theme.textTheme.titleLarge?.copyWith(
+      color: theme.colorScheme.outlineVariant,
+    );
 
     var startArbitraryWorkoutMenuButton = MenuItemButton(
       child: const Text('Start new workout'),
@@ -76,32 +85,55 @@ class WorkoutRunMenu extends ConsumerWidget {
           ? []
           : switch (lastWorkoutRecordResult) {
               AsyncValue(:final value?) => [
+                  Center(child: Text('Current Routine', style: titleStyle)),
                   MenuItemButton(
-                    leadingIcon:
-                        const Icon(FontAwesomeIcons.personWalkingArrowRight),
                     onPressed: () {
                       context.go('/workout/${value.id}');
                     },
                     child: const Text('Resume Current'),
                   ),
                   MenuItemButton(
-                    leadingIcon: const Icon(Icons.playlist_add_check),
                     onPressed: () {
                       ref.read(completeAllWorkoutExercisesProvider(
                           workoutRecordId: value.id));
                     },
                     child: const Text('Mark Current Completed'),
                   ),
-                  const Divider(),
                 ],
               _ => []
             },
       _ => []
     };
 
-    var commonButtons = [
+    var timerButtons = [
+      Center(child: Text('Timers', style: titleStyle)),
       MenuItemButton(
-        leadingIcon: const Icon(FontAwesomeIcons.personWalkingArrowLoopLeft),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const TimerSetDialog(
+                  buttonPadding: 24.0, gridSpacing: 4.0);
+            },
+          );
+        },
+        child: const Text('Start New Timer'),
+      ),
+      MenuItemButton(
+        onPressed: () {
+          ref
+              .read(timerControllerProvider.notifier)
+              .handleEvent(Reset(duration: userPreferences(ref).timerLength));
+          ref.read(timerControllerProvider.notifier).handleEvent(Start());
+        },
+        child: Text(
+            'Start timer for ${userPreferences(ref).timerLength.getDurationString()}'),
+      ),
+    ];
+
+    var commonButtons = [
+      Center(child: Text('Setup', style: titleStyle)),
+      MenuItemButton(
         onPressed: () {
           context.go('/routines');
         },
@@ -133,7 +165,6 @@ class WorkoutRunMenu extends ConsumerWidget {
             )),
             ...startDefinedWorkoutMenuButtons,
             startArbitraryWorkoutMenuButton,
-            const Divider(),
           ]
         : [];
 
@@ -141,7 +172,8 @@ class WorkoutRunMenu extends ConsumerWidget {
       menuChildren: [
         ...startWorkoutMenuButtons,
         ...currentWorkoutMenuButtons,
-        ...commonButtons
+        ...timerButtons,
+        ...commonButtons,
       ],
       builder: (context, controller, child) {
         return IconButton(
