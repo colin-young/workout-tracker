@@ -61,7 +61,7 @@ class _AddExerciseDialogState extends ConsumerState<AddExerciseDialog> {
             duration: const Duration(milliseconds: 200),
             child: isAdding
                 ? ExerciseEditForm(
-                    exercise: const Exercise(name: '', settings: []), // NON-NLS
+                    exercise: const Exercise(name: '', settings: []),
                     cancelLabel: 'Discard',
                     onCancel: () {
                       setState(() {

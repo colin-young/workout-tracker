@@ -87,8 +87,6 @@ class ExerciseSetsController extends _$ExerciseSetsController {
             .getEntity(workoutRecordId);
          await ref.read(workoutRecordRepositoryProvider).insert(workoutRecord
             .copyWith(lastActivityAt: updatedSet.latestDateTime()));
-      } else {
-        // TODO report error
       }
 
       ref.invalidate(getAllExerciseSetsByExerciseStreamProvider);

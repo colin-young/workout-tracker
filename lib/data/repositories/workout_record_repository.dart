@@ -76,7 +76,7 @@ class WorkoutRecordRepository implements Repository<WorkoutRecord> {
   late final StoreRef<int, Map<String, dynamic>> _store;
 
   WorkoutRecordRepository({required this.database}) {
-    _store = intMapStoreFactory.store('workout_record_store'); // NON-NLS
+    _store = intMapStoreFactory.store('workout_record_store');
   }
 
   @override
@@ -144,7 +144,7 @@ Future<WorkoutRecord> getWorkoutRecord(GetWorkoutRecordRef ref,
           startedAt: DateTime.now(),
           lastActivityAt: DateTime.now(),
           fromWorkoutDefinition:
-              const WorkoutDefinition(name: '', exercises: []), // NON-NLS
+              const WorkoutDefinition(name: '', exercises: []),
         ));
 }
 
@@ -235,14 +235,14 @@ Future<String> workoutSetsUnits(WorkoutSetsUnitsRef ref,
       getAllWorkoutExerciseSetsProvider(workoutRecordId: workoutRecordId)
           .future);
   if (workoutSets.isEmpty) {
-    return ''; // NON-NLS
+    return '';
   }
   return workoutSets.fold(defaultUnits, (previousValue, element) {
     var nextValue = element.sets.fold(defaultUnits, (prev, curr) {
-      return prev == '' || prev == curr.units ? curr.units : 'unknown'; // NON-NLS
+      return prev == '' || prev == curr.units ? curr.units : 'unknown';
     });
 
-    return previousValue == '' || previousValue == nextValue // NON-NLS
+    return previousValue == '' || previousValue == nextValue
         ? nextValue
         : 'unknown';
   });

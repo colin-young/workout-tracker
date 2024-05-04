@@ -16,7 +16,7 @@ class WorkoutDefinitionsRepository implements Repository<WorkoutDefinition> {
   late final StoreRef<int, Map<String, dynamic>> _store;
 
   WorkoutDefinitionsRepository({required this.database}) {
-    _store = intMapStoreFactory.store('workout_definition_store'); // NON-NLS
+    _store = intMapStoreFactory.store('workout_definition_store');
   }
 
   @override
@@ -67,5 +67,5 @@ Future<WorkoutDefinition> getWorkoutDefinition(GetWorkoutDefinitionRef ref,
     {required int entityId}) async {
   return entityId > 0
       ? ref.watch(workoutDefinitionsRepositoryProvider).getEntity(entityId)
-      : Future.value(const WorkoutDefinition(name: '', exercises: [])); // NON-NLS
+      : Future.value(const WorkoutDefinition(name: '', exercises: []));
 }

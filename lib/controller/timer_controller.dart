@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:workout_tracker/fsm/event.dart';
+import 'package:workout_tracker/fsm/state.dart';
 import 'package:workout_tracker/timer/timer_context.dart';
 import 'package:workout_tracker/timer/timer_event.dart';
 import 'package:workout_tracker/timer/timer_machine.dart';
@@ -36,7 +37,7 @@ Future<TimerMachine> getTimer(GetTimerRef ref, {Duration timerDuration = Duratio
 }
 
 @riverpod
-Stream<TimerState> getState(GetStateRef ref) async* {
+Stream<TimerState> getTimerState(GetTimerStateRef ref) async* {
   final timer = await ref.watch(getTimerProvider().future);
 
   yield Initiated();
@@ -47,7 +48,7 @@ Stream<TimerState> getState(GetStateRef ref) async* {
 }
 
 @riverpod
-Stream<TimerContext> getContext(GetContextRef ref) async* {
+Stream<TimerContext> getTimerContext(GetTimerContextRef ref) async* {
   final timer = await ref.watch(getTimerProvider().future);
 
   yield TimerContext.init(duration: Duration.zero);

@@ -25,7 +25,7 @@ class ExerciseSettingsDisplay extends StatelessWidget {
         TextUiUtilities.getTextSize('add', chipLabel).width + chipIconSize,
         (prev, curr) {
       final size = TextUiUtilities.getTextSize(
-              '${curr.setting} | ${curr.value}', chipLabel) // NON-NLS
+              '${curr.setting} | ${curr.value}', chipLabel)
           .width;
       return size > prev ? size : prev;
     });
@@ -64,7 +64,7 @@ class ExerciseSettingsDisplay extends StatelessWidget {
               label: SizedBox(
                   width: textWidth,
                   child:
-                      Center(child: Text('${item.setting} | ${item.value}'))), // NON-NLS
+                      Center(child: Text('${item.setting} | ${item.value}'))),
               visualDensity: VisualDensity.compact,
             )
         ],

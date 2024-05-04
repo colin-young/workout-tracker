@@ -74,7 +74,7 @@ class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
                         ? const SizedBox()
                         : FilledButton.tonal(
                             onPressed: () {
-                              context.go('/workout/$workoutRecordId'); // NON-NLS
+                              context.go('/workout/$workoutRecordId');
                             },
                             child: const Text('Continue current'),
                           ),
@@ -95,17 +95,17 @@ class WorkoutSummaryCard extends ConsumerWidget with UserPreferencesState {
                 children: [
                   switch (totalExercisesFuture) {
                     AsyncValue(:final value, hasValue: true) =>
-                      Text('$value exercises'), // NON-NLS
+                      Text('$value exercises'),
                     _ => const SizedBox(width: 0, height: 0),
                   },
                   switch (totalRepsFutures) {
                     AsyncValue(:final value, hasValue: true) =>
-                      Text('$value reps'), // NON-NLS
+                      Text('$value reps'),
                     _ => const SizedBox(width: 0, height: 0),
                   },
                   switch (totalWeightFutures) {
                     AsyncValue(:final value, hasValue: true) =>
-                      Text('$value ${prefs.weightUnits}'), // NON-NLS
+                      Text('$value ${prefs.weightUnits}'),
                     _ => const Text('No exercises'),
                   },
                 ],

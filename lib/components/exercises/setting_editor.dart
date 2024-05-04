@@ -23,8 +23,8 @@ class SettingEditor extends StatefulWidget {
 class _SettingEditorState extends State<SettingEditor> {
   final settingNameController = TextEditingController();
   final settingValueController = TextEditingController();
-  String setting = ''; // NON-NLS
-  String value = ''; // NON-NLS
+  String setting = '';
+  String value = '';
 
   @override
   void dispose() {

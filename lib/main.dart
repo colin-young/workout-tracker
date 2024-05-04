@@ -19,14 +19,14 @@ void main() async {
 
   final appPath = await getApplicationDocumentsDirectory();
   appPath.createSync(recursive: true);
-  final dbPath = join(appPath.path, 'workout_tracker.db'); // NON-NLS
+  final dbPath = join(appPath.path, 'workout_tracker.db');
 
   var mainStore = StoreRef.main();
   var workoutDefinitionStore =
-      intMapStoreFactory.store('workout_definition_store'); // NON-NLS
-  var exerciseStore = intMapStoreFactory.store('exercise_store'); // NON-NLS
-  var exerciseSetsStore = intMapStoreFactory.store('exercise_sets_store'); // NON-NLS
-  var workoutRecordStore = intMapStoreFactory.store('workout_record_store'); // NON-NLS
+      intMapStoreFactory.store('workout_definition_store');
+  var exerciseStore = intMapStoreFactory.store('exercise_store');
+  var exerciseSetsStore = intMapStoreFactory.store('exercise_sets_store');
+  var workoutRecordStore = intMapStoreFactory.store('workout_record_store');
 
   // TODO remove mock data, handle no data case for all stores
   final database = await databaseFactoryIo.openDatabase(dbPath, version: 1,

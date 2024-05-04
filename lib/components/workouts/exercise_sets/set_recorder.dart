@@ -29,7 +29,7 @@ class SetRecorder extends ConsumerStatefulWidget {
 class _SetRecorderState extends ConsumerState<SetRecorder>
     with UserPreferencesState, TickerProviderStateMixin {
   SetEntry setEntry =
-      SetEntry(reps: 0, weight: 0, units: '', finishedAt: DateTime.now()); // NON-NLS
+      SetEntry(reps: 0, weight: 0, units: '', finishedAt: DateTime.now());
   late final workoutRecordId = widget.workoutRecordId;
   bool isInitialized = false;
   int lastWorkoutSetsId = -1;
@@ -141,7 +141,7 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
     }
 
     final exerciseResultsHeight =
-        TextUiUtilities.getTextSize('0', textStyle.bodyMedium!).height; // NON-NLS
+        TextUiUtilities.getTextSize('0', textStyle.bodyMedium!).height;
     const recorderButton = 68.0;
     const digitWheelHeight = 140.0;
     const cardPadding = 8.0;
@@ -185,9 +185,9 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                                       'workoutChart${value.exercise.id}.chart'),
                                   exerciseId: value.exercise.id,
                                   showAxis: true,
-                                  // TODO get from user prefs
+                                  // TODO get from exercise props
                                   showRange: true,
-                                  // TODO get from user prefs
+                                  // TODO get from exercise props
                                   showTrend: true,
                                   showGridLines: false,
                                   setValueAccumulator:
@@ -275,7 +275,7 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                                     height: exerciseResultsHeight,
                                     child: Center(
                                         child: Text(
-                                      'Error: ${value.exercise.id}', // NON-NLS
+                                      'Error: ${value.exercise.id}',
                                       style: textStyle.bodyMedium,
                                     )),
                                   )

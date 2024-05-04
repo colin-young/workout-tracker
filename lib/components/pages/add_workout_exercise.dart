@@ -59,20 +59,18 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
           });
         });
     return CustomScaffold(
-        appBar: AppBar(
-          title: const Text('Add exercise'),
-          actions: [
-            ...(switch (exercises) {
-              AsyncValue(:final value?) => _selected.length < value.length
-                  ? [
-                      addAllButton(value),
-                      ...(_selected.isNotEmpty ? [removeAllButton] : [])
-                    ]
-                  : [removeAllButton],
-              _ => [Container()]
-            }),
-          ],
-        ),
+        title: const Text('Add exercise'),
+        actions: [
+          ...(switch (exercises) {
+            AsyncValue(:final value?) => _selected.length < value.length
+                ? [
+                    addAllButton(value),
+                    ...(_selected.isNotEmpty ? [removeAllButton] : [])
+                  ]
+                : [removeAllButton],
+            _ => [Container()]
+          }),
+        ],
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Consumer(

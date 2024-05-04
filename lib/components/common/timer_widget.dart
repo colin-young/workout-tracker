@@ -23,7 +23,7 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
   late bool isVisible;
 
   double widgetHeight = 72.0;
-  String display = ''; // NON-NLS
+  String display = '';
 
   @override
   void initState() {
@@ -120,7 +120,7 @@ class TimerWidgetState extends ConsumerState<TimerWidget>
 
     final Size timerDisplaysize = (TextPainter(
       text: TextSpan(
-        text: '00:00', // NON-NLS
+        text: '00:00',
         style: textStyle.headlineMedium,
       ),
       maxLines: 1,

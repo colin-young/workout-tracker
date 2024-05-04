@@ -150,7 +150,7 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
               data: trend!,
             )..setAttribute(
                 charts.rendererIdKey,
-                'trend', // NON-NLS
+                'trend',
               )
           ]
         : <charts.Series<TimeSeriesSets, DateTime>>[];
@@ -251,16 +251,16 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
       ),
       customSeriesRenderers: [
         charts.LineRendererConfig(
-            customRendererId: 'trend', // NON-NLS
+            customRendererId: 'trend',
             dashPattern: [6, 6],
             strokeWidthPx: animation * 2),
         charts.BarRendererConfig(
-          customRendererId: 'rangeBar', // NON-NLS
+          customRendererId: 'rangeBar',
           groupingType: charts.BarGroupingType.stacked,
           maxBarWidthPx: 2,
         ),
         charts.BarTargetLineRendererConfig(
-          customRendererId: 'rangeCap', // NON-NLS
+          customRendererId: 'rangeCap',
           groupingType: charts.BarGroupingType.stacked,
           strokeWidthPx: 2,
           maxBarWidthPx: 6,

@@ -9,9 +9,7 @@ class RoutinePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CustomScaffold(
-      appBar: AppBar(
-        title: const Text('Routines'),
-      ),
+      title: const Text('Routines'),
       body: const RoutineManager(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {

@@ -44,7 +44,7 @@ class SettingsEditSubForm extends StatelessWidget {
             : const SizedBox(),
         TextButton(
             onPressed: () =>
-                addSetting(const ExerciseSetting(setting: '', value: '')), child: const Row( // NON-NLS
+                addSetting(const ExerciseSetting(setting: '', value: '')), child: const Row(
                   children: [
                     Icon(Icons.add),
                     SizedBox(width: 8,),

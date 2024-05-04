@@ -35,11 +35,11 @@ class TimerContext {
     final duration = timerDuration -
         elapsedTime -
         (isRunning ? DateTime.now().difference(startedAt) : Duration.zero);
-    final hours = duration.inHours.toString().padLeft(2, '0'); // NON-NLS
-    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0'); // NON-NLS
-    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0'); // NON-NLS
+    final hours = duration.inHours.toString().padLeft(2, '0');
+    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
 
-    return '${hours == "00" ? "" : "$hours:"}$minutes:$seconds'; // NON-NLS
+    return '${hours == "00" ? "" : "$hours:"}$minutes:$seconds';
   }
 
   TimerContext copyWith(
@@ -61,7 +61,7 @@ sealed class TimerState extends MachineState<TimerContext> {
 }
 
 class Initiated extends TimerState {
-  Initiated() : super(name: 'initiated'); // NON-NLS
+  Initiated() : super(name: 'initiated');
 
   @override
   MachineStateAction<TimerContext>? get onEntry =>
@@ -80,7 +80,7 @@ class Initiated extends TimerState {
 }
 
 class Running extends TimerState {
-  Running() : super(name: 'running'); // NON-NLS
+  Running() : super(name: 'running');
 
   @override
   MachineStateAction<TimerContext>? get onEntry =>
@@ -108,7 +108,7 @@ class Running extends TimerState {
 }
 
 class Paused extends TimerState {
-  Paused() : super(name: 'paused'); // NON-NLS
+  Paused() : super(name: 'paused');
 
   @override
   MachineStateAction<TimerContext>? get onEntry =>
@@ -129,7 +129,7 @@ class Paused extends TimerState {
 }
 
 class Finished extends TimerState {
-  Finished() : super(name: 'finished'); // NON-NLS
+  Finished() : super(name: 'finished');
 
   (String,) _equality() => (name,);
 

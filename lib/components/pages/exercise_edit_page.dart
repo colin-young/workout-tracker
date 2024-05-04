@@ -16,9 +16,7 @@ class ExerciseEditPage extends StatelessWidget {
     final int exerciseIdKey = int.parse(exerciseId);
 
     return CustomScaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      title: Text(title),
       body: Consumer(builder: (_, WidgetRef ref, __) {
         final exercise =
             ref.watch(GetExerciseProvider(entityId: exerciseIdKey));

@@ -52,7 +52,7 @@ class _DigitWheelState extends State<DigitWheel> {
       child: WheelPicker(
         builder: (context, index) {
           return Text(
-            "$index", // NON-NLS
+            "$index",
             style: textStyle,
           );
         },

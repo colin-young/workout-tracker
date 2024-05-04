@@ -23,7 +23,7 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
   Stream<ExerciseSets> get streamExerciseSets => _setsController.stream;
 
   ExerciseSetsRepository({required this.database}) {
-    _store = intMapStoreFactory.store('exercise_sets_store'); // NON-NLS
+    _store = intMapStoreFactory.store('exercise_sets_store');
   }
 
   Future<void> close() async {
@@ -49,8 +49,8 @@ class ExerciseSetsRepository implements Repository<ExerciseSets> {
     return _store
         .query(
             finder: Finder(
-                filter: Filter.equals('workoutId', workoutId), // NON-NLS
-                sortOrders: [SortOrder('workoutId'), SortOrder('order')])) // NON-NLS
+                filter: Filter.equals('workoutId', workoutId),
+                sortOrders: [SortOrder('workoutId'), SortOrder('order')]))
         .onSnapshots(database)
         .map(
           (snapshot) => snapshot

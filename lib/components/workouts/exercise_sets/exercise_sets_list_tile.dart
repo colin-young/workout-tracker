@@ -5,7 +5,7 @@ class ExerciseSetsListTile extends StatelessWidget {
     super.key,
     required this.icon,
     required this.title,
-    this.subtitle = '', // NON-NLS
+    this.subtitle = '',
     this.trailing,
   });
 

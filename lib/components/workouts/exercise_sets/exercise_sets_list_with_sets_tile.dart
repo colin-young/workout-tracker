@@ -42,7 +42,7 @@ class ExerciseSetsListWithSetsTile extends ConsumerWidget {
               shrinkWrap: true,
               itemCount: _workoutSets.length,
               itemBuilder: (context, index) => Dismissible(
-                    key: Key('$index'), // NON-NLS
+                    key: Key('$index'),
                     onDismissed: (direction) async {
                       await ref.read(deleteExerciseSetsProvider(
                               exerciseId: _workoutSets[index].id)
@@ -161,7 +161,7 @@ class IncompleteExercisesList extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () {
-                context.go('/workout/$workoutRecordId/addExercise'); // NON-NLS
+                context.go('/workout/$workoutRecordId/addExercise');
               }, child: const Text('Add exercise'),
             ),
           ],

@@ -25,5 +25,5 @@ abstract class UserPreferences with _$UserPreferences {
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>
       _$UserPreferencesFromJson(json);
 
-  static String storeName = 'userPreferences'; // NON-NLS
+  static String storeName = 'userPreferences';
 }

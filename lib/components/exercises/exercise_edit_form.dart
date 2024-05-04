@@ -41,7 +41,7 @@ class _ExerciseEditFormState extends ConsumerState<ExerciseEditForm> {
     super.initState();
     _exercise = widget.exercise;
     nameController.text = _exercise.name;
-    noteController.text = _exercise.note ?? ''; // NON-NLS
+    noteController.text = _exercise.note ?? '';
 
     nameController.addListener(() {
       updateExercise(_exercise.copyWith(name: nameController.text));

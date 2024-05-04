@@ -263,14 +263,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  dio:
-    dependency: transitive
-    description:
-      name: dio
-      sha256: "11e40df547d418cc0c4900a9318b26304e665da6fa4755399a9ff9efd09034b5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.4.3+1"
   fake_async:
     dependency: transitive
     description:
@@ -534,14 +526,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  logging_appenders:
-    dependency: transitive
-    description:
-      name: logging_appenders
-      sha256: "1fb8a008c04246f4677a0d034d69779a5975e56e02573a5162240239b247e239"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0+1"
   markdown:
     dependency: transitive
     description:
@@ -694,14 +678,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   riverpod:
     dependency: "direct main"
     description:
@@ -883,22 +859,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-  string_literal_finder:
-    dependency: "direct dev"
-    description:
-      name: string_literal_finder
-      sha256: "61fb427acaa1ce92e9af48344e2af09c10bc68dad05f484e218a0bfb170795b3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.0+1"
-  string_literal_finder_annotations:
-    dependency: transitive
-    description:
-      name: string_literal_finder_annotations
-      sha256: "98bf9f1b4ced57201eaa1943769ce5841411e31ad4da5509cc9a335d7738d8b6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   string_scanner:
     dependency: transitive
     description:

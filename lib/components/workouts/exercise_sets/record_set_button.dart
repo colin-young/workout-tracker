@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workout_tracker/components/common/rounded_display.dart';
 import 'package:workout_tracker/controller/exercise_sets_controller.dart';
 import 'package:workout_tracker/controller/timer_controller.dart';
+import 'package:workout_tracker/controller/user_preferences_state.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
-import 'package:workout_tracker/timer/timer_context.dart';
 import 'package:workout_tracker/timer/timer_event.dart';
 
-class RecordSetButton extends ConsumerWidget {
+class RecordSetButton extends ConsumerWidget with UserPreferencesState {
   const RecordSetButton({
     super.key,
     required this.workoutSet,
@@ -21,16 +20,12 @@ class RecordSetButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var displayTextColor = Theme.of(context).colorScheme.onSurface;
-    var displayBackgroundColor = Theme.of(context).colorScheme.surface;
-
     var largeTitleText = Theme.of(context).textTheme.titleMedium;
     var mediumTitleText = Theme.of(context).textTheme.bodySmall;
     var smallTitleText = Theme.of(context).textTheme.bodySmall;
 
-    return RoundedDisplay(
-      background: displayBackgroundColor,
-      height: mediumTitleText!.height! + smallTitleText!.height! + 24,
+    return Card.outlined(
+      elevation: 0,
       child: Expanded(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -46,38 +41,26 @@ class RecordSetButton extends ConsumerWidget {
                       children: [
                         Text(
                           workoutSet.reps.toString(),
-                          style:
-                              largeTitleText!.copyWith(color: displayTextColor),
+                          style: largeTitleText!,
                         ),
-                        const SizedBox(
-                          width: 4,
-                        ),
+                        const SizedBox(width: 4),
                         Text(
                           'reps',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(color: displayTextColor),
+                          style: Theme.of(context).textTheme.bodySmall!,
                         ),
                       ],
                     ),
                     Row(
                       children: [
-                        const SizedBox(
-                          width: 8,
-                        ),
+                        const SizedBox(width: 8),
                         Text(
                           workoutSet.weight.toString(),
-                          style:
-                              mediumTitleText.copyWith(color: displayTextColor),
+                          style: mediumTitleText,
                         ),
-                        const SizedBox(
-                          width: 4,
-                        ),
+                        const SizedBox(width: 4),
                         Text(
                           workoutSet.units,
-                          style:
-                              smallTitleText.copyWith(color: displayTextColor),
+                          style: smallTitleText,
                         ),
                       ],
                     ),
@@ -89,24 +72,17 @@ class RecordSetButton extends ConsumerWidget {
                       .addWorkoutSet(
                           workoutRecordId: workoutRecordId, newSet: workoutSet);
                   ref.read(getAllowedEventsProvider.future).then((value) {
-                    if (value
-                        .any((element) => element.name == Running().name)) {
-                      ref
-                          .read(timerControllerProvider.notifier)
-                          .handleEvent(Reset());
-                    } else {
-                      ref
-                          .read(timerControllerProvider.notifier)
-                          .handleEvent(Start());
-                    }
+                    ref.read(timerControllerProvider.notifier).handleEvent(
+                        Reset(duration: userPreferences(ref).timerLength));
+                    ref
+                        .read(timerControllerProvider.notifier)
+                        .handleEvent(Start());
                   });
                 },
                 child: const Row(
                   children: [
                     Icon(Icons.check),
-                    SizedBox(
-                      width: 8,
-                    ),
+                    SizedBox(width: 8),
                     Text('Record set'),
                   ],
                 ),

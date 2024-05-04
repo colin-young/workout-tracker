@@ -12,9 +12,9 @@ class ExercisePage extends StatelessWidget {
 
   IconData getExerciseIcon(String icon) {
     switch (icon) {
-      case 'dumbbell': // NON-NLS
+      case 'dumbbell':
         return FontAwesomeIcons.dumbbell;
-      case 'machine': // NON-NLS
+      case 'machine':
         return FontAwesomeIcons.gears;
       default:
         return FontAwesomeIcons.question;
@@ -24,9 +24,7 @@ class ExercisePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      appBar: AppBar(
-        title: const Text('Exercises'),
-      ),
+      title: const Text('Exercises'),
       body: Consumer(builder: (_, WidgetRef ref, __) {
         final exerciseResult = ref.watch(exerciseControllerProvider);
 
@@ -51,8 +49,8 @@ class ExercisePage extends StatelessWidget {
                           itemBuilder: (BuildContext context, int index) {
                             var entry = items[index];
                             return GestureDetector(
-                              onDoubleTap: () => context
-                                  .go('/exercises/exercise/${entry.id}/edit'), // NON-NLS
+                              onDoubleTap: () => context.go(
+                                  '/exercises/exercise/${entry.id}/edit'),
                               child: ExerciseViewCard(entry: entry),
                             );
                           },
@@ -65,7 +63,7 @@ class ExercisePage extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          context.go('/exercises/exercise/-1/edit'); // NON-NLS
+          context.go('/exercises/exercise/-1/edit');
         },
         label: const Text('Add exercise'),
         icon: const Icon(Icons.add),

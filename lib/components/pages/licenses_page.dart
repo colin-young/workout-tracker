@@ -10,9 +10,7 @@ class LicencesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      appBar: AppBar(
-        title: const Text('Licences'),
-      ),
+      title: const Text('Licences'),
       body: ListView.builder(
         physics: const BouncingScrollPhysics(),
         itemCount: ossLicenses.length,
@@ -61,9 +59,7 @@ class LicenceDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      title: Text(title),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(

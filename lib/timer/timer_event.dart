@@ -6,7 +6,7 @@ sealed class TimerEvent extends Event<TimerContext, TimerState> {
 }
 
 class Start extends TimerEvent {
-  Start() : super(name: 'start', includeInStream: true); // NON-NLS
+  Start() : super(name: 'start', includeInStream: true);
 
   (String,) _equality() => (name,);
 
@@ -20,7 +20,7 @@ class Start extends TimerEvent {
 }
 
 class Pause extends TimerEvent {
-  Pause() : super(name: 'pause', includeInStream: true); // NON-NLS
+  Pause() : super(name: 'pause', includeInStream: true);
 
   (String,) _equality() => (name,);
 
@@ -36,7 +36,7 @@ class Pause extends TimerEvent {
 class Reset extends TimerEvent {
   Reset({Duration? duration})
       : super(
-            name: 'reset', // NON-NLS
+            name: 'reset',
             includeInStream: true,
             action: (dynamic context) =>
                 context.copyWith(timerDuration: duration));
@@ -53,7 +53,7 @@ class Reset extends TimerEvent {
 }
 
 class Finish extends TimerEvent {
-  Finish() : super(name: 'finish', includeInStream: true); // NON-NLS
+  Finish() : super(name: 'finish', includeInStream: true);
 
   (String,) _equality() => (name,);
 
@@ -67,7 +67,7 @@ class Finish extends TimerEvent {
 }
 
 class UpdateDisplay extends TimerEvent {
-  UpdateDisplay() : super(name: 'update-display'); // NON-NLS
+  UpdateDisplay() : super(name: 'update-display');
 
   (String,) _equality() => (name,);
 

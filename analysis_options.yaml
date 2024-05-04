@@ -26,14 +26,3 @@ linter:
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
-
-analyzer:
-  plugins:
-    - string_literal_finder
-string_literal_finder:
-  exclude_globs:
-    - '**/*.g.dart'
-    - '**/*.freezed.dart'
-    - '**/test/*.*'
-    - '**/oss_licenses.dart'
-    - '**/mock_data.dart'

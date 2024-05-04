@@ -18,14 +18,12 @@ class WorkoutPage extends ConsumerWidget {
         workoutCurrentExerciseStreamProvider(workoutRecordId: workoutRecordId));
 
     return CustomScaffold(
-      appBar: AppBar(
-        title: switch (workoutResult) {
-          AsyncValue(:final value, hasValue: true) =>
-            Text(value?.exercise.name ?? ''), // NON-NLS
-          AsyncError(:final error) => Text(error.toString()),
-          _ => Container()
-        },
-      ),
+      title: switch (workoutResult) {
+        AsyncValue(:final value, hasValue: true) =>
+          Text(value?.exercise.name ?? ''),
+        AsyncError(:final error) => Text(error.toString()),
+        _ => Container()
+      },
       body: WorkoutManager(
         workoutRecordId: workoutRecordId,
       ),

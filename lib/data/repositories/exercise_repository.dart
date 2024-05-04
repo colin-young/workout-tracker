@@ -16,7 +16,7 @@ class ExerciseRepository implements Repository<Exercise> {
   late final StoreRef<int, Map<String, dynamic>> _store;
 
   ExerciseRepository({required this.database}) {
-    _store = intMapStoreFactory.store('exercise_store'); // NON-NLS
+    _store = intMapStoreFactory.store('exercise_store');
   }
 
   @override
@@ -66,7 +66,7 @@ Future<Exercise> getExercise(GetExerciseRef ref,
     {required int entityId}) async {
   return entityId > 0
       ? ref.watch(exerciseRepositoryProvider).getEntity(entityId)
-      : Future.value(const Exercise(name: '', settings: [])); // NON-NLS
+      : Future.value(const Exercise(name: '', settings: []));
 }
 
 // @riverpod
