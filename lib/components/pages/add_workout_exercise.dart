@@ -60,10 +60,6 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
           });
         });
 
-    const exerciseEditFormController = ExerciseEditForm(
-      exercise: Exercise(name: '', settings: []),
-    );
-
     return CustomScaffold(
         title: const Text('Add exercise'),
         actions: [
@@ -79,18 +75,18 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
                     content: SizedBox(
                       width: screenSize.width * 0.85,
                       // height: screenSize.height * .85,
-                      child: exerciseEditFormController.editForm(),
+                      child: const ExerciseEditForm(
+                        exercise: Exercise(name: '', settings: []),
+                      ),
                     ),
                     actions: [
                       TextButton(
                           onPressed: () {
-                            exerciseEditFormController.discardExercise();
                             context.pop();
                           },
                           child: const Text('Cancel')),
                       TextButton(
                           onPressed: () {
-                            exerciseEditFormController.saveExercise();
                             context.pop();
                           },
                           child: const Text('Add exercise')),
