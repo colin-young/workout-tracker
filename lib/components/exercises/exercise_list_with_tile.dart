@@ -24,7 +24,7 @@ class ExerciseListWithTile extends StatelessWidget {
               onTap: () {
                 onTap(exercises, index);
               },
-              leading: Icon(exercises[index].exerciseType!.icon),
+              leading: Icon(exercises[index].exerciseType?.icon),
               title: Text(exercises[index].name),
               trailing: Icon(isItemSelected(exercises, index)
                   ? Icons.check_box_outlined

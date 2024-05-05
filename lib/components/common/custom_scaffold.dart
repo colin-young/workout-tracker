@@ -35,7 +35,7 @@ class CustomScaffold extends Scaffold {
   }) : super(
             appBar: AppBar(
               title: title,
-              actions: [const WorkoutRunMenu(), ...actions],
+              actions: [...actions, const WorkoutRunMenu()],
             ),
             bottomSheet: Consumer(
               builder: (context, ref, child) {

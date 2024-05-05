@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
+import 'package:workout_tracker/components/exercises/exercise_edit_form.dart';
 import 'package:workout_tracker/components/exercises/exercise_list_with_tile.dart';
 import 'package:workout_tracker/controller/exercise_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
@@ -58,9 +59,48 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
             _selected = [...selected];
           });
         });
+
+    const exerciseEditFormController = ExerciseEditForm(
+      exercise: Exercise(name: '', settings: []),
+    );
+
     return CustomScaffold(
         title: const Text('Add exercise'),
         actions: [
+          TextButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  var screenSize = MediaQuery.of(context).size;
+                  return AlertDialog(
+                    icon: const Icon(Icons.add),
+                    title: const Text('Create new exercise'),
+                    content: SizedBox(
+                      width: screenSize.width * 0.85,
+                      // height: screenSize.height * .85,
+                      child: exerciseEditFormController.editForm(),
+                    ),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            exerciseEditFormController.discardExercise();
+                            context.pop();
+                          },
+                          child: const Text('Cancel')),
+                      TextButton(
+                          onPressed: () {
+                            exerciseEditFormController.saveExercise();
+                            context.pop();
+                          },
+                          child: const Text('Add exercise')),
+                    ],
+                  );
+                },
+              );
+            },
+            child: const Text('New exercise'),
+          ),
           ...(switch (exercises) {
             AsyncValue(:final value?) => _selected.length < value.length
                 ? [
