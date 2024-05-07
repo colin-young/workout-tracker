@@ -6,6 +6,7 @@ import 'package:workout_tracker/components/exercises/exercise_list_with_tile.dar
 import 'package:workout_tracker/data/repositories/exercise_repository.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/workout_exercise.dart';
+import 'package:workout_tracker/utility/constants.dart';
 
 class AddExerciseDialog extends ConsumerStatefulWidget {
   const AddExerciseDialog({
@@ -55,8 +56,8 @@ class _AddExerciseDialogState extends ConsumerState<AddExerciseDialog> {
     return AlertDialog(
       title: const Text('Select exercises'),
       content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
-        height: MediaQuery.of(context).size.width * 0.85,
+        width: MediaQuery.of(context).size.width * Constants.dialogWidth,
+        height: MediaQuery.of(context).size.width * Constants.dialogHeight,
         child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             child: isAdding

@@ -25,7 +25,7 @@ dependencies:
   wheel_picker: ^0.0.4
   intl: ^0.19.0
   flutter_oss_licenses: ^2.0.1
-  flutter_markdown: ^0.6.22
+  flutter_markdown: ^0.7.1
   showcaseview: ^2.0.3
   animations: ^2.0.11
   community_charts_flutter: ^1.0.2

@@ -68,29 +68,13 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
               showDialog(
                 context: context,
                 builder: (context) {
-                  var screenSize = MediaQuery.of(context).size;
-                  return AlertDialog(
-                    icon: const Icon(Icons.add),
-                    title: const Text('Create new exercise'),
-                    content: SizedBox(
-                      width: screenSize.width * 0.85,
-                      // height: screenSize.height * .85,
-                      child: const ExerciseEditForm(
-                        exercise: Exercise(name: '', settings: []),
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            context.pop();
-                          },
-                          child: const Text('Cancel')),
-                      TextButton(
-                          onPressed: () {
-                            context.pop();
-                          },
-                          child: const Text('Add exercise')),
-                    ],
+                  return ExerciseEditDialog(
+                    title: 'Create new exercise',
+                    exercise: const Exercise(name: '', settings: []),
+                    cancelLabel: 'Cancel',
+                    saveLabel: 'Create new exercise',
+                    onCancel: () => context.pop(),
+                    afterSave: () => context.pop(),
                   );
                 },
               );

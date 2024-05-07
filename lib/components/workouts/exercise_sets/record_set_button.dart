@@ -26,69 +26,67 @@ class RecordSetButton extends ConsumerWidget with UserPreferencesState {
 
     return Card.outlined(
       elevation: 0,
-      child: Expanded(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          workoutSet.reps.toString(),
-                          style: largeTitleText!,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'reps',
-                          style: Theme.of(context).textTheme.bodySmall!,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const SizedBox(width: 8),
-                        Text(
-                          workoutSet.weight.toString(),
-                          style: mediumTitleText,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          workoutSet.units,
-                          style: smallTitleText,
-                        ),
-                      ],
-                    ),
-                  ]),
-              FilledButton.tonal(
-                onPressed: () async {
-                  await ref
-                      .read(exerciseSetsControllerProvider.notifier)
-                      .addWorkoutSet(
-                          workoutRecordId: workoutRecordId, newSet: workoutSet);
-                  ref.read(getAllowedEventsProvider.future).then((value) {
-                    ref.read(timerControllerProvider.notifier).handleEvent(
-                        Reset(duration: userPreferences(ref).timerLength));
-                    ref
-                        .read(timerControllerProvider.notifier)
-                        .handleEvent(Start());
-                  });
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.check),
-                    SizedBox(width: 8),
-                    Text('Record set'),
-                  ],
-                ),
-              )
-            ],
-          ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        workoutSet.reps.toString(),
+                        style: largeTitleText!,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'reps',
+                        style: Theme.of(context).textTheme.bodySmall!,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(width: 8),
+                      Text(
+                        workoutSet.weight.toString(),
+                        style: mediumTitleText,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        workoutSet.units,
+                        style: smallTitleText,
+                      ),
+                    ],
+                  ),
+                ]),
+            FilledButton.tonal(
+              onPressed: () async {
+                await ref
+                    .read(exerciseSetsControllerProvider.notifier)
+                    .addWorkoutSet(
+                        workoutRecordId: workoutRecordId, newSet: workoutSet);
+                ref.read(getAllowedEventsProvider.future).then((value) {
+                  ref.read(timerControllerProvider.notifier).handleEvent(
+                      Reset(duration: userPreferences(ref).timerLength));
+                  ref
+                      .read(timerControllerProvider.notifier)
+                      .handleEvent(Start());
+                });
+              },
+              child: const Row(
+                children: [
+                  Icon(Icons.check),
+                  SizedBox(width: 8),
+                  Text('Record set'),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

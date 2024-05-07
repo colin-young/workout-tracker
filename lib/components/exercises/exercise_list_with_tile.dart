@@ -18,17 +18,16 @@ class ExerciseListWithTile extends StatelessWidget {
     return ListView.builder(
         shrinkWrap: true,
         itemCount: exercises.length,
-        itemBuilder: (context, index) => Card(
-            child: ListTile(
-              key: Key('$index'),
-              onTap: () {
-                onTap(exercises, index);
-              },
-              leading: Icon(exercises[index].exerciseType?.icon),
-              title: Text(exercises[index].name),
-              trailing: Icon(isItemSelected(exercises, index)
-                  ? Icons.check_box_outlined
-                  : Icons.check_box_outline_blank),
-            )));
+        itemBuilder: (context, index) => ListTile(
+          key: Key('$index'),
+          onTap: () {
+            onTap(exercises, index);
+          },
+          leading: Icon(exercises[index].exerciseType?.icon),
+          title: Text(exercises[index].name),
+          trailing: Icon(isItemSelected(exercises, index)
+              ? Icons.check_box_outlined
+              : Icons.check_box_outline_blank),
+        ));
   }
 }
