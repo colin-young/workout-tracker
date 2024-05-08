@@ -41,10 +41,7 @@ class _UserPreferencesState extends ConsumerState<UserPreferencesEditor> {
     _userPreferences = widget.preferences;
     unitsController.text = _userPreferences.weightUnits;
 
-    unitsController.addListener(() {
-      // updatePrefs(
-      //     _userPreferences.copyWith(weightUnits: _userPreferences.weightUnits));
-    });
+    unitsController.addListener(() {});
   }
 
   void updatePrefs(UserPreferences newPrefs) {
@@ -64,7 +61,8 @@ class _UserPreferencesState extends ConsumerState<UserPreferencesEditor> {
 
   @override
   Widget build(BuildContext context) {
-    inputDecoration(name) => InputDecoration(labelText: name);
+    inputDecoration(name, {helper}) =>
+        InputDecoration(labelText: name, helperText: helper, helperMaxLines: 4);
     final textTheme = Theme.of(context).textTheme;
 
     return Form(
@@ -76,7 +74,9 @@ class _UserPreferencesState extends ConsumerState<UserPreferencesEditor> {
           mainAxisSize: MainAxisSize.min,
           children: ([
             DropdownButtonFormField<String>(
-              decoration: inputDecoration('Weight units'),
+              decoration: inputDecoration('Weight units',
+                  helper:
+                      'These units will be used to record new sets. Existing sets will not be updated.'),
               value: _userPreferences.weightUnits,
               items: const [
                 DropdownMenuItem(
@@ -93,7 +93,9 @@ class _UserPreferencesState extends ConsumerState<UserPreferencesEditor> {
               },
             ),
             DurationPickerFormField(
-                decoration: inputDecoration('Rest Timer'),
+                decoration: inputDecoration('Rest Timer',
+                    helper:
+                        'The duration of the timer used for rests between sets.'),
                 value: _userPreferences.timerLength,
                 style: textTheme.titleLarge,
                 styleSub: textTheme.labelMedium,
