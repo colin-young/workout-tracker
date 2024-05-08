@@ -78,7 +78,6 @@ class ExerciseSummaryChart extends ConsumerWidget {
     return SimpleTimeSeriesChart(
       data: data,
       trend: trendData,
-      exerciseId,
       animate: false,
       animation: animation?.value ?? 1,
       showAxis: showAxis,
@@ -90,7 +89,6 @@ class ExerciseSummaryChart extends ConsumerWidget {
 }
 
 class SimpleTimeSeriesChart extends ConsumerWidget {
-  final int exerciseId;
   final bool? animate;
   final bool showAxis;
   final double animation;
@@ -100,16 +98,17 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
   final bool showGridLines;
   final double? measure;
 
-  const SimpleTimeSeriesChart(this.exerciseId,
-      {super.key,
-      required this.data,
-      this.trend,
-      this.measure,
-      this.animate = false,
-      this.showAxis = true,
-      this.showRange = false,
-      this.showGridLines = true,
-      this.animation = 1.0});
+  const SimpleTimeSeriesChart({
+    super.key,
+    required this.data,
+    this.trend,
+    this.measure,
+    this.animate = false,
+    this.showAxis = true,
+    this.showRange = false,
+    this.showGridLines = true,
+    this.animation = 1.0,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

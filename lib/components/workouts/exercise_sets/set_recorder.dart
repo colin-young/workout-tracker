@@ -9,6 +9,7 @@ import 'package:workout_tracker/components/workouts/exercise_sets/record_set_but
 import 'package:workout_tracker/controller/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
+import 'package:workout_tracker/utility/constants.dart';
 import 'package:workout_tracker/utility/int_digits.dart';
 import 'package:workout_tracker/utility/set_entry_list_utils.dart';
 import 'package:workout_tracker/utility/set_entry_utils.dart';
@@ -142,29 +143,26 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
 
     final exerciseResultsHeight =
         TextUiUtilities.getTextSize('0', textStyle.bodyMedium!).height;
-    const recorderButton = 68.0;
-    const digitWheelHeight = 140.0;
-    const cardPadding = 8.0;
 
     return SizedBox(
-      height: digitWheelHeight * 2 +
-          recorderButton +
+      height: Constants.digitWheelHeight * 2 +
+          Constants.recorderButton +
           exerciseResultsHeight +
-          cardPadding * 2,
+          Constants.cardPadding * 2,
       child: Card(
           margin: const EdgeInsets.all(0),
           clipBehavior: Clip.hardEdge,
           child:
               // Chart
               Padding(
-                  padding: const EdgeInsets.all(cardPadding),
+                  padding: const EdgeInsets.all(Constants.cardPadding),
                   child: Stack(children: [
                     switch (currentExerciseResult) {
                       AsyncValue(:final value?) => Padding(
                           padding: EdgeInsets.fromLTRB(
-                              0, 0, 0, recorderButton + exerciseResultsHeight),
+                              0, 0, 0, Constants.recorderButton + exerciseResultsHeight),
                           child: Opacity(
-                            opacity: 0.25,
+                            opacity: Constants.chartOpacity,
                             child: AnimatedSwitcher(
                               transitionBuilder: (child, animation) =>
                                   SlideTransition(
@@ -208,7 +206,7 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                       AsyncValue(:final value?) => Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: SizedBox(
-                            height: digitWheelHeight * 2,
+                            height: Constants.digitWheelHeight * 2,
                             child: Flex(
                               direction: Axis.horizontal,
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -242,7 +240,7 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: digitWheelHeight,
+                          height: Constants.digitWheelHeight,
                           child: MultiDigitWheel(
                             key: ValueKey('${_exerciseId}reps'),
                             suffix: 'reps',
@@ -252,7 +250,7 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                           ),
                         ),
                         SizedBox(
-                          height: digitWheelHeight,
+                          height: Constants.digitWheelHeight,
                           child: MultiDigitWheel(
                             key: ValueKey('${_exerciseId}weight'),
                             suffix: prefs.weightUnits,

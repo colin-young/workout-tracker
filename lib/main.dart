@@ -40,6 +40,7 @@ void main() async {
             autoCloseWorkout: UserPreferencesAutoCloseWorkout(
                 autoClose: true, autoCloseWorkoutAfter: Duration(hours: 12)),
             timerLength: Duration(minutes: 1, seconds: 30),
+            chartOpacity: 0.25,
           ).toJson());
 
       await exerciseStore.add(db, bicepsCurl.toJson());

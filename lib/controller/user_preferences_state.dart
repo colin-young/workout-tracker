@@ -6,8 +6,10 @@ mixin UserPreferencesState {
   UserPreferences userPreferences(WidgetRef ref) =>
       ref.watch(getUserPreferencesProvider).value ??
       const UserPreferences(
-          weightUnits: 'unknown',
-          autoCloseWorkout: UserPreferencesAutoCloseWorkout(
-              autoClose: true, autoCloseWorkoutAfter: Duration()),
-          timerLength: Duration());
+        weightUnits: 'unknown',
+        autoCloseWorkout: UserPreferencesAutoCloseWorkout(
+            autoClose: true, autoCloseWorkoutAfter: Duration()),
+        timerLength: Duration(),
+        chartOpacity: 0.25,
+      );
 }
