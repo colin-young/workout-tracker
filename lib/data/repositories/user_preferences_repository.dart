@@ -39,4 +39,5 @@ Future updateUserPreferences(UpdateUserPreferencesRef ref, {required UserPrefere
   ref.read(userPreferencesRepositoryProvider).update(userPreferences);
   
   ref.invalidate(userPreferencesRepositoryProvider);
+  ref.invalidate(getUserPreferencesProvider);
 }

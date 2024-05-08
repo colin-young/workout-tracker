@@ -114,8 +114,7 @@ class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
           showDialog(
             context: context,
             builder: (context) {
-              return const TimerSetDialog(
-                  buttonPadding: 24.0, gridSpacing: 4.0);
+              return const TimerSetDialog();
             },
           );
         },
@@ -145,6 +144,12 @@ class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
         child: const Text('Manage exercises'),
         onPressed: () {
           context.go('/exercises');
+        },
+      ),
+      MenuItemButton(
+        child: const Text('Preferences'),
+        onPressed: () {
+          context.go('/userPreferences');
         },
       ),
       MenuItemButton(

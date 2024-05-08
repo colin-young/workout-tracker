@@ -5,6 +5,7 @@ import 'package:workout_tracker/components/pages/exercise_page.dart';
 import 'package:workout_tracker/components/pages/home_page.dart';
 import 'package:workout_tracker/components/pages/licenses_page.dart';
 import 'package:workout_tracker/components/pages/routine_page.dart';
+import 'package:workout_tracker/components/pages/user_preferences_page.dart';
 import 'package:workout_tracker/components/pages/workout_page.dart';
 
 final GoRouter router = GoRouter(
@@ -48,6 +49,10 @@ final GoRouter router = GoRouter(
                       workoutId: state.pathParameters['workoutId']!),
                 )
               ]),
+          GoRoute(
+            name: 'userPreferences',
+            path: 'userPreferences',
+            builder: (context, state) => const UserPreferencesPage()),
           GoRoute(
             name: 'licenses',
             path: 'licenses',
