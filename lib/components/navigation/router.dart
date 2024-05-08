@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:workout_tracker/components/pages/add_workout_exercise.dart';
+import 'package:workout_tracker/components/pages/workout/add_workout_exercise.dart';
 import 'package:workout_tracker/components/pages/exercise_edit_page.dart';
 import 'package:workout_tracker/components/pages/exercise_page.dart';
 import 'package:workout_tracker/components/pages/home_page.dart';

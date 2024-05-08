@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
-import 'package:workout_tracker/components/workouts/routines/routine_manager.dart';
+import 'package:workout_tracker/components/pages/routine/routine_manager.dart';
 
 class RoutinePage extends ConsumerWidget {
   const RoutinePage({super.key});

@@ -1,5 +1,5 @@
 import 'package:workout_tracker/fsm/event.dart';
-import 'package:workout_tracker/timer/timer_context.dart';
+import 'package:workout_tracker/components/timer/timer_context.dart';
 
 sealed class TimerEvent extends Event<TimerContext, TimerState> {
   TimerEvent({required super.name, super.includeInStream, super.action});

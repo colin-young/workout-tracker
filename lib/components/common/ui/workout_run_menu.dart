@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:workout_tracker/controller/timer_controller.dart';
-import 'package:workout_tracker/controller/user_preferences_state.dart';
+import 'package:workout_tracker/data/timer_controller.dart';
+import 'package:workout_tracker/data/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/domain/workout_record.dart';
-import 'package:workout_tracker/timer/timer_context.dart';
-import 'package:workout_tracker/timer/timer_event.dart';
-import 'package:workout_tracker/timer/timer_set_dialog.dart';
+import 'package:workout_tracker/components/timer/timer_context.dart';
+import 'package:workout_tracker/components/timer/timer_event.dart';
+import 'package:workout_tracker/components/timer/timer_set_dialog.dart';
 import 'package:workout_tracker/utility/duration_extensions.dart';
 import 'package:workout_tracker/utility/relative_date.dart';
 
@@ -114,7 +114,7 @@ class WorkoutRunMenu extends ConsumerWidget with UserPreferencesState {
           showDialog(
             context: context,
             builder: (context) {
-              return const TimerSetDialog();
+              return const TimerSetDialog(title: 'Set Timer');
             },
           );
         },

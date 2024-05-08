@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workout_tracker/controller/timer_controller.dart';
-import 'package:workout_tracker/timer/timer_context.dart';
-import 'package:workout_tracker/timer/timer_event.dart';
+import 'package:workout_tracker/data/timer_controller.dart';
+import 'package:workout_tracker/components/timer/timer_context.dart';
+import 'package:workout_tracker/components/timer/timer_event.dart';
 
 class TimerWidget extends ConsumerStatefulWidget {
   final Duration animationDuration;

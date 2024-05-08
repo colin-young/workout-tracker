@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/common/ui/card_title_divider.dart';
 import 'package:workout_tracker/components/common/relative_date.dart';
-import 'package:workout_tracker/controller/user_preferences_state.dart';
+import 'package:workout_tracker/data/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';
 import 'package:workout_tracker/utility/workout_utilities.dart';
 

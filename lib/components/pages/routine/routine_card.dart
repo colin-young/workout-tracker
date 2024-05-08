@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/components/workouts/exercise_sets/exercise_sets_list_tile.dart';
-import 'package:workout_tracker/components/workouts/routines/add_exercise_dialog.dart';
-import 'package:workout_tracker/controller/workout_definition_controller.dart';
+import 'package:workout_tracker/components/common/ui/exercise_sets/exercise_sets_list_tile.dart';
+import 'package:workout_tracker/components/pages/routine/add_exercise_dialog.dart';
+import 'package:workout_tracker/data/workout_definition_controller.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/domain/workout_exercise.dart';

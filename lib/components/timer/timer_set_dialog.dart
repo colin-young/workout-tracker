@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:workout_tracker/controller/timer_controller.dart';
-import 'package:workout_tracker/controller/user_preferences_state.dart';
-import 'package:workout_tracker/timer/timer_event.dart';
+import 'package:workout_tracker/data/timer_controller.dart';
+import 'package:workout_tracker/data/user_preferences_state.dart';
+import 'package:workout_tracker/components/timer/timer_event.dart';
 import 'package:workout_tracker/utility/int_digits.dart';
 import 'package:workout_tracker/utility/text_ui_utilities.dart';
 
@@ -14,12 +14,16 @@ class TimerSetDialog extends ConsumerStatefulWidget {
     this.gridSpacing = 4.0,
     this.onSave,
     this.saveLabel,
+    this.showHours = false,
+    required this.title,
   });
 
   final double buttonPadding;
   final double gridSpacing;
   final Function(Duration)? onSave;
   final String? saveLabel;
+  final bool showHours;
+  final String title;
 
   @override
   ConsumerState<TimerSetDialog> createState() => _TimerSetDialogState();
@@ -41,14 +45,22 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
   addToSetValue(String appendValue) {
     setState(() {
       setValue = '$setValue$appendValue';
-      setDuration = Duration(minutes: minutes(), seconds: seconds());
+      setDuration =
+          Duration(hours: hours(), minutes: minutes(), seconds: seconds());
     });
   }
 
   int get remainingLength => 4 - setValue.length;
   bool get canInput => setValue.length < 4;
-  int minutes() => int.parse(setValue.padLeft(4, '0').substring(0, 2));
-  int seconds() => int.parse(setValue.padLeft(4, '0').substring(2, 4));
+  int hours() => widget.showHours
+      ? int.parse(setValue.padLeft(4, '0').substring(0, 2))
+      : 0;
+  int minutes() => widget.showHours
+      ? int.parse(setValue.padLeft(4, '0').substring(2, 4))
+      : int.parse(setValue.padLeft(4, '0').substring(0, 2));
+  int seconds() => widget.showHours
+      ? 0
+      : int.parse(setValue.padLeft(4, '0').substring(2, 4));
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +94,7 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
     const spacerHeight = 24.0;
 
     return AlertDialog(
-      title: const Text('Set Timer'),
+      title: Text(widget.title),
       icon: const Icon(Icons.timer_outlined),
       actions: [
         TextButton(
@@ -96,9 +108,9 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
                   onPressed: setValue.isNotEmpty
                       ? widget.onSave != null
                           ? () {
-                            widget.onSave!(setDuration);
-                            context.pop();
-                          }
+                              widget.onSave!(setDuration);
+                              context.pop();
+                            }
                           : () {
                               ref
                                   .read(timerControllerProvider.notifier)
@@ -121,8 +133,10 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
               labelStyle: labelStyle,
               inputStyle: inputStyle,
               input: setValue,
+              hours: hours,
               minutes: minutes,
               seconds: seconds,
+              showHours: widget.showHours,
             ),
             const SizedBox(height: spacerHeight),
             InputKeypad(
@@ -153,16 +167,20 @@ class DurationDisplay extends StatelessWidget {
     this.inputActiveColor,
     this.inputStyle,
     required this.input,
+    required this.hours,
     required this.minutes,
     required this.seconds,
+    this.showHours = false,
   });
 
   final TextStyle? labelStyle;
   final Color? inputActiveColor;
   final TextStyle? inputStyle;
   final String input;
+  final int Function() hours;
   final int Function() minutes;
   final int Function() seconds;
+  final bool showHours;
 
   @override
   Widget build(BuildContext context) {
@@ -202,27 +220,42 @@ class DurationDisplay extends StatelessWidget {
         TextUiUtilities.getTextBaselineDistance('00', styleSub);
     final deltaBaseline = inputBaseline - labelBaseline;
 
+    var showHourValue = hours() > 0 || showHours;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       textBaseline: TextBaseline.alphabetic,
       children: [
-        Text('${minutes().tens()}', style: inputTextStyle(4)),
-        Text('${minutes().ones()}', style: inputTextStyle(3)),
+        ...showHourValue
+            ? [
+                Text('${hours().tens()}', style: inputTextStyle(4)),
+                Text('${hours().ones()}', style: inputTextStyle(3)),
+              ]
+            : [
+                Text('${minutes().tens()}', style: inputTextStyle(4)),
+                Text('${minutes().ones()}', style: inputTextStyle(3)),
+              ],
         Column(
           children: [
             SizedBox(height: deltaBaseline),
-            Text('m', style: styleSub),
+            Text(showHourValue ? 'h' : 'm', style: styleSub),
           ],
         ),
         const SizedBox(width: 8),
-        Text('${seconds().tens()}', style: inputTextStyle(2)),
-        Text('${seconds().ones()}', style: inputTextStyle(1)),
+        ...showHourValue
+            ? [
+                Text('${minutes().tens()}', style: inputTextStyle(2)),
+                Text('${minutes().ones()}', style: inputTextStyle(1)),
+              ]
+            : [
+                Text('${seconds().tens()}', style: inputTextStyle(2)),
+                Text('${seconds().ones()}', style: inputTextStyle(1)),
+              ],
         Column(
           children: [
             SizedBox(height: deltaBaseline),
-            Text('s', style: styleSub),
+            Text(showHourValue ? 'm' : 's', style: styleSub),
           ],
         ),
       ],

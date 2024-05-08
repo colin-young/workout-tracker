@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:workout_tracker/components/workouts/routines/routine_card.dart';
-import 'package:workout_tracker/controller/workout_definition_controller.dart';
+import 'package:workout_tracker/components/pages/routine/routine_card.dart';
+import 'package:workout_tracker/data/workout_definition_controller.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
 
 class RoutineManager extends ConsumerWidget {

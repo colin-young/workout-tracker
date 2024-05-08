@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/components/workouts/exercise_sets/exercise_settings_display.dart';
+import 'package:workout_tracker/components/common/ui/exercise_sets/exercise_settings_display.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 
 class ExerciseViewCard extends StatelessWidget {

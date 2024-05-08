@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workout_tracker/components/workouts/exercise_sets/workout_exercise_card_view.dart';
+import 'package:workout_tracker/components/common/ui/exercise_sets/workout_exercise_card_view.dart';
 import 'package:workout_tracker/components/workout_summary_card.dart';
-import 'package:workout_tracker/controller/user_preferences_state.dart';
+import 'package:workout_tracker/data/user_preferences_state.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 
 import 'package:workout_tracker/data/repositories/workout_record_repository.dart';

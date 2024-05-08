@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workout_tracker/components/common/ui/card/action_card_header.dart';
-import 'package:workout_tracker/components/workouts/exercise_sets/exercise_sets_list_with_sets_tile.dart';
+import 'package:workout_tracker/components/common/ui/exercise_sets/exercise_sets_list_with_sets_tile.dart';
 
 class WorkoutTrackerCard extends StatelessWidget {
   const WorkoutTrackerCard({

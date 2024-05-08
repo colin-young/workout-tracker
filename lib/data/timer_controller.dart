@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:workout_tracker/fsm/event.dart';
-import 'package:workout_tracker/fsm/state.dart';
-import 'package:workout_tracker/timer/timer_context.dart';
-import 'package:workout_tracker/timer/timer_event.dart';
-import 'package:workout_tracker/timer/timer_machine.dart';
+import 'package:workout_tracker/components/timer/timer_context.dart';
+import 'package:workout_tracker/components/timer/timer_event.dart';
+import 'package:workout_tracker/components/timer/timer_machine.dart';
 
 part 'timer_controller.g.dart';
 

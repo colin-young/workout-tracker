@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/common/custom_scaffold.dart';
-import 'package:workout_tracker/components/workouts/workout_manager.dart';
-import 'package:workout_tracker/controller/exercise_sets_controller.dart';
+import 'package:workout_tracker/components/pages/workout/workout_manager.dart';
+import 'package:workout_tracker/data/exercise_sets_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_sets_repository.dart';
 
 class WorkoutPage extends ConsumerWidget {

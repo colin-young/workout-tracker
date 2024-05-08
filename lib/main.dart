@@ -12,7 +12,7 @@ import 'package:workout_tracker/data/repositories/mock_data.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 import 'package:workout_tracker/domain/user_preferences.dart';
 import 'package:workout_tracker/domain/workout_record.dart';
-import 'package:workout_tracker/navigation/router.dart';
+import 'package:workout_tracker/components/navigation/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

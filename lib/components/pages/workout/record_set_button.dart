@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workout_tracker/controller/exercise_sets_controller.dart';
-import 'package:workout_tracker/controller/timer_controller.dart';
-import 'package:workout_tracker/controller/user_preferences_state.dart';
+import 'package:workout_tracker/data/exercise_sets_controller.dart';
+import 'package:workout_tracker/data/timer_controller.dart';
+import 'package:workout_tracker/data/user_preferences_state.dart';
 import 'package:workout_tracker/domain/set_entry.dart';
-import 'package:workout_tracker/timer/timer_event.dart';
+import 'package:workout_tracker/components/timer/timer_event.dart';
 
 class RecordSetButton extends ConsumerWidget with UserPreferencesState {
   const RecordSetButton({
