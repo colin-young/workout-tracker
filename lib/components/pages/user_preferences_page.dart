@@ -307,19 +307,15 @@ class DurationPickerFormField extends FormField<Duration> {
         super(
           initialValue: value,
           builder: (FormFieldState<Duration> field) {
-            final _DurationPickerFormFieldState state =
-                field as _DurationPickerFormFieldState;
             final InputDecoration decorationArg =
                 decoration ?? InputDecoration(focusColor: focusColor);
-            final InputDecoration effectiveDecoration =
-                decorationArg.applyDefaults(
+            decorationArg.applyDefaults(
               Theme.of(field.context).inputDecorationTheme,
             );
             return Focus(
               canRequestFocus: false,
               skipTraversal: true,
               child: Builder(builder: (BuildContext context) {
-                final bool isFocused = Focus.of(context).hasFocus;
 
                 final theme = Theme.of(context);
                 minutes() => value?.inMinutes ?? 0;
@@ -375,6 +371,7 @@ class DurationPickerFormField extends FormField<Duration> {
   final ValueChanged<Duration?>? onChanged;
   final InputDecoration decoration;
 
+  @override
   FormFieldState<Duration> createState() => _DurationPickerFormFieldState();
 }
 
