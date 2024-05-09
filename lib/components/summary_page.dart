@@ -18,69 +18,66 @@ class SummaryPage extends ConsumerWidget with UserPreferencesState {
     return workoutRecordAsync.when(
         data: (workoutRecord) {
           return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  WorkoutSummaryCard(workoutRecord.id),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Card(
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Recent exercises',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(
-                              width: double.infinity,
-                              height: 5,
-                            ),
-                            Consumer(
-                              builder: (context, ref, child) {
-                                const inset = 16.0;
-                                final workoutSetsResults =
-                                    ref.watch(getAllExerciseSetsStreamProvider);
-                                return workoutSetsResults.when(
-                                    data: (workoutSets) {
-                                      workoutSets.sort((a, b) => b
-                                          .latestDateTime()
-                                          .compareTo(a.latestDateTime()));
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: workoutSets
-                                            .where((element) =>
-                                                element.sets.isNotEmpty)
-                                            .take(15)
-                                            .map((e) {
-                                          return WorkoutExerciseCardView(
-                                              inset: inset, workoutExercise: e);
-                                        }).separatedList(const SizedBox(
-                                          height: inset,
-                                        )),
-                                      );
-                                    },
-                                    error: (e, st) => Text('SummaryPage: $e'),
-                                    loading: () => const Center(
-                                          child: CircularProgressIndicator(),
-                                        ));
-                              },
-                            ),
-                          ],
-                        ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                WorkoutSummaryCard(workoutRecord.id),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Card(
+                    elevation: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Recent exercises',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(
+                            width: double.infinity,
+                            height: 5,
+                          ),
+                          Consumer(
+                            builder: (context, ref, child) {
+                              const inset = 16.0;
+                              final workoutSetsResults =
+                                  ref.watch(getAllExerciseSetsStreamProvider);
+                              return workoutSetsResults.when(
+                                  data: (workoutSets) {
+                                    workoutSets.sort((a, b) => b
+                                        .latestDateTime()
+                                        .compareTo(a.latestDateTime()));
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: workoutSets
+                                          .where((element) =>
+                                              element.sets.isNotEmpty)
+                                          .take(15)
+                                          .map((e) {
+                                        return WorkoutExerciseCardView(
+                                            inset: inset, workoutExercise: e);
+                                      }).separatedList(const SizedBox(
+                                        height: inset,
+                                      )),
+                                    );
+                                  },
+                                  error: (e, st) => Text('SummaryPage: $e'),
+                                  loading: () => const Center(
+                                        child: CircularProgressIndicator(),
+                                      ));
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },

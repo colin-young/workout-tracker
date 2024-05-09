@@ -13,12 +13,12 @@ class UserPreferencesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userPreferencesResult = ref.watch(getUserPreferencesProvider);
 
-    return switch (userPreferencesResult) {
-      AsyncValue(:final value?) => CustomScaffold(
-          title: const Text('User preferences'),
-          body: UserPreferencesEditor(preferences: value),
-        ),
-      _ => const CircularProgressIndicator(),
-    };
+    return CustomScaffold(
+      title: const Text('User preferences'),
+      body: switch (userPreferencesResult) {
+        AsyncValue(:final value?) => UserPreferencesEditor(preferences: value),
+        _ => const CircularProgressIndicator(),
+      },
+    );
   }
 }

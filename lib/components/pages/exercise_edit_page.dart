@@ -22,12 +22,9 @@ class ExerciseEditPage extends StatelessWidget {
             ref.watch(GetExerciseProvider(entityId: exerciseIdKey));
 
         return exercise.when(
-            data: (exercise) => Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ExerciseEditForm(
-                    exercise: exercise,
-                  ),
-                ),
+            data: (exercise) => ExerciseEditForm(
+              exercise: exercise,
+            ),
             error: (e, st) => Text(e.toString()),
             loading: () => const Center(child: CircularProgressIndicator()));
       }),

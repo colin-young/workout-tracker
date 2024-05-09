@@ -9,7 +9,7 @@ class CustomScaffold extends Scaffold {
   CustomScaffold({
     super.key,
     super.backgroundColor,
-    super.body,
+    body,
     super.bottomNavigationBar,
     super.drawer,
     super.drawerDragStartBehavior,
@@ -36,6 +36,10 @@ class CustomScaffold extends Scaffold {
             appBar: AppBar(
               title: title,
               actions: [...actions, const WorkoutRunMenu()],
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(12),
+              child: body,
             ),
             bottomSheet: Consumer(
               builder: (context, ref, child) {

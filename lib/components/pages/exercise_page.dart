@@ -10,7 +10,7 @@ import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
 import 'package:workout_tracker/utility/constants.dart';
 
-class ExercisePage extends StatelessWidget {
+class ExercisePage extends ConsumerWidget {
   const ExercisePage({super.key});
 
   IconData getExerciseIcon(String icon) {
@@ -25,77 +25,69 @@ class ExercisePage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final exerciseResult = ref.watch(getExercisesProvider);
+
     return CustomScaffold(
       title: const Text('Exercises'),
-      body: Consumer(builder: (_, WidgetRef ref, __) {
-        final exerciseResult = ref.watch(getExercisesProvider);
+      body: switch (exerciseResult) {
+        AsyncValue(:final value?) => Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: value.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var entry = value[index];
+                    return Dismissible(
+                      onDismissed: (direction) {
+                        ref.read(deleteExerciseProvider(exerciseId: entry.id));
+                        final routines = ref
+                            .watch(workoutDefinitionControllerProvider.future);
 
-        return switch (exerciseResult) {
-          AsyncValue(:final value?) => Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: value.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        var entry = value[index];
-                        return Dismissible(
-                          onDismissed: (direction) {
-                            ref.read(
-                                deleteExerciseProvider(exerciseId: entry.id));
-                            final routines = ref.watch(
-                                workoutDefinitionControllerProvider.future);
-
-                            switch (routines) {
-                              case AsyncValue(:final value?):
-                                for (final routine in value.where((e) => e
-                                    .exercises
-                                    .any((ex) => ex.id == entry.id))) {
-                                  ref
-                                      .read(workoutDefinitionControllerProvider
-                                          .notifier)
-                                      .updateWorkoutDefinition(
-                                          definition: routine.copyWith(
-                                              exercises: routine.exercises
-                                                  .where(
-                                                      (ex) => ex.id != entry.id)
-                                                  .toList()));
-                                }
+                        switch (routines) {
+                          case AsyncValue(:final value?):
+                            for (final routine in value.where((e) =>
+                                e.exercises.any((ex) => ex.id == entry.id))) {
+                              ref
+                                  .read(workoutDefinitionControllerProvider
+                                      .notifier)
+                                  .updateWorkoutDefinition(
+                                      definition: routine.copyWith(
+                                          exercises: routine.exercises
+                                              .where((ex) => ex.id != entry.id)
+                                              .toList()));
                             }
-                          },
-                          confirmDismiss: (direction) => showDialog(
-                            context: context,
-                            builder: (context) {
-                              return ConfirmDismissDialog(entry: entry);
-                            },
-                          ),
-                          key: ValueKey(value[index].id),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              ExerciseViewCard(entry: entry),
-                              TextButton(
-                                child: const Text('Edit'),
-                                onPressed: () => context
-                                    .go('/exercises/exercise/${entry.id}/edit'),
-                              ),
-                              const Divider(),
-                            ],
-                          ),
-                        );
+                        }
                       },
-                    ),
-                  ),
-                  const SizedBox(height: Constants.floatingActionButtonHeight),
-                ],
+                      confirmDismiss: (direction) => showDialog(
+                        context: context,
+                        builder: (context) {
+                          return ConfirmDismissDialog(entry: entry);
+                        },
+                      ),
+                      key: ValueKey(value[index].id),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          ExerciseViewCard(entry: entry),
+                          TextButton(
+                            child: const Text('Edit'),
+                            onPressed: () => context
+                                .go('/exercises/exercise/${entry.id}/edit'),
+                          ),
+                          const Divider(),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          _ => const CircularProgressIndicator(),
-        };
-      }),
+              const SizedBox(height: Constants.floatingActionButtonHeight),
+            ],
+          ),
+        _ => const CircularProgressIndicator(),
+      },
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           context.go('/exercises/exercise/-1/edit');

@@ -44,12 +44,12 @@ class DurationPickerFormField extends FormField<Duration> {
                     children: [
                       DurationDisplay(
                         labelStyle: styleSub?.copyWith(
-                            color: theme.colorScheme.outlineVariant),
+                            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
                         inputStyle: style?.copyWith(
-                            color: theme.colorScheme.outlineVariant),
+                            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5)),
                         inputActiveColor: enabled
                             ? theme.colorScheme.onSurfaceVariant
-                            : theme.colorScheme.outlineVariant,
+                            : theme.colorScheme.onSurfaceVariant.withOpacity(0.25),
                         input: displayRaw,
                         hours: hours,
                         minutes: minutes,

@@ -91,21 +91,14 @@ class _AddWorkoutExercise extends ConsumerState<AddWorkoutExercise> {
             _ => [Container()]
           }),
         ],
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Consumer(
-            builder: (context, ref, child) {
-              return switch (exercises) {
-                AsyncValue(:final value?) => ExerciseListWithTile(
-                    onTap: selectItem,
-                    isItemSelected: isItemSelected,
-                    exercises: value,
-                  ),
-                _ => Container()
-              };
-            },
-          ),
-        ),
+        body: switch (exercises) {
+          AsyncValue(:final value?) => ExerciseListWithTile(
+              onTap: selectItem,
+              isItemSelected: isItemSelected,
+              exercises: value,
+            ),
+          _ => Container()
+        },
         floatingActionButton: _selected.isNotEmpty
             ? AddSelectedExercises(
                 workoutRecordId: workoutRecordId,
