@@ -15,4 +15,8 @@ abstract class WorkoutDefinition with _$WorkoutDefinition {
 
   factory WorkoutDefinition.fromJson(Map<String, dynamic> json) =>
       _$WorkoutDefinitionFromJson(json);
+
+  factory WorkoutDefinition.init() {
+    return const WorkoutDefinition(id: -1, name: '', exercises: []);
+  }
 }

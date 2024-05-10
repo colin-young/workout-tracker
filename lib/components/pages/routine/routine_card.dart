@@ -12,11 +12,15 @@ class RoutineCard extends ConsumerStatefulWidget {
     required this.definition,
     required this.textTheme,
     required this.isEditing,
+    this.onSave,
+    this.onCancel,
   });
 
   final WorkoutDefinition definition;
   final TextTheme textTheme;
   final bool isEditing;
+  final Function? onSave;
+  final Function? onCancel;
 
   @override
   ConsumerState<RoutineCard> createState() => _RoutineCardState();
@@ -24,20 +28,21 @@ class RoutineCard extends ConsumerStatefulWidget {
 
 class _RoutineCardState extends ConsumerState<RoutineCard>
     with TickerProviderStateMixin {
-  late bool isEditing;
+  late bool _isEditing;
   late List<WorkoutExercise> _exercises;
   late WorkoutDefinition _originalDefinition = widget.definition;
 
   final nameController = TextEditingController();
 
   late final AnimationController _controller = AnimationController(
+    value: _isEditing ? 1 : 0,
     duration: const Duration(milliseconds: 500),
     vsync: this,
   );
 
   @override
   void initState() {
-    isEditing = widget.isEditing;
+    _isEditing = widget.isEditing;
     nameController.text = widget.definition.name;
     _exercises = widget.definition.exercises.map((e) => e).toList();
 
@@ -59,13 +64,13 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
   void updateEditStatus(
       bool editStatus, WorkoutDefinition newDefinition) async {
     setState(() {
-      isEditing = editStatus;
+      _isEditing = editStatus;
       _originalDefinition = newDefinition;
       updateExercises(_originalDefinition.exercises);
     });
 
     try {
-      if (isEditing) {
+      if (_isEditing) {
         await _controller.forward().orCancel;
       } else {
         await _controller.reverse().orCancel;
@@ -87,15 +92,28 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
       exercises: _exercises.map((e) => e.copyWith(order: order++)).toList(),
     );
 
-    ref
-        .read(workoutDefinitionControllerProvider.notifier)
-        .updateWorkoutDefinition(definition: newDefinition);
+    newDefinition.id == -1
+        ? ref
+            .read(workoutDefinitionControllerProvider.notifier)
+            .createWorkoutDefinition(
+                name: newDefinition.name, exercises: newDefinition.exercises)
+        : ref
+            .read(workoutDefinitionControllerProvider.notifier)
+            .updateWorkoutDefinition(definition: newDefinition);
 
     updateEditStatus(false, newDefinition);
+
+    if (widget.onSave != null) {
+      widget.onSave!();
+    }
   }
 
   void cancelEdit() {
     updateEditStatus(false, _originalDefinition);
+    
+    if (widget.onCancel != null) {
+      widget.onCancel!();
+    }
   }
 
   @override
@@ -331,8 +349,8 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
                                                     },
                                                   );
                                                 },
-                                                child:
-                                                    const Text('Change exercises'),
+                                                child: const Text(
+                                                    'Change exercises'),
                                               ),
                                             ),
                                             itemCount: _exercises.length,
@@ -341,7 +359,8 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
                                                 if (oldIndex < newIndex) {
                                                   newIndex -= 1;
                                                 }
-                                                var newExercises = _exercises.toList();
+                                                var newExercises =
+                                                    _exercises.toList();
                                                 final WorkoutExercise item =
                                                     newExercises
                                                         .removeAt(oldIndex);
