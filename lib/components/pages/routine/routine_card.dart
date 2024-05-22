@@ -124,13 +124,13 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
             .iconButtonTheme
             .style
             ?.iconSize
-            ?.resolve(MaterialState.selected as Set<MaterialState>) ??
+            ?.resolve(WidgetState.selected as Set<WidgetState>) ??
         20;
     final EdgeInsetsGeometry iconPadding = Theme.of(context)
             .iconButtonTheme
             .style!
             .padding
-            ?.resolve(MaterialState.selected as Set<MaterialState>) ??
+            ?.resolve(WidgetState.selected as Set<WidgetState>) ??
         const EdgeInsets.all(8);
 
     const forwardCurve = Interval(0.0, 0.5, curve: Easing.emphasizedDecelerate);

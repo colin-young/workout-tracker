@@ -21,6 +21,8 @@ abstract class UserPreferences with _$UserPreferences {
     required Duration timerLength,
     required UserPreferencesAutoCloseWorkout autoCloseWorkout,
     required double chartOpacity,
+    required List<String> weightUnitList,
+    required List<String> exerciseType,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>

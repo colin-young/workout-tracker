@@ -28,7 +28,7 @@ class TextUiUtilities {
     );
     final textStyle = (theme.style ?? dummyButton.defaultStyleOf(context))
             .textStyle
-            ?.resolve(MaterialState.focused as Set<MaterialState>) ??
+            ?.resolve(WidgetState.focused as Set<WidgetState>) ??
         Theme.of(context).textTheme.labelLarge!;
 
     return textStyle;

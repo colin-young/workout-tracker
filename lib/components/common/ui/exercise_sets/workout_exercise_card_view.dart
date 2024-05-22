@@ -26,7 +26,7 @@ class WorkoutExerciseCardView extends StatelessWidget {
       inset: inset,
       workoutExercise: workoutExercise,
       detailPanelColor: Theme.of(context).colorScheme.secondaryContainer,
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
     );
   }
 }

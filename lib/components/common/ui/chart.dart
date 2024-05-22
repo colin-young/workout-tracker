@@ -117,11 +117,11 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
     var trendColor = charts.ColorUtil.fromDartColor(
         Theme.of(context).colorScheme.tertiary.withOpacity(0.75));
     var axisColor = charts.ColorUtil.fromDartColor(
-      Theme.of(context).colorScheme.onBackground.withOpacity(animation),
+      Theme.of(context).colorScheme.onSurface.withOpacity(animation),
     );
     var gridlineColor = charts.ColorUtil.fromDartColor(Theme.of(context)
         .colorScheme
-        .onBackground
+        .onSurface
         .withOpacity(animation * 0.25));
 
     final dataSeries = [
@@ -206,7 +206,7 @@ class SimpleTimeSeriesChart extends ConsumerWidget {
 
     var labelStyleSpec = charts.TextStyleSpec(
         color: charts.ColorUtil.fromDartColor(
-            Theme.of(context).colorScheme.onBackground.withOpacity(animation)));
+            Theme.of(context).colorScheme.onSurface.withOpacity(animation)));
 
     final charts.GridlineRendererSpec<num> gridlineRendererSpec =
         charts.GridlineRendererSpec(

@@ -186,26 +186,26 @@ class DurationDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle getInputStyleForState(TextStyle style) {
       final ThemeData theme = Theme.of(context);
-      final TextStyle stateStyle = MaterialStateProperty.resolveAs(
+      final TextStyle stateStyle = WidgetStateProperty.resolveAs(
           theme.useMaterial3
               ? _m3StateInputStyle(context)!
               : _m2StateInputStyle(context)!,
-          <MaterialState>{MaterialState.focused});
-      final TextStyle providedStyle = MaterialStateProperty.resolveAs(
-          style, <MaterialState>{MaterialState.focused});
+          <WidgetState>{WidgetState.focused});
+      final TextStyle providedStyle = WidgetStateProperty.resolveAs(
+          style, <WidgetState>{WidgetState.focused});
       return providedStyle.merge(stateStyle);
     }
 
     final ThemeData theme = Theme.of(context);
-    final TextStyle? providedStyleSub = MaterialStateProperty.resolveAs(
-        labelStyle, <MaterialState>{MaterialState.focused});
+    final TextStyle? providedStyleSub = WidgetStateProperty.resolveAs(
+        labelStyle, <WidgetState>{WidgetState.focused});
     final TextStyle styleSub = getInputStyleForState(theme.useMaterial3
             ? _m3InputStyle(context)
             : theme.textTheme.labelSmall!)
         .merge(providedStyleSub);
 
-    final TextStyle? providedStyle = MaterialStateProperty.resolveAs(
-        inputStyle, <MaterialState>{MaterialState.focused});
+    final TextStyle? providedStyle = WidgetStateProperty.resolveAs(
+        inputStyle, <WidgetState>{WidgetState.focused});
     final TextStyle style = getInputStyleForState(theme.useMaterial3
             ? _m3InputStyle(context)
             : theme.textTheme.labelSmall!)
@@ -263,17 +263,17 @@ class DurationDisplay extends StatelessWidget {
   }
 
   TextStyle? _m2StateInputStyle(BuildContext context) =>
-      MaterialStateTextStyle.resolveWith((Set<MaterialState> states) {
+      WidgetStateTextStyle.resolveWith((Set<WidgetState> states) {
         final ThemeData theme = Theme.of(context);
-        if (states.contains(MaterialState.disabled)) {
+        if (states.contains(WidgetState.disabled)) {
           return TextStyle(color: theme.disabledColor);
         }
         return TextStyle(color: theme.textTheme.titleMedium?.color);
       });
 
   TextStyle? _m3StateInputStyle(BuildContext context) =>
-      MaterialStateTextStyle.resolveWith((Set<MaterialState> states) {
-        if (states.contains(MaterialState.disabled)) {
+      WidgetStateTextStyle.resolveWith((Set<WidgetState> states) {
+        if (states.contains(WidgetState.disabled)) {
           return TextStyle(
               color: Theme.of(context)
                   .textTheme

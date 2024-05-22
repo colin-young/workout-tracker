@@ -66,16 +66,9 @@ class _UserPreferencesState extends ConsumerState<UserPreferencesEditor> {
                 helper:
                     'These units will be used to record new sets. Previously recorded sets will not be updated.'),
             value: _userPreferences.weightUnits,
-            items: const [
-              DropdownMenuItem(
-                value: 'lbs',
-                child: Text('lbs'),
-              ),
-              DropdownMenuItem(
-                value: 'kg',
-                child: Text('kg'),
-              ),
-            ],
+            items: _userPreferences.weightUnitList.map(
+              (u) => DropdownMenuItem(value: u, child: Text(u))
+            ).toList(),
             onChanged: (String? value) {
               updatePrefs(_userPreferences.copyWith(weightUnits: value!));
             },

@@ -41,6 +41,8 @@ void main() async {
                 autoClose: true, autoCloseWorkoutAfter: Duration(hours: 12)),
             timerLength: Duration(minutes: 1, seconds: 30),
             chartOpacity: 0.25,
+            weightUnitList: [ "lbs", "kg" ],
+            exerciseType: [ "machine", "dumbbell", "body weight" ]
           ).toJson());
 
       await exerciseStore.add(db, bicepsCurl.toJson());

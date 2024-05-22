@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/pages/routine/routine_card.dart';
 import 'package:workout_tracker/data/workout_definition_controller.dart';
 import 'package:workout_tracker/domain/workout_definition.dart';
-import 'package:workout_tracker/utility/constants.dart';
 
 class RoutineManager extends ConsumerWidget {
   const RoutineManager({

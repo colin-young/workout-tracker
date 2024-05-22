@@ -11,5 +11,7 @@ mixin UserPreferencesState {
             autoClose: true, autoCloseWorkoutAfter: Duration()),
         timerLength: Duration(),
         chartOpacity: 0.25,
+        weightUnitList: [],
+        exerciseType: [],
       );
 }
