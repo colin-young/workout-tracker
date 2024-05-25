@@ -13,7 +13,7 @@ class SettingEditor extends StatefulWidget {
 
   final Function inputDecoration;
   final ExerciseSetting setting;
-  final void Function(int) deleteItem;
+  final void Function(String) deleteItem;
   final void Function(ExerciseSetting) updateSetting;
 
   @override
@@ -70,9 +70,9 @@ class _SettingEditorState extends State<SettingEditor> {
           controller: settingValueController,
           decoration: widget.inputDecoration('Setting'),
         )),
-        LineItemDeleteButton<int>(
+        LineItemDeleteButton<String>(
           deleteItem: widget.deleteItem,
-          itemId: widget.setting.id,
+          itemId: widget.setting.id.toString(),
           size: 36,
         )
       ],

@@ -12,6 +12,6 @@ mixin UserPreferencesState {
         timerLength: Duration(),
         chartOpacity: 0.25,
         weightUnitList: [],
-        exerciseType: [],
+        exerciseTypeList: [],
       );
 }

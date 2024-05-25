@@ -5,22 +5,28 @@ import 'package:workout_tracker/utility/constants.dart';
 import 'package:workout_tracker/utility/separated_list.dart';
 import 'package:workout_tracker/utility/string_extensions.dart';
 
-class StringListEditorDialog extends StatefulWidget {
-  const StringListEditorDialog({
+// TODO create base class for V that can create the editor for the type, e.g. String, String with Icon, numbers, etc.
+/// A dialog to edit lists of type [V].
+class ListEditorDialog<V extends String>
+    extends StatefulWidget {
+  /// Create a new dialog to edit a list of items, [data]. The dialog title and
+  /// other references to the collection of items is defined by [itemName].
+  const ListEditorDialog({
     super.key,
     required this.data,
     required this.itemName,
   });
 
-  final List<String> data;
+  final List<V> data;
   final String itemName;
 
   @override
-  State<StringListEditorDialog> createState() => _StringListEditorDialogState();
+  State<ListEditorDialog<V>> createState() => _ListEditorDialogState<V>();
 }
 
-class _StringListEditorDialogState extends State<StringListEditorDialog> {
-  late Map<String, String> listItems;
+class _ListEditorDialogState<V extends String>
+    extends State<ListEditorDialog<V>> {
+  late Map<String, V> listItems;
 
   @override
   void initState() {
@@ -44,7 +50,7 @@ class _StringListEditorDialogState extends State<StringListEditorDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: listItems.keys
-                .map((i) => StringItemEditor<String>(
+                .map((i) => StringItemEditor<V>(
                     key: ValueKey(i),
                     itemValue: listItems[i]!,
                     itemKey: i,
@@ -74,7 +80,7 @@ class _StringListEditorDialogState extends State<StringListEditorDialog> {
               setState(() {
                 listItems = Map.fromEntries([
                   ...listItems.entries,
-                  MapEntry(UniqueKey().toString(), '')
+                  MapEntry(UniqueKey().toString(), '' as V)
                 ]);
               });
             },
@@ -94,7 +100,8 @@ class _StringListEditorDialogState extends State<StringListEditorDialog> {
   }
 }
 
-class StringItemEditor<T> extends StatefulWidget {
+class StringItemEditor<V extends String>
+    extends StatefulWidget {
   const StringItemEditor(
       {super.key,
       required this.itemValue,
@@ -104,27 +111,28 @@ class StringItemEditor<T> extends StatefulWidget {
       required this.updateSetting,
       required this.inputDecoration});
 
-  final String itemValue;
-  final T itemKey;
-  final void Function(T) deleteItem;
-  final void Function(String, T) updateSetting;
+  final V itemValue;
+  final String itemKey;
+  final void Function(String) deleteItem;
+  final void Function(V, String) updateSetting;
   final Function inputDecoration;
   final String valueName;
 
   @override
-  State<StringItemEditor<T>> createState() => _StringItemEditorState<T>();
+  State<StringItemEditor<V>> createState() => _StringItemEditorState<V>();
 }
 
-class _StringItemEditorState<T> extends State<StringItemEditor<T>> {
-  final settingValueController = TextEditingController();
+class _StringItemEditorState<V extends String>
+    extends State<StringItemEditor<V>> {
+  final valueController = TextEditingController();
   String value = '';
 
   @override
   void initState() {
-    settingValueController.text = widget.itemValue;
+    valueController.text = widget.itemValue;
 
-    settingValueController.addListener(() {
-      widget.updateSetting(settingValueController.text, widget.itemKey);
+    valueController.addListener(() {
+      widget.updateSetting(valueController.text as V, widget.itemKey);
     });
 
     super.initState();
@@ -132,7 +140,7 @@ class _StringItemEditorState<T> extends State<StringItemEditor<T>> {
 
   @override
   void dispose() {
-    settingValueController.dispose();
+    valueController.dispose();
     super.dispose();
   }
 
@@ -144,10 +152,10 @@ class _StringItemEditorState<T> extends State<StringItemEditor<T>> {
       children: [
         Expanded(
             child: TextFormField(
-          controller: settingValueController,
+          controller: valueController,
           decoration: widget.inputDecoration(widget.valueName),
         )),
-        LineItemDeleteButton<T>(
+        LineItemDeleteButton<String>(
           deleteItem: widget.deleteItem,
           itemId: widget.itemKey,
           size: 36,

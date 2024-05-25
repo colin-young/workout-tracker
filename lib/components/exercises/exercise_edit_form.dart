@@ -262,9 +262,9 @@ class _ExerciseEditorControlState extends State<ExerciseEditorControl> {
     return updateExercise(newExercise);
   }
 
-  Exercise deleteSetting(int id) {
+  Exercise deleteSetting(String id) {
     final newExercise = _exercise
-        .copyWith(settings: [..._exercise.settings.where((e) => e.id != id)]);
+        .copyWith(settings: [..._exercise.settings.where((e) => e.id.toString() != id)]);
     return updateExercise(newExercise);
   }
 

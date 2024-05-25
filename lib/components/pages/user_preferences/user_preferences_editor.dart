@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workout_tracker/components/common/ui/duration_picker/duration_picker_form_field.dart';
+import 'package:workout_tracker/components/common/ui/list_editor/item_list_form_field.dart';
 import 'package:workout_tracker/components/common/ui/list_editor/string_list_editor_dialog.dart';
 import 'package:workout_tracker/components/pages/user_preferences/sample_chart.dart';
 import 'package:workout_tracker/data/repositories/user_preferences_repository.dart';
@@ -82,7 +83,7 @@ class _UserPreferencesState extends ConsumerState<UserPreferencesEditor> {
                       onPressed: () async {
                         final List<String>? newUnits = await showDialog(
                           context: context,
-                          builder: (context) => StringListEditorDialog(
+                          builder: (context) => ListEditorDialog(
                             data: _userPreferences.weightUnitList,
                             itemName: 'unit',
                           ),
@@ -113,6 +114,21 @@ class _UserPreferencesState extends ConsumerState<UserPreferencesEditor> {
             onChanged: (String? value) {
               updatePrefs(_userPreferences.copyWith(weightUnits: value!));
             },
+          ),
+          ItemListFormField(
+            decoration: inputDecoration(
+              'Exercise types',
+              helperText:
+                  'These types are used to group exercises into general categories such as machine, free weights, body weight, etc. They can be used to distinguish between different styles of equivalent exercises, for example a chest press with free weights vs. a chest press machine.',
+            ),
+            onChanged: (newList) {
+              if (newList != null) {
+                updatePrefs(_userPreferences.copyWith(
+                    exerciseTypeList:
+                        newList.where((u) => u.isNotEmpty).toList()));
+              }
+            },
+            value: _userPreferences.exerciseTypeList,
           ),
           DurationPickerFormField(
               decoration: inputDecoration('Rest timer',

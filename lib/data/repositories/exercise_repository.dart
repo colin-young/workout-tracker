@@ -77,16 +77,20 @@ Future<Exercise> getExercise(GetExerciseRef ref,
 
 @riverpod
 Future<int> insertExercise(InsertExerciseRef ref,
-    {required Exercise exercise}) {
-  return ref.watch(exerciseRepositoryProvider).insert(exercise);
+    {required Exercise exercise}) async {
+  final result = await ref.watch(exerciseRepositoryProvider).insert(exercise);
+  ref.invalidate(exerciseRepositoryProvider);
+  return result;
 }
 
 @riverpod
-Future deleteExercise(DeleteExerciseRef ref, {required int exerciseId}) {
-  return ref.watch(exerciseRepositoryProvider).delete(exerciseId);
+Future<void> deleteExercise(DeleteExerciseRef ref, {required int exerciseId}) async {
+  await ref.watch(exerciseRepositoryProvider).delete(exerciseId);
+  ref.invalidate(exerciseRepositoryProvider);
 }
 
 @riverpod
-Future updateExercise(UpdateExerciseRef ref, {required Exercise exercise}) {
-  return ref.watch(exerciseRepositoryProvider).update(exercise);
+Future<void> updateExercise(UpdateExerciseRef ref, {required Exercise exercise}) async {
+  await ref.watch(exerciseRepositoryProvider).update(exercise);
+  ref.invalidate(exerciseRepositoryProvider);
 }

@@ -17,7 +17,7 @@ class SettingsEditSubForm extends StatelessWidget {
   final Function inputDecoration;
   final Function(ExerciseSetting) addSetting;
   final void Function(ExerciseSetting) updateSetting;
-  final void Function(int) deleteSetting;
+  final void Function(String) deleteSetting;
 
   @override
   Widget build(BuildContext context) {

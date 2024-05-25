@@ -20,10 +20,10 @@ const seatedLegCurl = Exercise(
     exerciseType: ExerciseType.machine,
     note: 'Sample note content.',
     settings: [
-      ExerciseSetting(setting: 'lower', value: '3'),
-      ExerciseSetting(setting: 'middle', value: '6'),
-      ExerciseSetting(setting: 'upper', value: '3'),
-      ExerciseSetting(setting: 'seat', value: '4')
+      ExerciseSetting(id: 1, setting: 'lower', value: '3'),
+      ExerciseSetting(id: 2, setting: 'middle', value: '6'),
+      ExerciseSetting(id: 3, setting: 'upper', value: '3'),
+      ExerciseSetting(id: 4, setting: 'seat', value: '4')
     ]);
 const chestPress = Exercise(
     id: 3,
@@ -37,8 +37,8 @@ const legExtension = Exercise(
     name: 'Leg Extension',
     exerciseType: ExerciseType.machine,
     settings: [
-      ExerciseSetting(setting: 'lower', value: '1'),
-      ExerciseSetting(setting: 'upper', value: '2')
+      ExerciseSetting(id: 1, setting: 'lower', value: '1'),
+      ExerciseSetting(id: 2, setting: 'upper', value: '2')
     ]);
 const benchDip = Exercise(
     id: 6,
