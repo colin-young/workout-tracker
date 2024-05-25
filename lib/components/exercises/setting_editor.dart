@@ -70,7 +70,7 @@ class _SettingEditorState extends State<SettingEditor> {
           controller: settingValueController,
           decoration: widget.inputDecoration('Setting'),
         )),
-        LineItemDeleteButton(
+        LineItemDeleteButton<int>(
           deleteItem: widget.deleteItem,
           itemId: widget.setting.id,
           size: 36,

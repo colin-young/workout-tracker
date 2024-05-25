@@ -59,7 +59,7 @@ class _AddExerciseDialogState extends ConsumerState<AddExerciseDialog> {
         width: MediaQuery.of(context).size.width * Constants.dialogWidth,
         height: MediaQuery.of(context).size.width * Constants.dialogHeight,
         child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
+            duration: Constants.formSwapDuration,
             child: isAdding
                 ? ExerciseEditForm(
                     exercise: const Exercise(name: '', settings: []),

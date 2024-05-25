@@ -14,6 +14,11 @@
             "runOptions": {
                 "runOn": "folderOpen"
             }
+        },
+        {
+            "label": "generate license content",
+            "type": "shell",
+            "command": "flutter pub run flutter_oss_licenses:generate.dart"
         }
     ]
 }

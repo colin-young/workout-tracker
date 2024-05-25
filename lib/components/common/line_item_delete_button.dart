@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class LineItemDeleteButton extends StatelessWidget {
+class LineItemDeleteButton<T> extends StatelessWidget {
   const LineItemDeleteButton({
     super.key,
     required this.deleteItem,
@@ -8,8 +8,8 @@ class LineItemDeleteButton extends StatelessWidget {
     this.size,
   });
 
-  final void Function(int) deleteItem;
-  final int itemId;
+  final void Function(T) deleteItem;
+  final T itemId;
   final double? size;
 
   @override
