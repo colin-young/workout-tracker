@@ -11,7 +11,7 @@ import 'package:workout_tracker/domain/exercise_sets.dart';
 const bicepsCurl = Exercise(
     id: 1,
     name: 'Biceps Curl',
-    exerciseType: ExerciseType.dumbbell,
+    exerciseType: ExerciseType.freeWeight,
     note: 'Lorem ipsum dolor sit amet.',
     settings: []);
 const seatedLegCurl = Exercise(
@@ -48,12 +48,12 @@ const benchDip = Exercise(
 const shoulderPress = Exercise(
     id: 7,
     name: 'Shoulder Press',
-    exerciseType: ExerciseType.dumbbell,
+    exerciseType: ExerciseType.freeWeight,
     settings: []);
 const forwardRaise = Exercise(
     id: 8,
     name: 'Forward Raise',
-    exerciseType: ExerciseType.dumbbell,
+    exerciseType: ExerciseType.freeWeight,
     settings: []);
 const tricepPulldown = Exercise(
     id: 9,

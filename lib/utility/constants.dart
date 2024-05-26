@@ -6,6 +6,8 @@ class Constants {
   static const double floatingActionButtonHeight = 64;
   static const chartOpacity = 0.25;
 
+  static const double rowSpacing = 12.0;
+
   static inputDecoration(name, {String? helperText, Widget? helper}) =>
       InputDecoration(
           labelText: name,

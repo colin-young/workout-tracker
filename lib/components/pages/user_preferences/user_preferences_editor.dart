@@ -83,9 +83,10 @@ class _UserPreferencesState extends ConsumerState<UserPreferencesEditor> {
                       onPressed: () async {
                         final List<String>? newUnits = await showDialog(
                           context: context,
-                          builder: (context) => ListEditorDialog(
+                          builder: (context) => ListEditorDialog<String>(
                             data: _userPreferences.weightUnitList,
                             itemName: 'unit',
+                            simpleStringEditor: StringItemEditorRow.getSimpleStringItemEditor,
                           ),
                         );
 

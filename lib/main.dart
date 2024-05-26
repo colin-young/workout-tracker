@@ -10,6 +10,7 @@ import 'package:sembast/sembast_io.dart';
 import 'package:workout_tracker/data/providers/global_providers.dart';
 import 'package:workout_tracker/data/repositories/mock_data.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
+import 'package:workout_tracker/domain/exercise_type.dart';
 import 'package:workout_tracker/domain/user_preferences.dart';
 import 'package:workout_tracker/domain/workout_record.dart';
 import 'package:workout_tracker/components/navigation/router.dart';
@@ -35,14 +36,14 @@ void main() async {
     if (oldVersion == 0) {
       await mainStore.record(UserPreferences.storeName).put(
           db,
-          const UserPreferences(
+          UserPreferences(
             weightUnits: 'lbs',
-            autoCloseWorkout: UserPreferencesAutoCloseWorkout(
+            autoCloseWorkout: const UserPreferencesAutoCloseWorkout(
                 autoClose: true, autoCloseWorkoutAfter: Duration(hours: 12)),
-            timerLength: Duration(minutes: 1, seconds: 30),
+            timerLength: const Duration(minutes: 1, seconds: 30),
             chartOpacity: 0.25,
             weightUnitList: [ "lbs", "kg" ],
-            exerciseTypeList: [ "machine", "dumbbell", "body weight" ]
+            exerciseTypeList: [ ...ExerciseType.values.map((i) => i.display) ]
           ).toJson());
 
       await exerciseStore.add(db, bicepsCurl.toJson());

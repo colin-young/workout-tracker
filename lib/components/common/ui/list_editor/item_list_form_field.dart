@@ -45,9 +45,10 @@ class ItemListFormField<T extends String> extends FormField<List<T>> {
                                     final List<T>? newTypes = await showDialog(
                                       context: context,
                                       builder: (context) =>
-                                          ListEditorDialog<T>(
+                                          ListEditorDialog<String>(
                                         data: value,
                                         itemName: 'exercise type',
+                                        simpleStringEditor: StringItemEditorRow.getExerciseTypeItemEditor,
                                       ),
                                     );
 
