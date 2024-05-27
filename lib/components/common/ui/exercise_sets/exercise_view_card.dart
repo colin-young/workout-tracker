@@ -34,7 +34,7 @@ class ExerciseViewCard extends StatelessWidget {
                     Opacity(
                         opacity: .2,
                         child: Icon(
-                          entry.exerciseType?.icon,
+                          entry.exerciseType?.deserialize.icon,
                           size: 60,
                         )),
                   ],

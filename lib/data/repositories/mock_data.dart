@@ -8,59 +8,59 @@ import 'package:workout_tracker/domain/workout_exercise.dart';
 import 'package:workout_tracker/domain/workout_record.dart';
 import 'package:workout_tracker/domain/exercise_sets.dart';
 
-const bicepsCurl = Exercise(
+final bicepsCurl = Exercise(
     id: 1,
     name: 'Biceps Curl',
-    exerciseType: ExerciseType.freeWeight,
+    exerciseType: ExerciseType.freeWeight.serialize,
     note: 'Lorem ipsum dolor sit amet.',
     settings: []);
-const seatedLegCurl = Exercise(
+final seatedLegCurl = Exercise(
     id: 2,
     name: 'Seated Leg Curl',
-    exerciseType: ExerciseType.machine,
+    exerciseType: ExerciseType.machine.serialize,
     note: 'Sample note content.',
     settings: [
-      ExerciseSetting(id: 1, setting: 'lower', value: '3'),
-      ExerciseSetting(id: 2, setting: 'middle', value: '6'),
-      ExerciseSetting(id: 3, setting: 'upper', value: '3'),
-      ExerciseSetting(id: 4, setting: 'seat', value: '4')
+      const ExerciseSetting(id: 1, setting: 'lower', value: '3'),
+      const ExerciseSetting(id: 2, setting: 'middle', value: '6'),
+      const ExerciseSetting(id: 3, setting: 'upper', value: '3'),
+      const ExerciseSetting(id: 4, setting: 'seat', value: '4')
     ]);
-const chestPress = Exercise(
+final chestPress = Exercise(
     id: 3,
     name: 'Chest Press',
-    exerciseType: ExerciseType.machine,
+    exerciseType: ExerciseType.machine.serialize,
     settings: []);
-const pecFly = Exercise(
-    id: 4, name: 'Pec Fly', exerciseType: ExerciseType.machine, settings: []);
-const legExtension = Exercise(
+final pecFly = Exercise(
+    id: 4, name: 'Pec Fly', exerciseType: ExerciseType.machine.serialize, settings: []);
+final legExtension = Exercise(
     id: 5,
     name: 'Leg Extension',
-    exerciseType: ExerciseType.machine,
+    exerciseType: ExerciseType.machine.serialize,
     settings: [
-      ExerciseSetting(id: 1, setting: 'lower', value: '1'),
-      ExerciseSetting(id: 2, setting: 'upper', value: '2')
+      const ExerciseSetting(id: 1, setting: 'lower', value: '1'),
+      const ExerciseSetting(id: 2, setting: 'upper', value: '2')
     ]);
-const benchDip = Exercise(
+final benchDip = Exercise(
     id: 6,
     name: 'Bench Dip',
-    exerciseType: ExerciseType.bodyWeight,
+    exerciseType: ExerciseType.bodyWeight.serialize,
     settings: []);
-const shoulderPress = Exercise(
+final shoulderPress = Exercise(
     id: 7,
     name: 'Shoulder Press',
-    exerciseType: ExerciseType.freeWeight,
+    exerciseType: ExerciseType.freeWeight.serialize,
     settings: []);
-const forwardRaise = Exercise(
+final forwardRaise = Exercise(
     id: 8,
     name: 'Forward Raise',
-    exerciseType: ExerciseType.freeWeight,
+    exerciseType: ExerciseType.freeWeight.serialize,
     settings: []);
-const tricepPulldown = Exercise(
+final tricepPulldown = Exercise(
     id: 9,
     name: 'Tricep Pulldown',
-    exerciseType: ExerciseType.machine,
+    exerciseType: ExerciseType.machine.serialize,
     settings: []);
-const exerciseList = [
+final exerciseList = [
   bicepsCurl,
   seatedLegCurl,
   chestPress,
@@ -71,23 +71,23 @@ const exerciseList = [
   forwardRaise,
   tricepPulldown,
 ];
-const routine1 = WorkoutDefinition(id: 1, name: 'Routine 1', exercises: [
+final routine1 = WorkoutDefinition(id: 1, name: 'Routine 1', exercises: [
   WorkoutExercise(id: 1, order: 1, exercise: bicepsCurl),
   WorkoutExercise(id: 2, order: 2, exercise: seatedLegCurl),
   WorkoutExercise(id: 5, order: 3, exercise: legExtension),
   WorkoutExercise(id: 5, order: 4, exercise: chestPress),
   WorkoutExercise(id: 5, order: 5, exercise: pecFly),
 ]);
-const routine2 = WorkoutDefinition(id: 2, name: 'Routine 2', exercises: [
+final routine2 = WorkoutDefinition(id: 2, name: 'Routine 2', exercises: [
   WorkoutExercise(id: 3, order: 1, exercise: chestPress),
   WorkoutExercise(id: 4, order: 2, exercise: pecFly),
 ]);
-const routine3 = WorkoutDefinition(id: 3, name: 'Routine 3', exercises: [
+final routine3 = WorkoutDefinition(id: 3, name: 'Routine 3', exercises: [
   WorkoutExercise(order: 1, exercise: chestPress),
   WorkoutExercise(order: 2, exercise: pecFly),
   WorkoutExercise(order: 3, exercise: bicepsCurl),
 ]);
-const workoutDefinitions = [routine1, routine2, routine3];
+final workoutDefinitions = [routine1, routine2, routine3];
 final workoutStartTime = DateTime.now().subtract(const Duration(days: 8 * 7));
 
 List<SetEntry> generateSets(DateTime startTime) {

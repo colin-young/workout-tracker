@@ -110,7 +110,7 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
 
   void cancelEdit() {
     updateEditStatus(false, _originalDefinition);
-    
+
     if (widget.onCancel != null) {
       widget.onCancel!();
     }
@@ -320,6 +320,7 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
                                                   icon: _exercises[index]
                                                       .exercise
                                                       .exerciseType!
+                                                      .deserialize
                                                       .icon,
                                                   title: _exercises[index]
                                                       .exercise

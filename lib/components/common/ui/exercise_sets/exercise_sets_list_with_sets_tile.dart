@@ -49,7 +49,7 @@ class ExerciseSetsListWithSetsTile extends ConsumerWidget {
                           .future);
                     },
                     child: ExerciseSetsListTile(
-                      icon: _workoutSets[index].exercise.exerciseType!.icon,
+                      icon: _workoutSets[index].exercise.exerciseType!.deserialize.icon,
                       title: _workoutSets[index].exercise.name,
                       subtitle: _workoutSets[index].displayString(),
                       trailing: swapEnabled && index == 0

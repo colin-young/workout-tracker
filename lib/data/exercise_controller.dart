@@ -23,7 +23,7 @@ class ExerciseController extends _$ExerciseController {
       required List<ExerciseSetting> setting}) async {
     final definitionsRepository = ref.watch(exerciseRepositoryProvider);
     final newExercise = Exercise(
-        name: name, exerciseType: exerciseType, note: note, settings: setting);
+        name: name, exerciseType: exerciseType.serialize, note: note, settings: setting);
 
     state = const AsyncLoading();
     var id = await definitionsRepository.insert(newExercise);

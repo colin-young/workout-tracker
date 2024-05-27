@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:workout_tracker/components/exercises/settings_edit_sub_form.dart';
 import 'package:workout_tracker/data/exercise_controller.dart';
 import 'package:workout_tracker/data/repositories/exercise_repository.dart';
+import 'package:workout_tracker/data/user_preferences_state.dart';
 import 'package:workout_tracker/domain/exercise.dart';
 import 'package:workout_tracker/domain/exercise_setting.dart';
 import 'package:workout_tracker/domain/exercise_type.dart';
@@ -190,7 +191,7 @@ class _ExerciseEditFormState extends ConsumerState<ExerciseEditForm> {
   }
 }
 
-class ExerciseEditorControl extends StatefulWidget {
+class ExerciseEditorControl extends ConsumerStatefulWidget {
   const ExerciseEditorControl({
     super.key,
     required this.exercise,
@@ -201,10 +202,12 @@ class ExerciseEditorControl extends StatefulWidget {
   final Exercise Function(Exercise) updateExercise;
 
   @override
-  State<ExerciseEditorControl> createState() => _ExerciseEditorControlState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ExerciseEditorControlState();
 }
 
-class _ExerciseEditorControlState extends State<ExerciseEditorControl> {
+class _ExerciseEditorControlState extends ConsumerState<ExerciseEditorControl>
+    with UserPreferencesState {
   late Exercise _exercise;
   final nameController = TextEditingController();
   final noteController = TextEditingController();
@@ -263,8 +266,8 @@ class _ExerciseEditorControlState extends State<ExerciseEditorControl> {
   }
 
   Exercise deleteSetting(String id) {
-    final newExercise = _exercise
-        .copyWith(settings: [..._exercise.settings.where((e) => e.id.toString() != id)]);
+    final newExercise = _exercise.copyWith(
+        settings: [..._exercise.settings.where((e) => e.id.toString() != id)]);
     return updateExercise(newExercise);
   }
 
@@ -289,30 +292,32 @@ class _ExerciseEditorControlState extends State<ExerciseEditorControl> {
         DropdownButtonFormField<ExerciseType>(
             onChanged: (ExerciseType? newType) {
               setState(() {
-                _exercise =
-                    updateExercise(_exercise.copyWith(exerciseType: newType));
+                _exercise = updateExercise(
+                    _exercise.copyWith(exerciseType: newType?.serialize));
               });
             },
             decoration: inputDecoration('Type'),
-            value: _exercise.exerciseType,
-            items: ExerciseType.values
-                .map((exerciseType) => DropdownMenuItem(
-                    value: exerciseType,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          exerciseType.icon,
-                          size: 16,
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Text(exerciseType.display),
-                      ],
-                    )))
-                .toList()),
+            value: _exercise.exerciseType?.deserialize,
+            items: userPreferences(ref).exerciseTypeList.map((e) {
+              final exerciseType = ExerciseType.deserialize(e);
+              
+              return DropdownMenuItem(
+                  value: exerciseType,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        exerciseType.icon,
+                        size: 16,
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Text(exerciseType.display),
+                    ],
+                  ));
+            }).toList()),
         TextFormField(
           controller: noteController,
           decoration: inputDecoration('Note'),

@@ -223,7 +223,7 @@ class StringItemEditorRow {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
       children: [
-        type != null ? Icon(type.icon) : const Icon(Icons.question_mark),
+        type != null ? Icon(type.icon) : const Icon(Icons.person_add),
         const SizedBox(width: Constants.rowSpacing),
         Expanded(
             child: TextFormField(
