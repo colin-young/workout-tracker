@@ -7,11 +7,13 @@ class DigitWheel extends StatefulWidget {
     required this.value,
     required this.textStyle,
     required this.updateSelectedValue,
+    required this.wheelPickerController,
   });
 
   final int value;
   final TextStyle? textStyle;
   final void Function(int) updateSelectedValue;
+  final WheelPickerController wheelPickerController;
 
   @override
   State<StatefulWidget> createState() => _DigitWheelState();
@@ -22,19 +24,15 @@ class _DigitWheelState extends State<DigitWheel> {
   late final textStyle = widget.textStyle;
   late final void Function(int) updateSelectedValue =
       widget.updateSelectedValue;
-  late final WheelPickerController wheelController =
-      WheelPickerController(itemCount: 10, initialIndex: widget.value);
 
   @override
   void dispose() {
-    wheelController.dispose();
-
     super.dispose();
   }
 
   @override
   void initState() {
-    wheelController.shiftBy(steps: _value);
+    widget.wheelPickerController.shiftBy(steps: _value);
 
     super.initState();
   }
@@ -56,7 +54,7 @@ class _DigitWheelState extends State<DigitWheel> {
             style: textStyle,
           );
         },
-        controller: wheelController,
+        controller: widget.wheelPickerController,
         selectedIndexColor: Theme.of(context).colorScheme.onSurface,
         onIndexChanged: (index) {
           setState(() {

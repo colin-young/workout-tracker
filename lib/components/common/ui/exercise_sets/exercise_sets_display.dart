@@ -231,7 +231,7 @@ class _SetEditorWidgetState extends ConsumerState<SetEditorWidget>
         SizedBox(
           height: Constants.digitWheelHeight,
           child: MultiDigitWheel(
-            key: ValueKey('${_setEntry.reps}reps'),
+            key: ValueKey('${_setEntry.id}reps'),
             suffix: 'reps',
             value: _setEntry.reps,
             updateTens: updateRepsTens,
@@ -241,7 +241,7 @@ class _SetEditorWidgetState extends ConsumerState<SetEditorWidget>
         SizedBox(
           height: Constants.digitWheelHeight,
           child: MultiDigitWheel(
-            key: ValueKey('${_setEntry.weight}weight'),
+            key: ValueKey('${_setEntry.id}weight'),
             suffix: prefs.weightUnits,
             value: _setEntry.weight,
             updateHundreds: updateWeightHundreds,

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:wheel_picker/wheel_picker.dart';
 import 'package:workout_tracker/components/common/ui/wheel_picker/digit_wheel.dart';
 import 'package:workout_tracker/utility/int_digits.dart';
 
-class MultiDigitWheel extends StatelessWidget {
+class MultiDigitWheel extends StatefulWidget {
   final void Function(int) updateOnes;
   final void Function(int)? updateTens;
   final void Function(int)? updateHundreds;
@@ -18,6 +19,34 @@ class MultiDigitWheel extends StatelessWidget {
       required this.suffix});
 
   @override
+  State<MultiDigitWheel> createState() => _MultiDigitWheelState();
+}
+
+class _MultiDigitWheelState extends State<MultiDigitWheel> {
+  late final hundredsWheelPicker = WheelPickerController(
+    itemCount: 10,
+    initialIndex: widget.value.hundreds(),
+  );
+  late final tensWheelPicker = WheelPickerController(
+    itemCount: 10,
+    initialIndex: widget.value.tens(),
+    mounts: [hundredsWheelPicker],
+  );
+  late final onesWheelPicker = WheelPickerController(
+    itemCount: 10,
+    initialIndex: widget.value.ones(),
+    mounts: [tensWheelPicker],
+  );
+
+  @override
+  void dispose() {
+    hundredsWheelPicker.dispose();
+    tensWheelPicker.dispose();
+    onesWheelPicker.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var textStyle = Theme.of(context).textTheme;
     var textTitle = textStyle.titleLarge;
@@ -29,37 +58,40 @@ class MultiDigitWheel extends StatelessWidget {
         Expanded(
           flex: 1,
           child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            updateHundreds != null
+            widget.updateHundreds != null
                 ? DigitWheel(
-                    key: ValueKey('${key}100s'),
-                    value: value.hundreds(),
+                    key: ValueKey('${widget.key}100s'),
+                    value: widget.value.hundreds(),
                     textStyle: textTitle,
-                    updateSelectedValue: updateHundreds!,
+                    updateSelectedValue: widget.updateHundreds!,
+                    wheelPickerController: hundredsWheelPicker,
                   )
                 : Container(),
-            updateHundreds != null
+            widget.updateHundreds != null
                 ? const SizedBox(
                     width: 4,
                   )
                 : Container(),
-            updateTens != null
+            widget.updateTens != null
                 ? DigitWheel(
-                    key: ValueKey('${key}10s'),
-                    value: value.tens(),
+                    key: ValueKey('${widget.key}10s'),
+                    value: widget.value.tens(),
                     textStyle: textTitle,
-                    updateSelectedValue: updateTens!,
+                    updateSelectedValue: widget.updateTens!,
+                    wheelPickerController: tensWheelPicker,
                   )
                 : Container(),
-            updateTens != null
+            widget.updateTens != null
                 ? const SizedBox(
                     width: 4,
                   )
                 : Container(),
             DigitWheel(
-              key: ValueKey('${key}1s'),
-              value: value.ones(),
+              key: ValueKey('${widget.key}1s'),
+              value: widget.value.ones(),
               textStyle: textTitle,
-              updateSelectedValue: updateOnes,
+              updateSelectedValue: widget.updateOnes,
+              wheelPickerController: onesWheelPicker,
             ),
           ]),
         ),
@@ -69,7 +101,7 @@ class MultiDigitWheel extends StatelessWidget {
         Expanded(
           flex: 1,
           child: Text(
-            suffix,
+            widget.suffix,
             style: textTitle,
           ),
         )
