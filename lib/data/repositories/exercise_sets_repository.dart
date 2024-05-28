@@ -318,7 +318,7 @@ Future deleteExerciseSets(DeleteExerciseSetsRef ref,
 
 @riverpod
 Future updateExerciseSets(UpdateExerciseSetsRef ref,
-    {required ExerciseSets exercise}) {
+    {required ExerciseSets exerciseSets}) async {
   // developer.log('entering', name: 'ExerciseSetsRepository.updateExerciseSets');
 
   // ref.onDispose(() {
@@ -326,7 +326,10 @@ Future updateExerciseSets(UpdateExerciseSetsRef ref,
   //       name: 'ExerciseSetsRepository.updateExerciseSets');
   // });
 
-  return ref.read(exerciseSetsRepositoryProvider).update(exercise);
+  final update = await ref.read(exerciseSetsRepositoryProvider).update(exerciseSets);
+  ref.invalidateSelf();
+  
+  return update;
 }
 
 @riverpod

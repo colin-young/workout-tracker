@@ -80,7 +80,7 @@ class ExerciseSetsController extends _$ExerciseSetsController {
       if (currentSets != null) {
         final updatedSet =
             currentSets.copyWith(sets: [...currentSets.sets, newSet]);
-        await ref.read(updateExerciseSetsProvider(exercise: updatedSet).future);
+        await ref.read(updateExerciseSetsProvider(exerciseSets: updatedSet).future);
         _currentSetController.add(updatedSet);
         final workoutRecord = await ref
             .read(workoutRecordRepositoryProvider)

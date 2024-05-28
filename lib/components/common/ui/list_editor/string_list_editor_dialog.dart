@@ -146,24 +146,8 @@ class _StringItemEditorState extends State<StringItemEditor> {
 
   @override
   Widget build(BuildContext context) {
-    // return Row(
-    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //   mainAxisSize: MainAxisSize.max,
-    //   children: [
-    //     Expanded(
-    //         child: TextFormField(
-    //       controller: valueController,
-    //       decoration: widget.inputDecoration(widget.valueName),
-    //     )),
-    //     LineItemDeleteButton<String>(
-    //       deleteItem: widget.deleteItem,
-    //       itemId: widget.itemKey,
-    //       size: 36,
-    //     )
-    //   ],
-    // );
     return widget.itemEditorRow(
-      controller: valueController,
+      controller: [valueController],
       decorator: widget.inputDecoration(widget.valueName),
       valueName: widget.valueName,
       deleteItem: widget.deleteItem,
@@ -174,7 +158,7 @@ class _StringItemEditorState extends State<StringItemEditor> {
 }
 
 typedef ItemEditorRowFunction = Widget Function({
-  required TextEditingController controller,
+  required List<TextEditingController> controller,
   required InputDecoration decorator,
   required String valueName,
   required void Function(String) deleteItem,
@@ -184,20 +168,22 @@ typedef ItemEditorRowFunction = Widget Function({
 
 class StringItemEditorRow {
   static Widget getSimpleStringItemEditor({
-    required TextEditingController controller,
+    required List<TextEditingController> controller,
     required InputDecoration decorator,
     required String valueName,
     required void Function(String) deleteItem,
     required String itemKey,
     required String item,
-  }) =>
-      Row(
+  }) {
+    assert(controller.length == 1);
+
+    return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
               child: TextFormField(
-            controller: controller,
+            controller: controller[0],
             decoration: decorator,
           )),
           LineItemDeleteButton<String>(
@@ -207,14 +193,17 @@ class StringItemEditorRow {
           )
         ],
       );
+  }
   static Widget getExerciseTypeItemEditor({
-    required TextEditingController controller,
+    required List<TextEditingController> controller,
     required InputDecoration decorator,
     required String valueName,
     required void Function(String) deleteItem,
     required String itemKey,
     required String item,
   }) {
+    assert(controller.length == 1);
+
     final ExerciseType? type = ExerciseType.values
         .where((e) => e.display.toLowerCase() == (item).toLowerCase())
         .firstOrNull;
@@ -227,7 +216,7 @@ class StringItemEditorRow {
         const SizedBox(width: Constants.rowSpacing),
         Expanded(
             child: TextFormField(
-          controller: controller,
+          controller: controller[0],
           decoration: decorator,
         )),
         LineItemDeleteButton<String>(

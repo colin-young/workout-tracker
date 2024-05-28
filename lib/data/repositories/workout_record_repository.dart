@@ -218,7 +218,7 @@ Future<WorkoutRecord> completeAllWorkoutExercises(
   for (final exercise in workoutExercises) {
     if (!exercise.isComplete) {
       updates.add(ref.read(updateExerciseSetsProvider(
-              exercise: exercise.copyWith(isComplete: true))
+              exerciseSets: exercise.copyWith(isComplete: true))
           .future));
     }
   }
