@@ -70,7 +70,7 @@ void main() async {
         final workoutStartsAt =
             prevWorkoutRecordStart.add(Duration(days: Random().nextInt(2) + 7));
         final workoutSets = createExerciseSets(
-            id: setsCount + 1,
+            id: setsCount,
             workoutId: i,
             routine: routine,
             startTime: workoutStartsAt);
