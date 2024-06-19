@@ -25,7 +25,7 @@ final GoRouter router = GoRouter(
                   path: 'exercise/:exerciseId/edit',
                   builder: (context, state) => ExerciseEditPage(
                     exerciseId: state.pathParameters['exerciseId']!,
-                    title: 'Exercise Name',
+                    title: 'Edit Exercise',
                   ),
                 ),
               ]),

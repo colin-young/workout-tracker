@@ -28,7 +28,8 @@ class RoutineManager extends ConsumerWidget {
             ...newRoutine ? [WorkoutDefinition.init()] : [],
           ];
 
-          return ListView.builder(
+          return ListView.separated(
+            separatorBuilder: (context, index) => const Divider(),
             shrinkWrap: true,
             itemCount: definitions.length,
             itemBuilder: (context, index) {
@@ -59,15 +60,12 @@ class RoutineManager extends ConsumerWidget {
                         ],
                       );
                     }),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RoutineCard(
-                    definition: definitions[index],
-                    textTheme: textTheme,
-                    isEditing: false || definitions[index].id == -1,
-                    onSave: onSave,
-                    onCancel: onCancel,
-                  ),
+                child: RoutineCard(
+                  definition: definitions[index],
+                  textTheme: textTheme,
+                  isEditing: false || definitions[index].id == -1,
+                  onSave: onSave,
+                  onCancel: onCancel,
                 ),
               );
             },

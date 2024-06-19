@@ -157,14 +157,15 @@ class _ExerciseEditFormState extends ConsumerState<ExerciseEditForm> {
                   exercise: _exercise,
                   updateExercise: updateExercise,
                 ),
+                const Divider(),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    OutlinedButton(
+                    TextButton(
                       onPressed: widget.onCancel ?? () => context.pop(),
                       child: Text(widget.cancelLabel ?? 'Cancel'),
                     ),
-                    FilledButton(
+                    TextButton(
                       onPressed: () {
                         if (_exercise.id > 0) {
                           ref.read(updateExerciseProvider(exercise: _exercise));

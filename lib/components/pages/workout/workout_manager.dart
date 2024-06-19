@@ -55,8 +55,7 @@ class WorkoutManager extends ConsumerWidget {
             height: 16,
           ),
           Card(
-            color: Theme.of(context).colorScheme.surface,
-            elevation: 5,
+            clipBehavior: Clip.hardEdge,
             margin: const EdgeInsets.all(0),
             child: Padding(
               padding: const EdgeInsets.all(8.0),

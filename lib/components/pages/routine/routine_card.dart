@@ -203,213 +203,216 @@ class _RoutineCardState extends ConsumerState<RoutineCard>
     const buttonRowHeight = 64;
     const footerHeight = 36;
 
-    return Card(
-      elevation: 1,
-      shadowColor: Colors.transparent,
-      margin: EdgeInsets.zero,
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (BuildContext context, Widget? child) {
-            return Stack(
-              children: [
-                Opacity(
-                  opacity: 1 - fadeInDelayed.value,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(border: borderTween.value),
-                    child: Padding(
-                      padding: edgeInsetsTween.value,
-                      child: Text(
-                        widget.definition.name,
-                        style: editStyleTween.value,
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (BuildContext context, Widget? child) {
+        return Card(
+            surfaceTintColor: Theme.of(context).colorScheme.surfaceTint,
+            elevation: 1 * sizeTween.value,
+            // shadowColor: Colors.transparent,
+            margin: EdgeInsets.zero,
+            clipBehavior: Clip.hardEdge,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Stack(
+                children: [
+                  Opacity(
+                    opacity: 1 - fadeInDelayed.value,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(border: borderTween.value),
+                      child: Padding(
+                        padding: edgeInsetsTween.value,
+                        child: Text(
+                          widget.definition.name,
+                          style: editStyleTween.value,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Opacity(
-                  opacity: fadeInDelayed.value,
-                  child: TextFormField(
-                    controller: nameController,
-                    decoration: inputDecoration('Name'),
-                  ),
-                ),
-                Stack(
-                  children: [
-                    AnimatedBuilder(
-                      animation: _controller,
-                      builder: (context, child) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            Padding(
-                              padding: iconPadding,
-                              child: SizedBox(
-                                height: defaultIconHeight,
-                              ),
-                            )
-                          ],
-                        );
-                      },
+                  Opacity(
+                    opacity: fadeInDelayed.value,
+                    child: TextFormField(
+                      controller: nameController,
+                      decoration: inputDecoration('Name'),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: flexTween.value,
-                          child: const SizedBox(),
-                        ),
-                        Expanded(
-                          flex: 30000,
-                          child: Column(
+                  ),
+                  Stack(
+                    children: [
+                      AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, child) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
-                                  height: sizeTween.value * (buttonRowHeight),
-                                  width: 1),
-                              Stack(children: [
-                                fadeInDelayed.value < 1.0
-                                    ? Opacity(
-                                        opacity: 1 - fadeInDelayed.value,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              bottom: sizeTween.value *
-                                                  footerHeight),
-                                          child: ListView.builder(
-                                            shrinkWrap: true,
-                                            itemBuilder: (context, index) {
-                                              return Padding(
-                                                padding: EdgeInsets.all(
-                                                    sizeTween.value * 14),
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: sizeTween.value *
-                                                          40.0),
-                                                  child: Text(
-                                                    key: ValueKey(
-                                                        'exercises$index'),
-                                                    _exercises[index]
+                              const SizedBox(
+                                height: 24,
+                              ),
+                              Padding(
+                                padding: iconPadding,
+                                child: SizedBox(
+                                  height: defaultIconHeight,
+                                ),
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: flexTween.value,
+                            child: const SizedBox(),
+                          ),
+                          Expanded(
+                            flex: 30000,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                    height: sizeTween.value * (buttonRowHeight),
+                                    width: 1),
+                                Stack(children: [
+                                  fadeInDelayed.value < 1.0
+                                      ? Opacity(
+                                          opacity: 1 - fadeInDelayed.value,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: sizeTween.value *
+                                                    footerHeight),
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              itemBuilder: (context, index) {
+                                                return Padding(
+                                                  padding: EdgeInsets.all(
+                                                      sizeTween.value * 14),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: sizeTween.value *
+                                                            40.0),
+                                                    child: Text(
+                                                      key: ValueKey(
+                                                          'exercises$index'),
+                                                      _exercises[index]
+                                                          .exercise
+                                                          .name,
+                                                      style:
+                                                          listStyleTween.value,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              itemCount: _exercises.length,
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                  fadeInDelayed.value > 0
+                                      ? Opacity(
+                                          opacity: fadeInDelayed.value,
+                                          child: ReorderableListView.builder(
+                                              shrinkWrap: true,
+                                              itemBuilder: (context, index) {
+                                                return Dismissible(
+                                                  key: ValueKey(
+                                                      'exercises$index'),
+                                                  child: ExerciseSetsListTile(
+                                                    icon: _exercises[index]
+                                                        .exercise
+                                                        .exerciseType!
+                                                        .deserialize
+                                                        .icon,
+                                                    title: _exercises[index]
                                                         .exercise
                                                         .name,
-                                                    style: listStyleTween.value,
                                                   ),
+                                                  onDismissed: (direction) {
+                                                    updateExercises(_exercises
+                                                        .where((element) =>
+                                                            element.id !=
+                                                            _exercises[index]
+                                                                .id)
+                                                        .toList());
+                                                  },
+                                                );
+                                              },
+                                              footer: Align(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: TextButton(
+                                                  onPressed: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return AddExerciseDialog(
+                                                          exercises: _exercises,
+                                                          updateExercises:
+                                                              updateExercises,
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: const Text(
+                                                      'Change exercises'),
                                                 ),
-                                              );
-                                            },
-                                            itemCount: _exercises.length,
-                                          ),
-                                        ),
-                                      )
-                                    : const SizedBox(),
-                                fadeInDelayed.value > 0
-                                    ? Opacity(
-                                        opacity: fadeInDelayed.value,
-                                        child: ReorderableListView.builder(
-                                            shrinkWrap: true,
-                                            itemBuilder: (context, index) {
-                                              return Dismissible(
-                                                key:
-                                                    ValueKey('exercises$index'),
-                                                child: ExerciseSetsListTile(
-                                                  icon: _exercises[index]
-                                                      .exercise
-                                                      .exerciseType!
-                                                      .deserialize
-                                                      .icon,
-                                                  title: _exercises[index]
-                                                      .exercise
-                                                      .name,
-                                                ),
-                                                onDismissed: (direction) {
-                                                  updateExercises(_exercises
-                                                      .where((element) =>
-                                                          element.id !=
-                                                          _exercises[index].id)
-                                                      .toList());
-                                                },
-                                              );
-                                            },
-                                            footer: Align(
-                                              alignment: Alignment.centerRight,
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AddExerciseDialog(
-                                                        exercises: _exercises,
-                                                        updateExercises:
-                                                            updateExercises,
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                child: const Text(
-                                                    'Change exercises'),
                                               ),
-                                            ),
-                                            itemCount: _exercises.length,
-                                            onReorder: (oldIndex, newIndex) {
-                                              setState(() {
-                                                if (oldIndex < newIndex) {
-                                                  newIndex -= 1;
-                                                }
-                                                var newExercises =
-                                                    _exercises.toList();
-                                                final WorkoutExercise item =
-                                                    newExercises
-                                                        .removeAt(oldIndex);
-                                                newExercises.insert(
-                                                    newIndex, item);
+                                              itemCount: _exercises.length,
+                                              onReorder: (oldIndex, newIndex) {
+                                                setState(() {
+                                                  if (oldIndex < newIndex) {
+                                                    newIndex -= 1;
+                                                  }
+                                                  var newExercises =
+                                                      _exercises.toList();
+                                                  final WorkoutExercise item =
+                                                      newExercises
+                                                          .removeAt(oldIndex);
+                                                  newExercises.insert(
+                                                      newIndex, item);
 
-                                                _exercises = newExercises;
-                                              });
-                                            }),
-                                      )
-                                    : const SizedBox()
-                              ]),
-                              SizedBox(
-                                  height: sizeTween.value * 64,
-                                  child: Opacity(
-                                    opacity: fadeInDelayed.value,
-                                    child: Column(
-                                      children: [
-                                        const Divider(),
-                                        EditButtonsRow(
-                                            save: saveDefinition,
-                                            cancel: cancelEdit),
-                                      ],
-                                    ),
-                                  ))
-                            ],
+                                                  _exercises = newExercises;
+                                                });
+                                              }),
+                                        )
+                                      : const SizedBox()
+                                ]),
+                                SizedBox(
+                                    height: sizeTween.value * 64,
+                                    child: Opacity(
+                                      opacity: fadeInDelayed.value,
+                                      child: Column(
+                                        children: [
+                                          const Divider(),
+                                          EditButtonsRow(
+                                              save: saveDefinition,
+                                              cancel: cancelEdit),
+                                        ],
+                                      ),
+                                    ))
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                fadeOut.value > 0.0
-                    ? Positioned(
-                        bottom: 0,
-                        left: 0,
-                        child: Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Opacity(
-                                opacity: fadeOut.value,
-                                child: ViewButtonsRow(edit: startEdit))),
+                        ],
                       )
-                    : const SizedBox()
-              ],
-            );
-          },
-        ),
-      ),
+                    ],
+                  ),
+                  fadeOut.value > 0.0
+                      ? Positioned(
+                          bottom: 0,
+                          left: 0,
+                          child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Opacity(
+                                  opacity: fadeOut.value,
+                                  child: ViewButtonsRow(edit: startEdit))),
+                        )
+                      : const SizedBox()
+                ],
+              ),
+            ));
+      },
     );
   }
 }
@@ -422,8 +425,9 @@ class ViewButtonsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [OutlinedButton(onPressed: edit, child: const Text('Edit'))]);
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [TextButton(onPressed: edit, child: const Text('Edit'))]);
   }
 }
 
@@ -441,11 +445,11 @@ class EditButtonsRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: [
-          OutlinedButton.icon(
+          TextButton.icon(
               onPressed: cancel,
               label: const Text('Cancel'),
               icon: const Icon(Icons.close)),
-          FilledButton.tonalIcon(
+          TextButton.icon(
               onPressed: save,
               icon: const Icon(Icons.check),
               label: const Text('Save'))
