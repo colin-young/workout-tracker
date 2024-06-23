@@ -74,7 +74,7 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
         .labelLarge!
         .copyWith(textBaseline: TextBaseline.alphabetic);
     final textStyle = TextUiUtilities.getFilledButtonTextStyle(context, '00');
-    final textSize = TextUiUtilities.getTextSize('00', textStyle);
+    final textSize = TextUiUtilities.getTextSize(context, '00', textStyle);
 
     addDigit(digit) => FilledButton.tonal(
         onPressed: canInput &&
@@ -90,7 +90,7 @@ class _TimerSetDialogState extends ConsumerState<TimerSetDialog>
         2 * widget.gridSpacing;
     var height =
         width + widget.gridSpacing + textSize.width + widget.buttonPadding * 2;
-    final inputHeight = TextUiUtilities.getTextSize('00', inputStyle).height;
+    final inputHeight = TextUiUtilities.getTextSize(context, '00', inputStyle).height;
     const spacerHeight = 24.0;
 
     return AlertDialog(

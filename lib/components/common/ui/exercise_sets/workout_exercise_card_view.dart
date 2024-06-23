@@ -93,15 +93,12 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
   };
 
   var isOpen = false;
-  final colorForwardCurve =
-      const Interval(0.25, 1.0, curve: Easing.standard);
-  final colorReverseCurve =
-      const Interval(0.25, 1.0, curve: Easing.standard);
+  final colorForwardCurve = const Interval(0.25, 1.0, curve: Easing.standard);
+  final colorReverseCurve = const Interval(0.25, 1.0, curve: Easing.standard);
 
   late final AnimationController _controller = AnimationController(
     duration: openDuration,
-    reverseDuration:
-        closeDuration,
+    reverseDuration: closeDuration,
     vsync: this,
   );
 
@@ -110,8 +107,7 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
     parent: _controller,
     curve: const Interval(0, 0.75, curve: Easing.emphasizedDecelerate),
     reverseCurve:
-        const Interval(0.0, 0.75, curve: Easing.emphasizedAccelerate)
-            .flipped,
+        const Interval(0.0, 0.75, curve: Easing.emphasizedAccelerate).flipped,
   ));
 
   late final _opacityTween =
@@ -159,15 +155,18 @@ class _ClosedWorkoutExerciseCardState extends State<ClosedWorkoutExerciseCard>
 
     const chipsHeight = 24.0;
     final cardHeightClosed = max(
-        TextUiUtilities.getTextSize(
+        TextUiUtilities.getTextSize(context,
                     widget.workoutExercise.exercise.name, headingStyle!)
                 .height +
             widget.inset +
-            TextUiUtilities.getTextSize('dummy string', subHeadingStyle!)
+            TextUiUtilities.getTextSize(
+                    context, 'Dummy string', subHeadingStyle!)
                 .height +
             widget.inset,
+        // + 32, // HACK
         widget.workoutExercise.sets.length *
-            TextUiUtilities.getTextSize('1 dummy entry', setEntryStyle!)
+            TextUiUtilities.getTextSize(
+                    context, '1 Dummy entry', setEntryStyle!)
                 .height);
 
     return GestureDetector(

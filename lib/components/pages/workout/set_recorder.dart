@@ -142,13 +142,14 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
     }
 
     final exerciseResultsHeight =
-        TextUiUtilities.getTextSize('0', textStyle.bodyMedium!).height;
+        TextUiUtilities.getTextSize(context, '0', textStyle.bodyMedium!).height;
 
     return SizedBox(
       height: Constants.digitWheelHeight * 2 +
           Constants.recorderButton +
           exerciseResultsHeight +
-          Constants.cardPadding * 2,
+          Constants.cardPadding * 2 +
+          4.0, // HACK
       child: Card(
           margin: const EdgeInsets.all(0),
           clipBehavior: Clip.hardEdge,
@@ -159,8 +160,8 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                   child: Stack(children: [
                     switch (currentExerciseResult) {
                       AsyncValue(:final value?) => Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              0, 0, 0, Constants.recorderButton + exerciseResultsHeight),
+                          padding: EdgeInsets.fromLTRB(0, 0, 0,
+                              Constants.recorderButton + exerciseResultsHeight),
                           child: Opacity(
                             opacity: Constants.chartOpacity,
                             child: AnimatedSwitcher(
@@ -204,8 +205,8 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                     // Settings
                     switch (currentExerciseResult) {
                       AsyncValue(:final value?) => Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: SizedBox(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: SizedBox(
                             height: Constants.digitWheelHeight * 2,
                             child: Flex(
                               direction: Axis.horizontal,
@@ -217,7 +218,8 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                                   child: SizedBox(
                                       width: 150,
                                       child: AnimatedSwitcher(
-                                        duration: const Duration(milliseconds: 500),
+                                        duration:
+                                            const Duration(milliseconds: 500),
                                         switchInCurve: slideInCurve,
                                         switchOutCurve: slideOutCurve,
                                         child: Align(
@@ -232,7 +234,7 @@ class _SetRecorderState extends ConsumerState<SetRecorder>
                               ],
                             ),
                           ),
-                      ),
+                        ),
                       _ => const SizedBox(),
                     },
                     Column(
