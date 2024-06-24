@@ -144,7 +144,7 @@ class _SetEditorDialogState extends State<SetEditorDialog> {
 
     saveCaption = saveCaption.toBeginningOfSentenceCase();
 
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: const Text('Edit sets'),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * Constants.dialogWidth,

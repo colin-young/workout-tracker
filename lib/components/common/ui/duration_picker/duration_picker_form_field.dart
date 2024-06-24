@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_tracker/components/timer/duration_display.dart';
 import 'package:workout_tracker/components/timer/timer_set_dialog.dart';
 
 class DurationPickerFormField extends FormField<Duration> {

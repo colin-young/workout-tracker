@@ -111,7 +111,7 @@ class ConfirmDismissDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final routinesResult = ref.watch(workoutDefinitionControllerProvider);
 
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text('Delete exercise \'${entry.name.toLowerCase()}\'?'),
       content: Column(
         mainAxisSize: MainAxisSize.min,

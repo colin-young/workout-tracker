@@ -53,7 +53,7 @@ class _AddExerciseDialogState extends ConsumerState<AddExerciseDialog> {
   Widget build(BuildContext context) {
     final exercisesResult = ref.watch(getExercisesProvider);
     
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: const Text('Select exercises'),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * Constants.dialogWidth,

@@ -40,7 +40,7 @@ class _ListEditorDialogState<V extends String> extends State<ListEditorDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text('Edit ${widget.itemName} list'),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * Constants.dialogWidth,

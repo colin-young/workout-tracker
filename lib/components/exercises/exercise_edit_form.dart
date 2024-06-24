@@ -55,7 +55,7 @@ class _ExerciseEditDialogState extends ConsumerState<ExerciseEditDialog> {
     // Build a Form widget using the _formKey created above.
     var screenSize = MediaQuery.of(context).size;
 
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text(widget.title),
       content: Form(
         key: _formKey,
